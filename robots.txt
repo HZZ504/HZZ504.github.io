@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://hanzhi-zhang.github.io/sitemap.xml
+Sitemap: https://hzz504.github.io/sitemap.xml
