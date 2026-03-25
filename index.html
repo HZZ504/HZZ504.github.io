@@ -62,8 +62,20 @@ nav{
   border-bottom:1px solid rgba(255,255,255,.05);
 }
 nav .inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
-nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright)}
+nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+nav .logo svg{width:28px;height:28px}
 nav .logo span{color:var(--accent)}
+/* ── SVG Icon System ─────────────────────────────────────────── */
+.icon{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.icon svg{width:100%;height:100%}
+.icon-sm svg{width:18px;height:18px}
+.icon-md svg{width:24px;height:24px}
+.icon-lg svg{width:32px;height:32px}
+.icon-xl svg{width:40px;height:40px}
+.project-icon .icon svg{width:40px;height:40px}
+.contact-icon .icon svg{width:22px;height:22px}
+.highlight-icon{display:inline-flex;width:28px;height:28px;margin-right:6px;vertical-align:middle}
+.highlight-icon svg{width:28px;height:28px}
 nav ul{list-style:none;display:flex;gap:28px;align-items:center}
 nav a{font-size:.85rem;color:var(--text-dim);transition:color .2s;cursor:pointer;position:relative;z-index:101}
 nav a:hover,nav a.active{color:var(--accent)}
@@ -168,7 +180,7 @@ nav a:hover,nav a.active{color:var(--accent)}
   transition:all .3s;position:relative;
 }
 .project-card:hover{border-color:var(--accent2);transform:translateY(-4px)}
-.project-icon{font-size:2rem;margin-bottom:12px}
+.project-icon{margin-bottom:16px;width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,rgba(0,212,170,.12),rgba(0,168,255,.08));border:1px solid rgba(0,212,170,.2);display:flex;align-items:center;justify-content:center}
 .project-card h3{font-size:1.1rem;color:var(--text-bright);margin-bottom:8px}
 .project-card p{font-size:.85rem;color:var(--text-dim);margin-bottom:16px}
 .project-metrics{display:flex;gap:16px}
@@ -270,7 +282,7 @@ footer .social a:hover{border-color:var(--accent);color:var(--accent)}
 <!-- ── Nav ──────────────────────────────────────────────────── -->
 <nav>
   <div class="inner">
-    <div class="logo"><span>&lt;</span>HZ<span>/&gt;</span></div>
+    <div class="logo"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="28" height="28" rx="6" fill="url(#logo-grad)"/><path d="M7 8h3v12H7V8zm4 5h6v3h-6v-3zm7-5h3v12h-3V8z" fill="#0a0a0f"/><defs><linearGradient id="logo-grad" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00d4aa"/><stop offset="1" stop-color="#00a8ff"/></linearGradient></defs></svg><span>&lt;</span>HZ<span>/&gt;</span></div>
     <button class="nav-toggle" onclick="document.querySelector('nav ul').classList.toggle('open')" aria-label="Menu">☰</button>
     <ul>
       <li><a href="#about" data-zh="关于" data-en="About">关于</a></li>
@@ -316,15 +328,15 @@ footer .social a:hover{border-color:var(--accent);color:var(--accent)}
       </div>
       <div class="about-highlights">
         <div class="highlight-card fade-up">
-          <h4 data-zh="🛡️ 全球风控体系" data-en="🛡️ Global Risk Control">🛡️ 全球风控体系</h4>
+          <h4><span class="highlight-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#00d4aa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5.25-3.4 10.13-8 11.5C7.4 22.13 4 17.25 4 12V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg></span><span data-zh="全球风控体系" data-en="Global Risk Control">全球风控体系</span></h4>
           <p data-zh="设计并落地覆盖多区域核心风险场景的算法与策略闭环" data-en="Designed and deployed algorithm & strategy loops covering multi-region core risk scenarios">设计并落地覆盖多区域核心风险场景的算法与策略闭环</p>
         </div>
         <div class="highlight-card fade-up">
-          <h4 data-zh="🤖 多模态AI融合" data-en="🤖 Multimodal AI Fusion">🤖 多模态AI融合</h4>
+          <h4><span class="highlight-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#00a8ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><path d="M8 15c1 1.5 3 2 4 2s3-.5 4-2"/><path d="M2 12h2m16 0h2M12 2v2m0 16v2"/></svg></span><span data-zh="多模态AI融合" data-en="Multimodal AI Fusion">多模态AI融合</span></h4>
           <p data-zh="将视觉、语音、文本、行为序列和设备信号融合到统一风控流水线" data-en="Fused vision, speech, text, behavioral sequences, and device signals into unified risk pipeline">将视觉、语音、文本、行为序列和设备信号融合到统一风控流水线</p>
         </div>
         <div class="highlight-card fade-up">
-          <h4 data-zh="⚡ 实时特征平台" data-en="⚡ Real-time Feature Platform">⚡ 实时特征平台</h4>
+          <h4><span class="highlight-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7c5cfc" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></span><span data-zh="实时特征平台" data-en="Real-time Feature Platform">实时特征平台</span></h4>
           <p data-zh="构建毫秒级特征生成、模型推理与策略编排的全链路平台" data-en="Built end-to-end platform for ms-level feature generation, model inference & strategy orchestration">构建毫秒级特征生成、模型推理与策略编排的全链路平台</p>
         </div>
       </div>
@@ -491,7 +503,7 @@ footer .social a:hover{border-color:var(--accent);color:var(--accent)}
     <h2 class="section-title" data-zh="代表性成果" data-en="Signature Work">代表性成果</h2>
     <div class="projects-grid">
       <div class="project-card fade-up">
-        <div class="project-icon">🛡️</div>
+        <div class="project-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#00d4aa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5.25-3.4 10.13-8 11.5C7.4 22.13 4 17.25 4 12V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg></div>
         <h3 data-zh="全球智能风控算法体系" data-en="Global Intelligent Risk Control System">全球智能风控算法体系</h3>
         <p data-zh="基于多模型协同（多模态+序列+图结构），覆盖多区域核心风险场景的算法设计与策略闭环" data-en="Multi-model synergy (multimodal + sequence + graph) covering multi-region core risk scenarios with closed-loop strategy">基于多模型协同（多模态+序列+图结构），覆盖多区域核心风险场景的算法设计与策略闭环</p>
         <div class="project-metrics">
@@ -501,7 +513,7 @@ footer .social a:hover{border-color:var(--accent);color:var(--accent)}
         </div>
       </div>
       <div class="project-card fade-up">
-        <div class="project-icon">👁️</div>
+        <div class="project-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#00a8ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/><path d="M12 5v-.5M12 19.5V19M18.36 6.64l.35-.35M5.29 17.71l.35-.35M20 12h.5M3.5 12H3M18.36 17.36l.35.35M5.29 6.29l.35.35"/></svg></div>
         <h3 data-zh="多模态风控模型体系" data-en="Multimodal Risk Control Models">多模态风控模型体系</h3>
         <p data-zh="将视觉、语音、文本、行为序列和设备信号融合到统一风控流水线上" data-en="Unified risk pipeline fusing vision, speech, text, behavioral sequences, and device signals">将视觉、语音、文本、行为序列和设备信号融合到统一风控流水线上</p>
         <div class="project-metrics">
@@ -510,7 +522,7 @@ footer .social a:hover{border-color:var(--accent);color:var(--accent)}
         </div>
       </div>
       <div class="project-card fade-up">
-        <div class="project-icon">🔗</div>
+        <div class="project-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7c5cfc" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M8.5 7.5l7 7M15.5 7.5l-7 7M6 9v6M18 9v6"/></svg></div>
         <h3 data-zh="图结构反欺诈引擎" data-en="Graph-based Anti-fraud Engine">图结构反欺诈引擎</h3>
         <p data-zh="基于GNN、序列建模、对比学习的高风险账号识别，解决刷单、黑产、团伙欺诈" data-en="GNN, sequence modeling & contrastive learning for high-risk account detection against fraud rings & organized crime">基于GNN、序列建模、对比学习的高风险账号识别，解决刷单、黑产、团伙欺诈</p>
         <div class="project-metrics">
@@ -519,7 +531,7 @@ footer .social a:hover{border-color:var(--accent);color:var(--accent)}
         </div>
       </div>
       <div class="project-card fade-up">
-        <div class="project-icon">🌍</div>
+        <div class="project-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#00d4aa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10A15.3 15.3 0 0112 2z"/></svg></div>
         <h3 data-zh="跨国实时安全系统" data-en="Cross-border Real-time Safety">跨国实时安全系统</h3>
         <p data-zh="在滴滴国际化中构建实时聚合与安全预警系统，覆盖巴西、墨西哥等市场" data-en="Built real-time aggregation & safety alert system for DiDi's international markets in Brazil, Mexico, etc.">在滴滴国际化中构建实时聚合与安全预警系统，覆盖巴西、墨西哥等市场</p>
         <div class="project-metrics">
@@ -570,27 +582,27 @@ footer .social a:hover{border-color:var(--accent);color:var(--accent)}
     <div class="contact-grid">
       <div class="contact-info">
         <div class="contact-item">
-          <div class="contact-icon">📧</div>
+          <div class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#00d4aa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4l-10 8L2 4"/></svg></div>
           <div><div class="ci-label">Email</div><div class="ci-value">michaelredhadoop@gmail.com</div></div>
         </div>
         <div class="contact-item">
-          <div class="contact-icon">📱</div>
+          <div class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#00d4aa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></div>
           <div><div class="ci-label" data-zh="电话" data-en="Phone">电话</div><div class="ci-value">+86 13120379793</div></div>
         </div>
         <div class="contact-item">
-          <div class="contact-icon">📍</div>
+          <div class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#00d4aa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
           <div><div class="ci-label" data-zh="位置" data-en="Location">位置</div><div class="ci-value" data-zh="北京，中国" data-en="Beijing, China">北京，中国</div></div>
         </div>
         <div class="contact-item">
-          <div class="contact-icon">💼</div>
+          <div class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#00d4aa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div>
           <div><div class="ci-label" data-zh="当前" data-en="Current">当前</div><div class="ci-value" data-zh="货拉拉 · Staff Engineer" data-en="Lalamove · Staff Engineer">货拉拉 · Staff Engineer</div></div>
         </div>
         <div class="contact-item">
-          <div class="contact-icon">⌨</div>
+          <div class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#00d4aa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg></div>
           <div><div class="ci-label">GitHub</div><div class="ci-value"><a href="https://github.com/HZZ504" target="_blank" rel="noopener">github.com/HZZ504</a></div></div>
         </div>
         <div class="contact-item">
-          <div class="contact-icon">🔗</div>
+          <div class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#00d4aa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></div>
           <div><div class="ci-label">LinkedIn</div><div class="ci-value"><a href="https://www.linkedin.com/in/hanzhi-zhang-662ab5a2/" target="_blank" rel="noopener">linkedin.com/in/hanzhi-zhang</a></div></div>
         </div>
       </div>
@@ -608,9 +620,9 @@ footer .social a:hover{border-color:var(--accent);color:var(--accent)}
 <footer>
   <div class="container">
     <div class="social">
-      <a href="mailto:michaelredhadoop@gmail.com" title="Email">📧</a>
-      <a href="https://github.com/HZZ504" target="_blank" rel="noopener" title="GitHub">⌨</a>
-      <a href="https://www.linkedin.com/in/hanzhi-zhang-662ab5a2/" target="_blank" rel="noopener" title="LinkedIn">in</a>
+      <a href="mailto:michaelredhadoop@gmail.com" title="Email"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4l-10 8L2 4"/></svg></a>
+      <a href="https://github.com/HZZ504" target="_blank" rel="noopener" title="GitHub"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg></a>
+      <a href="https://www.linkedin.com/in/hanzhi-zhang-662ab5a2/" target="_blank" rel="noopener" title="LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
     </div>
     <p data-zh="© 2025 张翰之. 用代码和算法守护安全。" data-en="© 2025 Hanzhi Zhang. Securing the world with code & algorithms.">© 2025 张翰之. 用代码和算法守护安全。</p>
   </div>
