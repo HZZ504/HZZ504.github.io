@@ -606,11 +606,14 @@ footer .social a:hover{border-color:var(--accent);color:var(--accent)}
           <div><div class="ci-label">LinkedIn</div><div class="ci-value"><a href="https://www.linkedin.com/in/hanzhi-zhang-662ab5a2/" target="_blank" rel="noopener">linkedin.com/in/hanzhi-zhang</a></div></div>
         </div>
       </div>
-      <form class="contact-form" onsubmit="event.preventDefault();alert(currentLang==='zh'?'消息已发送！':'Message sent!')">
-        <input type="text" data-placeholder-zh="你的名字" data-placeholder-en="Your Name" placeholder="你的名字" required>
-        <input type="email" data-placeholder-zh="你的邮箱" data-placeholder-en="Your Email" placeholder="你的邮箱" required>
-        <textarea rows="5" data-placeholder-zh="你的消息..." data-placeholder-en="Your message..." placeholder="你的消息..." required></textarea>
-        <button type="submit" data-zh="发送消息 →" data-en="Send Message →">发送消息 →</button>
+      <form class="contact-form" id="contactForm" action="https://formspree.io/f/xykbgond" method="POST">
+        <input type="text" name="name" data-placeholder-zh="你的名字" data-placeholder-en="Your Name" placeholder="你的名字" required>
+        <input type="email" name="email" data-placeholder-zh="你的邮箱" data-placeholder-en="Your Email" placeholder="你的邮箱" required>
+        <textarea rows="5" name="message" data-placeholder-zh="你的消息..." data-placeholder-en="Your message..." placeholder="你的消息..." required></textarea>
+        <input type="hidden" name="_subject" value="来自个人网站的新消息">
+        <input type="hidden" name="_next" value="https://hzz504.github.io/#contact">
+        <div id="formStatus" style="display:none;padding:12px;border-radius:8px;text-align:center;font-size:.9rem"></div>
+        <button type="submit" id="submitBtn" data-zh="发送消息 →" data-en="Send Message →">发送消息 →</button>
       </form>
     </div>
   </div>
@@ -723,6 +726,43 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
     // Close mobile menu if open
     document.querySelector('nav ul').classList.remove('open');
   });
+});
+
+// ── Contact Form (Formspree) ─────────────────────────────────
+const contactForm = document.getElementById('contactForm');
+const formStatus = document.getElementById('formStatus');
+const submitBtn = document.getElementById('submitBtn');
+
+contactForm.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btnText = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.textContent = currentLang === 'zh' ? '发送中...' : 'Sending...';
+  formStatus.style.display = 'none';
+
+  try {
+    const resp = await fetch(contactForm.action, {
+      method: 'POST',
+      body: new FormData(contactForm),
+      headers: { 'Accept': 'application/json' }
+    });
+    if (resp.ok) {
+      formStatus.style.display = 'block';
+      formStatus.style.background = 'rgba(0,212,170,.15)';
+      formStatus.style.color = '#00d4aa';
+      formStatus.textContent = currentLang === 'zh' ? '消息已发送，感谢你的联系！' : 'Message sent! Thanks for reaching out.';
+      contactForm.reset();
+    } else {
+      throw new Error('fail');
+    }
+  } catch (err) {
+    formStatus.style.display = 'block';
+    formStatus.style.background = 'rgba(255,80,80,.15)';
+    formStatus.style.color = '#ff5050';
+    formStatus.textContent = currentLang === 'zh' ? '发送失败，请直接发邮件联系我。' : 'Failed to send. Please email me directly.';
+  }
+  submitBtn.disabled = false;
+  submitBtn.textContent = btnText;
 });
 
 // ── Init ────────────────────────────────────────────────────
