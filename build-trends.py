@@ -194,7 +194,13 @@ def parse_trends_file(filepath):
 
 def generate_detail_page(info):
     """生成单篇日报详情页"""
-    content_html = md_to_html(info['md_text'])
+    # 去掉 md 开头的标题、日期、来源行（模板已包含这些信息）
+    body_text = info['md_text']
+    body_text = re.sub(r'^#\s+.+\n', '', body_text, count=1)           # 去掉第一个 # 标题
+    body_text = re.sub(r'^\*\*日期[：:]\*\*\s*.+\n', '', body_text)     # 去掉日期行
+    body_text = re.sub(r'^\*\*数据来源[：:]\*\*\s*.+\n', '', body_text)  # 去掉来源行
+    body_text = body_text.lstrip('\n')
+    content_html = md_to_html(body_text)
     date_str = info['date']
     title = info['title']
 
