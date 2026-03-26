@@ -200,6 +200,32 @@ nav a:hover,nav a.active{color:var(--accent)}
 .blog-item p{font-size:.8rem;color:var(--text-dim)}
 .blog-item .blog-date{font-family:var(--mono);font-size:.75rem;color:var(--text-dim);white-space:nowrap}
 
+/* ── AI Trends ──────────────────────────────────────────────── */
+.trends-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;flex-wrap:wrap;gap:16px}
+.trends-header .section-title{margin-bottom:0}
+.trends-live{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.75rem;color:var(--accent);padding:4px 12px;border:1px solid rgba(0,212,170,.3);border-radius:20px;background:rgba(0,212,170,.06)}
+.trends-live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse-dot 2s infinite}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.3}}
+.trends-grid{display:grid;grid-template-columns:1fr;gap:16px}
+.trends-card{
+  display:block;text-decoration:none;color:inherit;padding:24px;
+  background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:12px;
+  transition:all .3s;position:relative;overflow:hidden;
+}
+.trends-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,212,170,.08)}
+.trends-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.trends-card-date{font-family:var(--mono);font-size:.7rem;color:var(--accent);padding:3px 8px;border:1px solid rgba(0,212,170,.25);border-radius:4px;white-space:nowrap}
+.trends-card h3{font-size:1.05rem;color:var(--text-bright);margin-bottom:8px;line-height:1.4}
+.trends-card-desc{font-size:.82rem;color:var(--text-dim);line-height:1.6;margin-bottom:14px}
+.trends-tags{display:flex;flex-wrap:wrap;gap:6px}
+.trends-tag{font-family:var(--mono);font-size:.65rem;color:var(--accent2);padding:2px 8px;background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.15);border-radius:4px}
+.trends-stats{display:flex;gap:16px;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.05)}
+.trends-stat{font-family:var(--mono);font-size:.7rem;color:var(--text-dim);display:flex;align-items:center;gap:4px}
+.trends-stat svg{width:14px;height:14px}
+.trends-stat .ts-num{color:var(--accent);font-weight:600}
+.trends-more{display:inline-flex;align-items:center;gap:6px;margin-top:24px;font-family:var(--mono);font-size:.8rem;color:var(--accent);transition:gap .3s}
+.trends-more:hover{gap:10px}
+
 /* ── Contact ────────────────────────────────────────────────── */
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
 .contact-info{display:flex;flex-direction:column;gap:20px}
@@ -290,6 +316,7 @@ footer .social a:hover{border-color:var(--accent);color:var(--accent)}
       <li><a href="#skills" data-zh="技能" data-en="Skills">技能</a></li>
       <li><a href="#projects" data-zh="项目" data-en="Projects">项目</a></li>
       <li><a href="#blog" data-zh="博客" data-en="Blog">博客</a></li>
+      <li><a href="#ai-trends" data-zh="日报" data-en="Trends">日报</a></li>
       <li><a href="#contact" data-zh="联系" data-en="Contact">联系</a></li>
       <li><button class="lang-switch" onclick="toggleLang()">EN</button></li>
     </ul>
@@ -571,6 +598,35 @@ footer .social a:hover{border-color:var(--accent);color:var(--accent)}
         <span class="blog-date" data-zh="即将发布" data-en="Coming Soon">即将发布</span>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ── AI Trends ────────────────────────────────────────────── -->
+<section id="ai-trends">
+  <div class="container">
+    <div class="section-label" data-zh="AI 动态" data-en="AI Trends">AI 动态</div>
+    <div class="trends-header">
+      <h2 class="section-title" data-zh="每日 AI 动态追踪" data-en="Daily AI Trends Tracker">每日 AI 动态追踪</h2>
+      <span class="trends-live" data-zh="自动更新" data-en="Auto-updated">自动更新</span>
+    </div>
+    <div class="trends-grid" id="trendsGrid">
+      <a href="ai-trends/2026-03-26.html" class="trends-card fade-up" style="text-decoration:none;color:inherit">
+        <div class="trends-card-top">
+          <div>
+            <h3>AI 动态追踪日报 — Claude Cowork & Claude Code</h3>
+            <p class="trends-card-desc">Cowork 快速出圈，内容爆发式增长 — 过去 2 周 YouTube 上出现多个 10 万+ 观看量的 Cowork 教程，Reddit 上最热的 Cowork 讨论帖已超 180 条评论，...</p>
+          </div>
+          <span class="trends-card-date">2026-03-26</span>
+        </div>
+        <div class="trends-tags"><span class="trends-tag">CLAUDE.md</span><span class="trends-tag">Skills</span><span class="trends-tag">Scheduled Tasks</span><span class="trends-tag">MCP</span><span class="trends-tag">Hooks</span></div>
+        <div class="trends-stats">
+          <span class="trends-stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span class="ts-num">10</span> 技巧</span>
+          <span class="trends-stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg><span class="ts-num">11</span> 视频</span>
+          <span class="trends-stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg><span class="ts-num">21</span> 来源</span>
+        </div>
+      </a>
+    </div>
+    <a href="ai-trends/" class="trends-more" data-zh="查看全部日报 →" data-en="View all reports →">查看全部日报 →</a>
   </div>
 </section>
 

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 动态日报 | 张翰之</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;
+  --text:#e0e0e8;--text-dim:#8888a0;--text-bright:#ffffff;
+  --accent:#00d4aa;--accent2:#00a8ff;--accent3:#7c5cfc;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --max-w:900px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.7;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent2)}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+nav .inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--accent)}
+nav .logo svg{width:28px;height:28px}
+nav .back{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--accent)}
+
+.page-header{padding:100px 0 40px}
+.page-header h1{font-size:2rem;font-weight:700;color:var(--text-bright);margin-bottom:8px}
+.page-header p{color:var(--text-dim);font-size:.9rem}
+.live-badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.75rem;color:var(--accent);padding:4px 12px;border:1px solid rgba(0,212,170,.3);border-radius:20px;background:rgba(0,212,170,.06);margin-top:12px}
+.live-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pd 2s infinite}
+@keyframes pd{0%,100%{opacity:1}50%{opacity:.3}}
+
+.t-list{display:flex;flex-direction:column;gap:16px;padding-bottom:80px}
+.t-card{display:block;padding:24px;background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:12px;transition:all .3s;color:inherit}
+.t-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,212,170,.08)}
+.t-card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+.t-date{font-family:var(--mono);font-size:.75rem;color:var(--accent);padding:3px 8px;border:1px solid rgba(0,212,170,.25);border-radius:4px}
+.t-tags{display:flex;flex-wrap:wrap;gap:4px}
+.t-tag{font-family:var(--mono);font-size:.6rem;color:var(--accent2);padding:2px 6px;background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.15);border-radius:3px}
+.t-card h3{font-size:1rem;color:var(--text-bright);margin-bottom:6px}
+.t-card p{font-size:.82rem;color:var(--text-dim)}
+.t-stats{display:flex;gap:14px;margin-top:12px;font-family:var(--mono);font-size:.7rem;color:var(--text-dim)}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="../" class="logo"><svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="url(#lg)"/><path d="M7 8h3v12H7V8zm4 5h6v3h-6v-3zm7-5h3v12h-3V8z" fill="#0a0a0f"/><defs><linearGradient id="lg" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00d4aa"/><stop offset="1" stop-color="#00a8ff"/></linearGradient></defs></svg><span>&lt;</span>HZ<span>/&gt;</span></a>
+    <a href="../" class="back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> 返回首页</a>
+  </div>
+</nav>
+<div class="page-header">
+  <div class="container">
+    <h1>每日 AI 动态追踪</h1>
+    <p>Claude Code / Cowork 社区高级用法、实战技巧与趋势分析</p>
+    <span class="live-badge">由 Claude Cowork 自动生成</span>
+  </div>
+</div>
+<div class="container">
+  <div class="t-list">
+    <a href="2026-03-26.html" class="t-card">
+      <div class="t-card-head">
+        <span class="t-date">2026-03-26</span>
+        <div class="t-tags"><span class="t-tag">CLAUDE.md</span><span class="t-tag">Skills</span><span class="t-tag">Scheduled Tasks</span><span class="t-tag">MCP</span><span class="t-tag">Hooks</span></div>
+      </div>
+      <h3>AI 动态追踪日报 — Claude Cowork & Claude Code</h3>
+      <p>Cowork 快速出圈，内容爆发式增长 — 过去 2 周 YouTube 上出现多个 10 万+ 观看量的 Cowork 教程，Reddit 上最热的 Cowork 讨论帖已超 180 条评论，...</p>
+      <div class="t-stats">
+        <span>📋 10 技巧</span>
+        <span>📺 11 视频</span>
+        <span>📡 21 来源</span>
+      </div>
+    </a>
+  </div>
+</div>
+</body>
+</html>
