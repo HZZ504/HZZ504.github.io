@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI 动态追踪日报 — Claude Cowork & Claude Code | 张翰之</title>
-<meta name="description" content="Cowork 快速出圈，内容爆发式增长 — 过去 2 周 YouTube 上出现多个 10 万+ 观看量的 Cowork 教程，Reddit 上最热的 Cowork 讨论帖已超 180 条评论，...">
+<meta name="description" content="2026-03-26 Claude Code / Cowork 社区最新动态、高级用法和实战技巧汇总">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -88,50 +88,117 @@ tr:hover td{background:rgba(0,212,170,.03)}
 <h2>一、高级用法精选（按难度分层）</h2>
 
 <h3>Level 1 — 基础配置</h3>
+
 <ul>
-<li><strong>全局指令文件 CLAUDE.md</strong>：在项目根目录放一个 <code class="inline">CLAUDE.md</code>，作为 Claude 的"宪法"，写清楚代码风格、命名规范、禁止操作。所有会话都会自动读取。（来源：Reddit r/ClaudeAI, GitHub claude-code-best-practice）</li>
-<li><strong>文件夹结构规划</strong>：先在本地建好专属工作文件夹，再授权 Cowork 访问，而非让它在整个磁盘乱翻。（来源：YouTube Ben AI）</li>
-<li><strong>Cowork vs Claude Chat vs Claude Code 区别</strong>：Chat 适合问答；Cowork 适合非编码知识工作（文件、邮件、日程）；Claude Code 适合软件开发。（来源：YouTube AI Foundations, Ben AI）</li>
+<li><strong>CLAUDE.md 宪法文件</strong>：在项目根目录放一个 <code class="inline">CLAUDE.md</code>，写清楚代码风格、命名规范、禁止操作，所有会话自动读取。推荐同时建 <code class="inline">CLAUDE.local.md</code>（加入 .gitignore）用于个人偏好，避免影响团队。（来源：<a href="https://github.com/shanraisshan/claude-code-best-practice" target="_blank" rel="noopener">GitHub claude-code-best-practice</a>）</li>
+</ul>
+
+<ul>
+<li><strong>专属工作文件夹</strong>：不要把 Cowork 指向 Documents 或 Desktop 根目录，创建一个专属文件夹，只授权访问此目录，Claude 不会误操作其他文件。（来源：<a href="https://support.claude.com/en/articles/13345190-get-started-with-cowork" target="_blank" rel="noopener">support.claude.com</a>）</li>
+</ul>
+
+<ul>
+<li><strong>三种 Claude 模式区分</strong>：Claude Chat 适合问答；Cowork 适合非编码知识工作（文件、邮件、日程）；Claude Code 适合软件开发。混用往往浪费上下文窗口。</li>
 </ul>
 
 <h3>Level 2 — Skills 技巧</h3>
+
 <ul>
-<li><strong>拆分技能（Chunked Skills）</strong>：不要写一个巨大的 Skill 覆盖所有场景，应拆成多个小技能。例如写作类拆成「语气风格」「企业文案」「Newsletter」三个独立 Skill，实测效果明显优于合并版。（来源：Roger Wong 博客）</li>
-<li><strong>技能的渐进式加载</strong>：每个 Skill 的名称+描述约消耗 100 tokens，完整指令仅在 Claude 判断相关时才加载（<5k tokens）。相比把所有内容放 CLAUDE.md，Skills 更节省上下文。（来源：WebSearch）</li>
-<li><strong>调用技能</strong>：在对话中直接说「创建一个 Word 文档」，docx Skill 自动触发。Skill 触发取决于其描述文字，优化描述 = 优化触发准确率。（来源：Cowork Help Center）</li>
+<li><strong>拆分小技能（Chunked Skills）</strong>：不要写一个覆盖所有场景的巨型 Skill，拆成多个专注单一任务的小 Skill。例如写作类拆成「语气风格」「企业文案」「Newsletter」三个独立 Skill，实测效果明显优于合并版。每个 Skill 名称+描述约 100 tokens，完整指令仅在 Claude 判断相关时才加载，比 CLAUDE.md 更节省上下文。（来源：<a href="https://rogerwong.me/2026/03/claude-cowork-guide-56-tips" target="_blank" rel="noopener">Roger Wong 博客</a>）</li>
+</ul>
+
+<ul>
+<li><strong>描述即触发器</strong>：Skill 触发取决于其 SKILL.md 的描述文字，优化描述 = 优化触发准确率。建议用 <code class="inline">MANDATORY TRIGGERS:</code> 字段明确列出触发词。</li>
+</ul>
+
+<ul>
+<li><strong>用户自定义技能</strong>：放在 <code class="inline">.claude/skills/</code> 目录下，可与团队公共 Skill 共存，用于个人品牌声音、行业术语表、特定工作流模板。（来源：<a href="https://findskill.ai/blog/claude-cowork-guide/" target="_blank" rel="noopener">findskill.ai</a>）</li>
 </ul>
 
 <h3>Level 3 — 定时任务（Scheduled Tasks）</h3>
+
 <ul>
-<li><strong>每日早报自动化</strong>：设置一个每日 9am 的定时任务，汇总 Slack/邮件/日历过去 24 小时内容，生成格式化报告。（来源：Roger Wong，support.claude.com）</li>
-<li><strong>竞品监控</strong>：每周自动搜索竞品动态并整理到 Markdown 文件，无需手动操作。（来源：karozieminski.substack.com）</li>
-<li><strong>文件自动整理</strong>：定期扫描指定文件夹，按规则归档、重命名文件。（来源：findskill.ai）</li>
+<li><strong>每日早报自动化</strong>：设置 <code class="inline">0 9 <em> </em> *</code> cron 定时任务，汇总 Slack/邮件/日历过去 24 小时内容，生成格式化 Markdown 日报。（来源：<a href="https://support.claude.com/en/articles/13854387-schedule-recurring-tasks-in-cowork" target="_blank" rel="noopener">support.claude.com</a>）</li>
+</ul>
+
+<ul>
+<li><strong>竞品监控</strong>：每周一自动搜索竞品动态并整理到文件，只需写一次 prompt，永久运行。（来源：<a href="https://karozieminski.substack.com/p/claude-cowork-guide-plugins-memory-sub-agents-tips" target="_blank" rel="noopener">karozieminski.substack.com</a>）</li>
+</ul>
+
+<ul>
+<li><strong>多步骤 SKILL.md 定时任务</strong>：定时任务支持在 SKILL.md 中定义完整的多步骤工作流（如本日报：搜索 → 生成 Markdown → 构建 HTML → Git 推送），极大扩展自动化边界。（来源：<a href="https://aiblewmymind.substack.com/p/claude-cowork-scheduled-tasks-6-ways" target="_blank" rel="noopener">aiblewmymind.substack.com</a>）</li>
+</ul>
+
+<ul>
+<li><strong>Dispatch 远程触发</strong>：用手机扫 QR Code 与桌面 Cowork 配对，可在外出时远程启动定时任务或派发新任务，任务在本地电脑执行。（来源：<a href="https://aadhunik.ai/blog/claude-cowork-dispatch-anthrophics-new-claude-assistant/" target="_blank" rel="noopener">aadhunik.ai</a>）</li>
 </ul>
 
 <h3>Level 4 — Connectors & MCP</h3>
+
 <ul>
-<li><strong>接入外部工具</strong>：通过 Connectors，Cowork 可直接读写 Google Drive、Slack、Notion、GitHub 等，真正打通数据孤岛。（来源：YouTube Ben AI）</li>
-<li><strong>MCP 扩展能力</strong>：Claude Code 支持 MCP（Model Context Protocol）服务器，相当于给 AI 装插件，社区已有大量开源 MCP 可用。（来源：GitHub awesome-claude-code）</li>
+<li><strong>38+ 内置 Connectors</strong>：截至 2026-03-26，Cowork 已支持 Google Drive、Slack、Notion、GitHub、Excalidraw 等 38 个以上 Connector，真正打通数据孤岛。（来源：<a href="https://claude.com/product/cowork" target="_blank" rel="noopener">claude.com/product/cowork</a>）</li>
+</ul>
+
+<ul>
+<li><strong>MCP 服务器扩展</strong>：Claude Code 支持 MCP（Model Context Protocol）服务器，社区已有大量开源 MCP，Twitter MCP 可让 Claude Code 直接在终端管理 X 账号。（来源：<a href="https://github.com/hesreallyhim/awesome-claude-code" target="_blank" rel="noopener">GitHub awesome-claude-code</a>）</li>
+</ul>
+
+<ul>
+<li><strong>MCP + Claude Agent SDK 是 2026 核心技能栈</strong>：成为 Claude 架构师不需要官方认证，关键技能：MCP、Claude API、Claude Code、Claude Agent SDK。（来源：<a href="https://x.com/Param_eth/status/2033211564862705765" target="_blank" rel="noopener">X @Param_eth</a>）</li>
 </ul>
 
 <h3>Level 5 — Hooks 自动化控制</h3>
+
 <ul>
-<li><strong>8 种 Hook 事件</strong>：Claude Code 的 Hooks 在开发生命周期的特定时机执行 Shell 命令，实现确定性控制。包括 <code class="inline">/careful</code>（阻止危险命令）和 <code class="inline">/freeze</code>（禁止目录外编辑）。（来源：WebSearch）</li>
-<li><strong>Hook 应用场景</strong>：每次 Claude 写完代码自动运行 <code class="inline">ruff format</code> + <code class="inline">pytest</code>，强制保持代码质量。（来源：Blog sshh.io）</li>
+<li><strong>Hooks 是 2026 最重要新特性之一</strong>：Hooks 是用户定义的命令/脚本，在 Claude Code 生命周期特定时机自动执行，将最佳实践从"建议"变为"强制规则"。（来源：<a href="https://serenitiesai.com/articles/claude-code-hooks-guide-2026" target="_blank" rel="noopener">serenitiesai.com</a>）</li>
+</ul>
+
+<ul>
+<li><strong>12 种 Hook 事件</strong>：包括 <code class="inline">UserPromptSubmit</code>（拦截 prompt 前处理）、<code class="inline">PreToolUse</code>（工具执行前验证）、<code class="inline">PostToolUse</code>（执行后记录）、<code class="inline">SubagentStart/Stop</code>、<code class="inline">TaskCompleted</code>、<code class="inline">TeammateIdle</code> 等。（来源：<a href="https://www.pixelmojo.io/blogs/claude-code-hooks-production-quality-ci-cd-patterns" target="_blank" rel="noopener">pixelmojo.io</a>）</li>
+</ul>
+
+<ul>
+<li><strong>实战应用</strong>：每次 Claude 写完代码自动运行 <code class="inline">ruff format</code> + <code class="inline">pytest</code>；用 <code class="inline">PreToolUse</code> 阻止危险文件删除；用 <code class="inline">PostToolUse</code> 记录所有操作到审计日志。（来源：<a href="https://nick-tune.me/blog/2026-02-28-hook-driven-dev-workflows-with-claude-code/" target="_blank" rel="noopener">nick-tune.me</a>）</li>
+</ul>
+
+<ul>
+<li><strong>Hooks Mastery 项目</strong>：<code class="inline">disler/claude-code-hooks-mastery</code> 是目前最全的 Hooks 实战示例库，包含 CI/CD 集成和生产级代码审查模式。（来源：<a href="https://github.com/disler/claude-code-hooks-mastery" target="_blank" rel="noopener">GitHub disler/claude-code-hooks-mastery</a>）</li>
 </ul>
 
 <h3>Level 6 — 子代理编排（Sub-Agents）</h3>
+
 <ul>
-<li><strong>并行任务执行</strong>：使用 Claude 内置的 <code class="inline">Task(...)</code> 功能派生子代理，主代理决定何时委派，子代理专注执行，主窗口 token 消耗大幅降低。（来源：WebSearch）</li>
-<li><strong>避免微观管理</strong>：指定"结束状态"而非操作步骤。例如「写一份分析报告并保存为 PDF」，而非「先搜索，再整理，再写作，再保存」。（来源：Reddit r/ClaudeAI）</li>
-<li><strong>容器隔离</strong>：高级用法是让本地 Claude Code 控制运行在容器中的另一个 Claude Code 实例，实现完全隔离的并行开发。（来源：Reddit r/ClaudeAI）</li>
+<li><strong>子代理独立上下文窗口</strong>：每个子代理有独立 context window、自定义 system prompt 和权限配置，专注处理特定类型任务，主代理 context 不被污染。（来源：<a href="https://code.claude.com/docs/en/sub-agents" target="_blank" rel="noopener">code.claude.com</a>）</li>
+</ul>
+
+<ul>
+<li><strong>并行 5+ 个 Claude</strong>：Claude Code 创始人 Boris Cherny 实际工作流：本地同时运行 5 个 Claude 实例，claude.ai/code 再并行 5-10 个，每个处理独立任务。（来源：<a href="https://twitter-thread.com/t/2007179832300581177" target="_blank" rel="noopener">X @bcherny</a>）</li>
+</ul>
+
+<ul>
+<li><strong>避免微观管理</strong>：指定"结束状态"而非操作步骤。说「写一份分析报告保存为 PDF」，而非「先搜索，再整理，再写作，再保存」。Director 思维 > Operator 思维。（来源：<a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">Reddit r/ClaudeAI</a>）</li>
+</ul>
+
+<ul>
+<li><strong>容器隔离并行开发</strong>：让本地 Claude Code 控制运行在 Docker 容器里的另一个 Claude Code 实例，实现完全隔离的并行开发，互不影响。（来源：<a href="https://github.com/ykdojo/claude-code-tips" target="_blank" rel="noopener">GitHub ykdojo/claude-code-tips</a>）</li>
 </ul>
 
 <h3>Level 7 — 专家级工作流</h3>
+
 <ul>
-<li><strong>AI Operating System（AIOS）理念</strong>：将 Cowork + Plugins + Scheduled Tasks 组合成个人 AI 操作系统，自动处理日常工作流，实现 10-15x 生产力提升。（来源：YouTube KJ Rainey, AI Foundations）</li>
-<li><strong>Director vs Operator 思维转变</strong>：大多数人把 Claude Code 当命令执行器（Operator），高手把自己当 Director——描述目标，让 Claude 自己规划路径。这是效率跃升的关键思维转变。（来源：X @lukashanren1 / ClaudeWorld Taiwan）</li>
-<li><strong>X 书签自动总结</strong>：使用 Claude Cowork 每日自动读取 X 书签并生成摘要，整套方案只需 15 分钟搭建。（来源：X @mass_perfection）</li>
+<li><strong>AI OS 理念</strong>：将 Cowork + Plugins + Scheduled Tasks + Hooks + 子代理组合，构建个人 AI 操作系统。每个工具/应用/数据源通过 MCP 接入，Claude 成为统一调度层。（来源：<a href="https://dev.to/jan_lucasandmann_bb9257c/claude-code-to-ai-os-blueprint-skills-hooks-agents-mcp-setup-in-2026-46gg" target="_blank" rel="noopener">dev.to - AI OS Blueprint</a>）</li>
+</ul>
+
+<ul>
+<li><strong>反馈闭环原则</strong>：高级 Claude Code 用法的核心——始终给 Agent 验证自己输出的机会。加入验证步骤可将最终结果质量提升 2-3 倍。（来源：<a href="https://www.builder.io/blog/claude-code" target="_blank" rel="noopener">builder.io</a>）</li>
+</ul>
+
+<ul>
+<li><strong>上下文窗口管理</strong>：用自定义 status line 持续监控 token 用量，达到 80% 时主动压缩或开新会话。（来源：<a href="https://github.com/ykdojo/claude-code-tips" target="_blank" rel="noopener">GitHub ykdojo/claude-code-tips</a>）</li>
+</ul>
+
+<ul>
+<li><strong>Computer Use 远程控制（3月新功能）</strong>：Claude 现在可以控制鼠标、键盘、操作应用和浏览器。与 MCP Connectors + Dispatch 结合，构成真正意义上的"万能 AI 员工"。（来源：<a href="https://9to5google.com/2026/03/24/claude-can-now-remotely-control-your-computer-and-it-looks-absolutely-wild-video/" target="_blank" rel="noopener">9to5google.com</a>、<a href="https://x.com/toddsaunders/status/2036206426679349388" target="_blank" rel="noopener">X @toddsaunders</a>）</li>
 </ul>
 
 <hr>
@@ -147,73 +214,94 @@ tr:hover td{background:rgba(0,212,170,.03)}
 </tr></thead><tbody>
 <tr>
 <td>1</td>
-<td>写好 CLAUDE.md</td>
-<td>作为 AI 的"宪法"，定义规则、风格、禁止事项，所有会话自动读取</td>
+<td>CLAUDE.md 宪法</td>
+<td>AI 行为规范文件，所有会话自动读取</td>
 <td>⭐</td>
-<td>Reddit r/ClaudeAI</td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">Reddit r/ClaudeAI</a></td>
 </tr>
 <tr>
 <td>2</td>
-<td>拆分小技能</td>
-<td>不要一个大 Skill，拆成多个专注单一任务的小 Skill，效果更稳定</td>
-<td>⭐⭐</td>
-<td>Roger Wong 博客</td>
+<td>专属工作文件夹</td>
+<td>限制 Cowork 访问范围，安全+高效</td>
+<td>⭐</td>
+<td><a href="https://support.claude.com/en/articles/13345190-get-started-with-cowork" target="_blank" rel="noopener">support.claude.com</a></td>
 </tr>
 <tr>
 <td>3</td>
-<td>定时任务自动化</td>
-<td>每日早报、竞品追踪、文件整理——设置一次，永久运行</td>
+<td>拆分小技能</td>
+<td>多个专注单一任务的小 Skill > 一个大 Skill</td>
 <td>⭐⭐</td>
-<td>support.claude.com</td>
+<td><a href="https://rogerwong.me/2026/03/claude-cowork-guide-56-tips" target="_blank" rel="noopener">Roger Wong 博客</a></td>
 </tr>
 <tr>
 <td>4</td>
-<td>Director 思维</td>
-<td>只描述目标（"完成X"），不要写操作步骤，让 Claude 规划路径</td>
+<td>每日定时任务</td>
+<td>早报、竞品监控——写一次，永久运行</td>
 <td>⭐⭐</td>
-<td>X ClaudeWorld Taiwan</td>
+<td><a href="https://support.claude.com/en/articles/13854387-schedule-recurring-tasks-in-cowork" target="_blank" rel="noopener">support.claude.com</a></td>
 </tr>
 <tr>
 <td>5</td>
-<td>使用 Hooks 守门</td>
-<td><code class="inline">/careful</code> 阻止危险操作，<code class="inline">/freeze</code> 防止意外修改非目标文件</td>
-<td>⭐⭐⭐</td>
-<td>GitHub claude-code-tips</td>
+<td>38+ Connectors</td>
+<td>接入 Google Drive、Slack、Notion 等打通数据孤岛</td>
+<td>⭐⭐</td>
+<td><a href="https://claude.com/product/cowork" target="_blank" rel="noopener">claude.com/product/cowork</a></td>
 </tr>
 <tr>
 <td>6</td>
-<td>删除无用 MCP</td>
-<td>过多 MCP 浪费 token，定期用 <code class="inline">/context</code> 检查并清理不需要的 MCP</td>
+<td>Dispatch 远程触发</td>
+<td>手机远程启动 Cowork 任务，任务在本地执行</td>
 <td>⭐⭐</td>
-<td>Reddit r/ClaudeCode</td>
+<td><a href="https://aadhunik.ai/blog/claude-cowork-dispatch-anthrophics-new-claude-assistant/" target="_blank" rel="noopener">aadhunik.ai</a></td>
 </tr>
 <tr>
 <td>7</td>
-<td>子代理并行执行</td>
-<td>用 Task(...) 派生子代理并行处理独立任务，主窗口 token 节省显著</td>
-<td>⭐⭐⭐⭐</td>
-<td>claude.com/docs/sub-agents</td>
+<td>PreToolUse Hook</td>
+<td>工具执行前验证，阻止危险操作，强制代码格式化</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://www.pixelmojo.io/blogs/claude-code-hooks-production-quality-ci-cd-patterns" target="_blank" rel="noopener">pixelmojo.io</a></td>
 </tr>
 <tr>
 <td>8</td>
-<td>VM 磁盘满修复</td>
-<td>Cowork VM 空间不足时删除 <code class="inline">~/Library/Application Support/Claude/claude-code-vm</code> 和 <code class="inline">vm_bundles</code></td>
-<td>⭐⭐</td>
-<td>X @toaru93275310</td>
+<td>子代理并行执行</td>
+<td>主代理派发，子代理独立执行，并行处理多任务</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://code.claude.com/docs/en/sub-agents" target="_blank" rel="noopener">code.claude.com</a></td>
 </tr>
 <tr>
 <td>9</td>
-<td>Skill 描述优化</td>
-<td>Skill 触发靠名称+描述（~100 tokens），精心写描述 = 提升触发准确率</td>
+<td>反馈闭环原则</td>
+<td>让 Claude 验证自己输出（测试/lint/截图），质量提升 2-3x</td>
 <td>⭐⭐⭐</td>
-<td>WebSearch</td>
+<td><a href="https://www.builder.io/blog/claude-code" target="_blank" rel="noopener">builder.io</a></td>
 </tr>
 <tr>
 <td>10</td>
-<td>容器内 Claude Code</td>
-<td>让本地 Claude 控制容器内另一个 Claude 实例，实现并行、隔离开发</td>
+<td>并行 5+ Claude</td>
+<td>多实例并行处理独立任务，Boris Cherny 亲测</td>
+<td>⭐⭐⭐⭐</td>
+<td><a href="https://twitter-thread.com/t/2007179832300581177" target="_blank" rel="noopener">X @bcherny</a></td>
+</tr>
+<tr>
+<td>11</td>
+<td>Hooks CI/CD 集成</td>
+<td>Hooks 接入 CI/CD，自动化代码审查和质量门</td>
+<td>⭐⭐⭐⭐</td>
+<td><a href="https://github.com/disler/claude-code-hooks-mastery" target="_blank" rel="noopener">disler/claude-code-hooks-mastery</a></td>
+</tr>
+<tr>
+<td>12</td>
+<td>Computer Use</td>
+<td>Claude 控制鼠标键盘+MCP+Dispatch，打造"万能 AI 员工"</td>
 <td>⭐⭐⭐⭐⭐</td>
-<td>Reddit r/ClaudeAI</td>
+<td><a href="https://9to5google.com/2026/03/24/claude-can-now-remotely-control-your-computer-and-it-looks-absolutely-wild-video/" target="_blank" rel="noopener">9to5google.com</a></td>
+</tr>
+<tr>
+<td>13</td>
+<td>AI OS 架构</td>
+<td>Cowork+Plugins+Hooks+MCP 构建个人 AI 操作系统</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td><a href="https://dev.to/jan_lucasandmann_bb9257c/claude-code-to-ai-os-blueprint-skills-hooks-agents-mcp-setup-in-2026-46gg" target="_blank" rel="noopener">dev.to - AI OS Blueprint</a></td>
 </tr>
 </tbody></table></div>
 
@@ -224,37 +312,37 @@ tr:hover td{background:rgba(0,212,170,.03)}
 <div class="table-wrap"><table><thead><tr>
 <th>视频标题</th>
 <th>作者</th>
-<th>观看量</th>
-<th>时长</th>
 <th>特色内容</th>
 </tr></thead><tbody>
 <tr>
-<td><a href="https://www.youtube.com/results?search_query=How+to+Use+Claude+Cowork+Better+Than+99%25+Ben+AI" target="_blank" rel="noopener">How to Use Claude Cowork Better Than 99% of People</a></td>
-<td>Ben AI</td>
-<td><strong>25万</strong></td>
-<td>21分钟</td>
-<td>文件管理、Connectors/MCP、Skills 三种创建方法、代码执行</td>
+<td><a href="https://www.youtube.com/results?search_query=Automate+Your+Life+with+Claude+Code+Teresa+Torres" target="_blank" rel="noopener">Automate Your Life with Claude Code in 50 Min</a></td>
+<td>Teresa Torres</td>
+<td>50分钟完整工作流自动化，非技术人员友好</td>
 </tr>
 <tr>
-<td><a href="https://www.youtube.com/results?search_query=Claude+Cowork+Full+Tutorial+Bart+Slodyczka" target="_blank" rel="noopener">Claude Cowork Full Tutorial</a></td>
-<td>Bart Slodyczka</td>
-<td><strong>11万</strong></td>
-<td>14分钟</td>
-<td>本地文件访问、多步骤自动化工作流、定时任务实战</td>
+<td><a href="https://www.youtube.com/results?search_query=best+Claude+Code+tutorials+ranked+2026" target="_blank" rel="noopener">Best Claude Code YouTube Videos Ranked 2026</a></td>
+<td>Rentier Digital</td>
+<td>25 个 Claude Code 视频排名，含 85万观看病毒视频</td>
 </tr>
 <tr>
-<td><a href="https://www.youtube.com/results?search_query=Full+Claude+Cowork+Tutorial+Beginners+2026+AI+Foundations" target="_blank" rel="noopener">Full Claude Cowork Tutorial for Beginners in 2026!</a></td>
-<td>AI Foundations</td>
-<td><strong>3.6万</strong></td>
-<td>33分钟</td>
-<td>12章节完整教程，从下载到高级 Skills，附赠 AIOS 模板</td>
+<td><a href="https://www.youtube.com/results?search_query=Claude+Cowork+tutorial+desktop+agent+2026" target="_blank" rel="noopener">Claude Cowork Tutorial — Desktop Agent Guide</a></td>
+<td>DataCamp</td>
+<td>官方级入门，涵盖 Cowork 全功能</td>
 </tr>
 <tr>
-<td><a href="https://www.youtube.com/results?search_query=Claude+COWORK+Full+Course+Zero+Working+AI+Employee+KJ+Rainey" target="_blank" rel="noopener">Claude COWORK Full Course: Zero To Working AI Employee</a></td>
-<td>KJ Rainey</td>
-<td><strong>2.4万</strong></td>
-<td>1h28m</td>
-<td>最新 21章节课程，Opus vs Sonnet 选择、高级技能创建、4个进阶 AI 技巧</td>
+<td><a href="https://www.youtube.com/results?search_query=Claude+Code+hooks+complete+guide+2026" target="_blank" rel="noopener">Claude Code Hooks Complete Guide 2026</a></td>
+<td>Serenities AI</td>
+<td>Hooks 完整讲解，12 种事件类型</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Claude+Code+AI+OS+Skills+Hooks+Agents+MCP+2026" target="_blank" rel="noopener">Claude Code to AI OS Blueprint</a></td>
+<td>Jan Lucas Andmann</td>
+<td>Skills+Hooks+Agents+MCP 四合一架构</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Claude+Cowork+parallel+workflows+dispatch+morning" target="_blank" rel="noopener">The 6 AM Dispatch: 5 Parallel Workflows</a></td>
+<td>Techy Surgeon</td>
+<td>Dispatch 远程触发 + 并行工作流演示</td>
 </tr>
 </tbody></table></div>
 
@@ -265,44 +353,37 @@ tr:hover td{background:rgba(0,212,170,.03)}
 <div class="table-wrap"><table><thead><tr>
 <th>帖子标题</th>
 <th>子版块</th>
-<th>评论数</th>
 <th>要点</th>
 </tr></thead><tbody>
 <tr>
-<td><a href="https://www.reddit.com/r/ClaudeAI/search/?q=25+Claude+Code+Tips+11+Months" target="_blank" rel="noopener">25 Claude Code Tips from 11 Months of Intense Use</a></td>
+<td><a href="https://www.reddit.com/search/?q=claude+code+vs+codex+2026+developers" target="_blank" rel="noopener">Claude Code vs Codex 2026 — 500+ Developers Think</a></td>
 <td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
-<td>40+</td>
-<td>含 40+ 条实用技巧，实战沉淀，覆盖 CLAUDE.md、Hooks、子代理</td>
+<td>Claude 200k context 在大型代码库的结构性优势分析</td>
 </tr>
 <tr>
-<td><a href="https://www.reddit.com/r/ClaudeAI/search/?q=best+guide+Claude+Cowork" target="_blank" rel="noopener">Hands down the best guide to Claude Cowork</a></td>
+<td><a href="https://www.reddit.com/search/?q=claude+code+is+great+learn+how+to+use" target="_blank" rel="noopener">Claude Code is Great. You Just Need to Learn How</a></td>
 <td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
-<td><strong>90+</strong></td>
-<td>目前公认最全面的 Cowork 指南，含营销人员使用案例</td>
+<td>新手常见误区及进阶使用心得，高赞讨论</td>
 </tr>
 <tr>
-<td><a href="https://www.reddit.com/r/ClaudeCode/search/?q=Tried+Claude+Cowork+last+night+top+3" target="_blank" rel="noopener">Tried Claude Cowork last night, and it was a top 3 most...</a></td>
-<td><a href="https://www.reddit.com/r/ClaudeCode/" target="_blank" rel="noopener">r/ClaudeCode</a></td>
-<td><strong>180+</strong></td>
-<td>Cowork 初体验分享，讨论 Cowork 与 Claude Code 协作问题</td>
-</tr>
-<tr>
-<td><a href="https://www.reddit.com/r/ClaudeAI/search/?q=Top+10+Claude+Code+Tips+11+Months" target="_blank" rel="noopener">My Top 10 Claude Code Tips from 11 Months of Intense Use</a></td>
+<td><a href="https://www.reddit.com/search/?q=claude+skills+token+efficient+vs+CLAUDE.md" target="_blank" rel="noopener">Skills are more token-efficient than CLAUDE.md</a></td>
 <td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
-<td>50+</td>
-<td>10 大高频实用技巧，适合有一定基础的用户</td>
+<td>Skills 仅在需要时加载，对比 CLAUDE.md 每次载入的 token 开销</td>
 </tr>
 <tr>
-<td><a href="https://www.reddit.com/r/ClaudeCode/search/?q=Claude+Code+Pro+tips+efficiently" target="_blank" rel="noopener">What's Claude Code Pro's tips to use it efficiently</a></td>
-<td><a href="https://www.reddit.com/r/ClaudeCode/" target="_blank" rel="noopener">r/ClaudeCode</a></td>
-<td>20+</td>
-<td>如何在专业计划中节省 token，移除无用 MCP 是首要建议</td>
+<td><a href="https://www.reddit.com/search/?q=anthropic+lessons+building+claude+code+skills" target="_blank" rel="noopener">Lessons from Building Claude Code: How We Use Skills</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>Anthropic 团队成员分享内部 Skills 使用方法</td>
 </tr>
 <tr>
-<td><a href="https://www.reddit.com/r/ClaudeCode/search/?q=claude+cowork" target="_blank" rel="noopener">claude cowork</a></td>
-<td><a href="https://www.reddit.com/r/ClaudeCode/" target="_blank" rel="noopener">r/ClaudeCode</a></td>
-<td>10+</td>
-<td>讨论 Cowork 定位：非开发者版 Claude Code，适合知识工作者</td>
+<td><a href="https://www.reddit.com/search/?q=claude+code+loop+recurring+tasks+3+days" target="_blank" rel="noopener">/loop — schedule recurring tasks for up to 3 days</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>新命令 <code class="inline">/loop</code> 可让 Claude Code 运行最长 3 天的循环任务</td>
+</tr>
+<tr>
+<td><a href="https://www.reddit.com/search/?q=claude+code+docker+container+isolation+parallel" target="_blank" rel="noopener">Container isolation for parallel Claude Code</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>Docker 容器隔离多 Claude Code 实例并行开发的技术细节</td>
 </tr>
 </tbody></table></div>
 
@@ -313,44 +394,32 @@ tr:hover td{background:rgba(0,212,170,.03)}
 <div class="table-wrap"><table><thead><tr>
 <th>作者</th>
 <th>内容摘要</th>
-<th>互动</th>
 <th>亮点</th>
 </tr></thead><tbody>
 <tr>
-<td><a href="https://x.com/mass_perfection" target="_blank" rel="noopener">@mass_perfection</a></td>
-<td>用 Claude Cowork 每天自动读取 X 书签并生成摘要，15 分钟搭建</td>
-<td>🔥 实用</td>
-<td>展示 Cowork 真实自动化场景</td>
+<td><a href="https://x.com/claudeai" target="_blank" rel="noopener">@claudeai</a></td>
+<td>宣布 Cowork 上线，"Claude Code for the rest of your work"——为非技术用户带来 Claude Code 级别的自动化</td>
+<td>官方定位声明</td>
 </tr>
 <tr>
-<td><a href="https://x.com/theranajitkodag" target="_blank" rel="noopener">@theranajitkodag</a></td>
-<td>盘点 Claude 2026 年更新：Cowork、Opus 4.6、Sonnet 4.6 全都在 2 月内发布</td>
-<td>📈 资讯</td>
-<td>时间轴清晰，适合了解最新动态</td>
+<td><a href="https://x.com/bcherny" target="_blank" rel="noopener">@bcherny</a>（Claude Code 创始人 Boris Cherny）</td>
+<td>本地 5 个 Claude、cloud 5-10 个，用语音消息替代打字，所有会话都有反馈闭环</td>
+<td>创始人亲测并行工作流</td>
 </tr>
 <tr>
-<td><a href="https://x.com/lukashanren1" target="_blank" rel="noopener">@lukashanren1</a></td>
-<td>分享 ClaudeWorld Taiwan Discord，聚焦"Director vs Operator"高阶方法论</td>
-<td>🎯 社区</td>
-<td>进阶思维框架，从微观管理到战略委派</td>
+<td><a href="https://x.com/toddsaunders/status/2036206426679349388" target="_blank" rel="noopener">@toddsaunders</a></td>
+<td>"Computer Use + Claude Code + MCP Connectors + Dispatch = 万能 AI 员工"</td>
+<td>对 Cowork 全栈能力的震撼评价</td>
 </tr>
 <tr>
-<td><a href="https://x.com/toaru93275310" target="_blank" rel="noopener">@toaru93275310</a></td>
-<td>Cowork VM 启动失败的修复方法：删除 <code class="inline">claude-code-vm</code> 和 <code class="inline">vm_bundles</code> 目录</td>
-<td>🔧 实用</td>
-<td>解决常见痛点的即用技巧</td>
+<td><a href="https://x.com/Param_eth/status/2033211564862705765" target="_blank" rel="noopener">@Param_eth</a></td>
+<td>"2026 成为 Claude 架构师：MCP + Claude API + Claude Code + Agent SDK，不需要官方认证"</td>
+<td>技能栈路线图</td>
 </tr>
 <tr>
-<td><a href="https://x.com/grow33_sky" target="_blank" rel="noopener">@grow33_sky</a></td>
-<td>Claude Code 和 Cowork 现在可以操控 Mac 桌面——点击、导航、开文件、用浏览器</td>
-<td>🆕 新功能</td>
-<td>桌面 GUI 自动化能力宣告</td>
-</tr>
-<tr>
-<td><a href="https://x.com/FerrariJetpack" target="_blank" rel="noopener">@FerrariJetpack</a></td>
-<td>向音乐行业 PM 演示 Claude Cowork</td>
-<td>😄 轻松</td>
-<td>跨行业推广 Cowork 的真实场景</td>
+<td><a href="https://x.com/excalidraw/status/2021284377506742331" target="_blank" rel="noopener">@excalidraw</a></td>
+<td>"Excalidraw 正式有了官方 MCP！在 Connectors 里搜索即可使用"</td>
+<td>MCP 生态扩张案例</td>
 </tr>
 </tbody></table></div>
 
@@ -358,67 +427,63 @@ tr:hover td{background:rgba(0,212,170,.03)}
 
 <h2>六、跨平台趋势总结</h2>
 
-<p><strong>1. Cowork 快速出圈，内容爆发式增长</strong></p>
-<p>过去 2 周 YouTube 上出现多个 10 万+ 观看量的 Cowork 教程，Reddit 上最热的 Cowork 讨论帖已超 180 条评论，X 上每分钟都有新帖提及 Cowork。这是一个正在进入主流意识的产品。</p>
+<p><strong>本周最热话题：</strong></p>
 
-<p><strong>2. Skills 生态成为护城河</strong></p>
-<p>用户开始意识到构建自己的 Skills 库是提升 Cowork 效率的核心。"拆分 Skill"的实践建议在多个独立内容创作者中不约而同被提及，说明这是从实战中总结的真实洞见。</p>
+<p>1. <strong>Computer Use 正式商用（3月24日）</strong>：Claude 可以像人一样操作电脑（鼠标+键盘+屏幕）。Reddit 和 X 上的讨论量是过去一周最高的。</p>
 
-<p><strong>3. 定时任务 + 自动化是最受期待的功能</strong></p>
-<p>从社区反馈来看，Scheduled Tasks 是让 Cowork 真正变成"AI 员工"的关键功能。书签自动总结、竞品追踪、日报生成是最高频的用例。</p>
+<p>2. <strong>Hooks 生产级实践爆发</strong>：越来越多工程团队分享 Hooks 在 CI/CD、代码审查、合规审计中的落地案例。<code class="inline">disler/claude-code-hooks-mastery</code> 成为本周最受关注开源项目。</p>
 
-<p><strong>4. 思维模式转变是最大瓶颈</strong></p>
-<p>多个高手指出，从"告诉 AI 做什么（Operator）"转变为"告诉 AI 要达到什么结果（Director）"，是效率提升的最大杠杆，也是大多数用户停滞不前的根本原因。</p>
+<p>3. <strong>AI OS 架构理念崛起</strong>：把 Claude 工具栈当成个人操作系统来设计——不再是"用 AI 完成一个任务"，而是"让 AI 管理所有工作流"。这一思维转变正在技术社区快速传播。</p>
+
+<p>4. <strong>Cowork 完整生命周期案例涌现</strong>：从 Dispatch 远程派发 → 定时执行 → Computer Use 操作应用 → MCP 写入数据库，完整的"AI 工作流生命周期"开始被真实用户验证。</p>
+
+<p>5. <strong>MCP 生态快速扩张</strong>：官方和社区 MCP 数量持续增加，Excalidraw、Twitter/X 等相继加入，"All-in on MCP" 成为 2026 技术趋势。</p>
 
 <hr>
 
 <h2>七、进阶路线图</h2>
 
 <pre><code>
-新手 → 熟练 → 高手 → 专家
-</code></pre>
+Week 1: 基础配置
+├── 创建 CLAUDE.md + CLAUDE.local.md
+├── 设置专属工作文件夹
+└── 配置 1-2 个 Connectors（推荐 Google Drive + Slack）
 
-<div class="table-wrap"><table><thead><tr>
-<th>阶段</th>
-<th>目标</th>
-<th>关键动作</th>
-</tr></thead><tbody>
-<tr>
-<td><strong>新手</strong>（第 1-2 周）</td>
-<td>跑通基本工作流</td>
-<td>安装 Claude Desktop、授权文件夹、试用内置 Skills、连接 1 个 Connector</td>
-</tr>
-<tr>
-<td><strong>熟练</strong>（第 3-4 周）</td>
-<td>建立个人工作台</td>
-<td>写好 CLAUDE.md、创建 3 个自定义 Skills、设置第一个定时任务</td>
-</tr>
-<tr>
-<td><strong>高手</strong>（第 2 月）</td>
-<td>自动化日常工作</td>
-<td>拆分技能库、使用 Scheduled Tasks 做每日自动化、学会 Director 式提问</td>
-</tr>
-<tr>
-<td><strong>专家</strong>（第 3 月+）</td>
-<td>构建 AI 操作系统</td>
-<td>掌握 Hooks/Sub-Agents、构建多代理工作流、开发/发布自定义 Plugin</td>
-</tr>
-</tbody></table></div>
+Week 2: Skills & 定时任务
+├── 创建 3 个拆分写作 Skills（语气/企业/Newsletter）
+├── 设置每日早报定时任务
+└── 设置每周竞品监控任务
+
+Week 3: Hooks & 子代理
+├── 配置 PostToolUse Hook：自动运行 linting
+├── 配置 PreToolUse Hook：阻止危险操作
+└── 尝试主代理 + 2 个子代理并行工作流
+
+Week 4: 专家级工作流
+├── 启用 Computer Use（谨慎，避免敏感应用）
+├── 配置 Dispatch 手机远程控制
+└── 规划个人 AI OS 架构（Plugins + MCP + Hooks 全栈）
+</code></pre>
 
 <hr>
 
 <h2>八、推荐行动</h2>
 
-<p>1. <strong>立刻做：</strong> 在你最常用的项目里创建 <code class="inline">CLAUDE.md</code>，写清楚 3 条核心规则（语言、格式、禁止操作），今天就能感受到效果提升。</p>
+<p><strong>今日可立即执行（< 30 分钟）：</strong></p>
 
-<p>2. <strong>本周做：</strong> 设置一个定时任务——例如每天早 9 点自动汇总昨日邮件/通知，生成 Markdown 报告。参考 KJ Rainey 的 YouTube 教程（1h28m 完整课程）快速上手。</p>
+<p>1. <strong>阅读 <a href="https://rogerwong.me/2026/03/claude-cowork-guide-56-tips" target="_blank" rel="noopener">Claude Cowork Power User Guide</a></strong>（Roger Wong 的 50+ tips 合集，信噪比极高）</p>
 
-<p>3. <strong>下周做：</strong> 把 Ben AI 的 YouTube 视频（25 万观看量版本）完整看一遍，重点学习"Skills 三种创建方法"，开始构建属于自己的 Cowork Skills 库。</p>
+<p>2. <strong>为现有定时任务添加验证步骤</strong>：在 SKILL.md 最后加入"截图/读取文件确认输出"，触发反馈闭环原则。</p>
+
+<p>3. <strong>尝试拆分一个现有大型 Skill</strong>：选最常用的 Skill，拆成 2-3 个专注单一任务的小版本，对比触发准确率。</p>
+
+<p>4. <strong>关注 <a href="https://github.com/hesreallyhim/awesome-claude-code" target="_blank" rel="noopener">awesome-claude-code</a></strong>：社区维护的 Skills、Hooks、Slash Commands、MCP 精选列表，每周更新。</p>
+
+<p>5. <strong>观看 Computer Use 演示</strong>：<a href="https://9to5google.com/2026/03/24/claude-can-now-remotely-control-your-computer-and-it-looks-absolutely-wild-video/" target="_blank" rel="noopener">9to5google 的报道视频</a> 是目前最直观的 Computer Use 实战展示。</p>
 
 <hr>
 
-<p><em>报告由 Claude Cowork 自动生成 · 数据截止 2026-03-26</em></p>
-<p><em>数据来源：X (Twitter) 实时搜索 · Google/Reddit 社区讨论 · YouTube 视频分析 · Web 专业博客</em></p>
+<p><em>本日报由 Claude Cowork 定时任务自动生成 · 2026-03-26</em></p>
 
   </div>
 </article>
