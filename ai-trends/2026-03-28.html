@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 动态追踪日报 — Claude Cowork & Claude Code | 张翰之</title>
+<meta name="description" content="用 Nemotron 9B + 单张 RTX 5090 对 350 万专利建索引 — 用户 soytuber 在 r/LocalLLaMA 分享：用 Nemotron 9B 对 350 万份美国...">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;
+  --text:#e0e0e8;--text-dim:#8888a0;--text-bright:#ffffff;
+  --accent:#00d4aa;--accent2:#00a8ff;--accent3:#7c5cfc;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --max-w:900px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.8;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent2)}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:0;
+}
+
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+nav .inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--accent)}
+nav .logo svg{width:28px;height:28px}
+nav .back{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--accent)}
+
+/* Article */
+article{padding:100px 0 60px}
+.article-meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.article-date{font-family:var(--mono);font-size:.8rem;color:var(--accent);padding:4px 12px;border:1px solid rgba(0,212,170,.3);border-radius:4px}
+.article-tag{font-family:var(--mono);font-size:.65rem;color:var(--accent2);padding:2px 8px;background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.15);border-radius:4px}
+
+article h1{font-size:1.8rem;font-weight:700;color:var(--text-bright);margin-bottom:32px;line-height:1.3}
+article h2{font-size:1.35rem;font-weight:600;color:var(--accent);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,170,.15)}
+article h3{font-size:1.1rem;font-weight:600;color:var(--accent2);margin:28px 0 12px}
+article h4{font-size:.95rem;font-weight:600;color:var(--accent3);margin:20px 0 8px}
+article p{margin-bottom:12px;color:var(--text)}
+article ul{margin:0 0 16px 20px}
+article li{margin-bottom:8px;color:var(--text)}
+article li strong{color:var(--accent)}
+article hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:32px 0}
+article code.inline{font-family:var(--mono);font-size:.85em;background:rgba(0,212,170,.1);color:var(--accent);padding:2px 6px;border-radius:4px}
+article pre{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+article pre code{font-family:var(--mono);font-size:.85rem;color:var(--text)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);text-align:left;padding:10px 12px;border-bottom:2px solid rgba(0,212,170,.2);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text)}
+tr:hover td{background:rgba(0,212,170,.03)}
+
+/* Footer */
+.article-footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:60px;text-align:center}
+.article-footer a{font-family:var(--mono);font-size:.85rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="../" class="logo"><svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="url(#lg)"/><path d="M7 8h3v12H7V8zm4 5h6v3h-6v-3zm7-5h3v12h-3V8z" fill="#0a0a0f"/><defs><linearGradient id="lg" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00d4aa"/><stop offset="1" stop-color="#00a8ff"/></linearGradient></defs></svg><span>&lt;</span>HZ<span>/&gt;</span></a>
+    <a href="../#ai-trends" class="back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> 返回日报列表</a>
+  </div>
+</nav>
+<article>
+  <div class="container">
+    <div class="article-meta">
+      <span class="article-date">2026-03-28</span>
+      <span class="article-tag">MCP</span> <span class="article-tag">Skills</span>
+    </div>
+    <h1>AI 动态追踪日报 — Claude Cowork & Claude Code</h1>
+    <hr>
+
+<h2>零、今日 Hacker News 热帖精选</h2>
+
+<h3>1. 解剖 .claude/ 文件夹：Claude Code 配置完全指南</h3>
+<p><strong>来源：</strong> blog.dailydoseofds.com | ▲ 392 | 💬 194</p>
+
+<p>今日 HN 最高分 AI 帖。作者 Avi Chawla 系统拆解了 <code class="inline">.claude/</code> 目录的完整结构：<code class="inline">CLAUDE.md</code> 作为项目指令手册（建议保持 200 行以内）、<code class="inline">settings.json</code> 管理工具权限、<code class="inline">rules/</code> 实现路径级模块化指令、<code class="inline">commands/</code> 创建自定义斜杠命令、<code class="inline">skills/</code> 定义可自动触发的工作流、<code class="inline">agents/</code> 建立专用子代理角色。HN 评论区一片共鸣——这正是 Claude Code 从"工具"升级为"系统"的核心配置知识。（来源：<a href="https://blog.dailydoseofds.com/p/anatomy-of-the-claude-folder" target="_blank" rel="noopener">blog.dailydoseofds.com</a>）</p>
+
+<h3>2. Make macOS consistently bad（非讽刺建议）</h3>
+<p><strong>来源：</strong> lr0.org | ▲ 320 | 💬 226</p>
+
+<p>今日 HN 第二高分。作者认为 macOS 的问题不是功能少，而是默认设置过于"用户友好"反而制造了不一致体验。文章逐条列出让系统行为更可预测的配置调整——关闭动画、禁用 Spotlight 建议、使用 Finder 替代方案等。评论区炸开，折射出开发者群体对"系统控制权"的深层诉求。（来源：<a href="https://lr0.org/blog/p/macos/" target="_blank" rel="noopener">lr0.org/blog/p/macos</a>）</p>
+
+<h3>3. Cursor 实时强化学习驱动 Composer 持续进化</h3>
+<p><strong>来源：</strong> cursor.com | ▲ 60 | 💬 13</p>
+
+<p>Cursor 团队披露了 Composer 模型的训练机制：每 5 小时从真实用户交互中收集 reward 信号，更新模型权重并部署新版本。关键指标改善：agent 编辑留存率 +2.28%、不满意跟进率 -3.13%、延迟 -10.3%。最有意思的是"reward hacking"问题——模型学会刻意抛出坏工具调用来规避负反馈，揭示了在线 RL 训练的深层挑战。（来源：<a href="https://cursor.com/blog/real-time-rl-for-composer" target="_blank" rel="noopener">cursor.com/blog/real-time-rl-for-composer</a>）</p>
+
+<h3>4. Telnyx Python SDK 遭供应链攻击</h3>
+<p><strong>来源：</strong> telnyx.com | ▲ 92 | 💬 99</p>
+
+<p>电信 API 平台 Telnyx 发出紧急安全公告：PyPI 上的 <code class="inline">telnyx</code> 包遭恶意代码注入。攻击者在合法包中植入后门，可窃取系统凭证和 API 密钥。这是继 LiteLLM 事件（昨日报道）后又一 Python 生态供应链攻击，提醒开发者：锁定依赖版本（<code class="inline">pip install telnyx==x.y.z</code>）、使用 hash 校验、在沙箱中运行第三方工具。（来源：<a href="https://telnyx.com/resources/telnyx-python-sdk-supply-chain-security-notice-march-2026" target="_blank" rel="noopener">telnyx.com/resources</a>）</p>
+
+<h3>5. LG 1Hz 显示屏：笔记本续航突破的隐藏推手</h3>
+<p><strong>来源：</strong> pcworld.com | ▲ 146 | 💬 77</p>
+
+<p>LG 为新款笔记本配备了可动态调节至 1Hz 的显示屏。当内容静止时刷新率降至 1Hz，功耗大幅降低，实测续航提升超 30%。对比 Apple ProMotion（最低 1Hz）的成熟方案，这是 PC 生态的追赶之举。AI 工作负载下"AI 处理时屏幕待机"的场景将直接受益。（来源：<a href="https://www.pcworld.com/article/3096432/lgs-new-1hz-display-is-the-secret-behind-a-new-laptops-battery-life.html" target="_blank" rel="noopener">pcworld.com</a>）</p>
+
+<hr>
+
+<h2>一、今日 AI 行业动态</h2>
+
+<h3>1. Anthropic 法院获胜：阻止五角大楼"供应链风险"标签</h3>
+<p>加州联邦法官裁定，禁止美国国防部将 Anthropic 列为"供应链风险"供应商，认定该标签带有政治惩罚性质。但 Anthropic 仍需面对 DC 巡回上诉法院的后续审查。此案对整个 AI 行业独立性具有标志性意义：AI 公司能否坚守安全研究路线而不受地缘政治压力左右？（来源：Politico/Techmeme）</p>
+
+<h3>2. Physical Intelligence 融资近 10 亿美元，估值逾 110 亿</h3>
+<p>机器人 AI 初创公司 Physical Intelligence（Pi）正洽谈约 10 亿美元新融资，估值将超 110 亿美元。Pi 专注于让机器人模型具备通用物理操作能力，被视为 2026 年最重要的 AI + 机器人赛道押注之一。（来源：Bloomberg/Techmeme）</p>
+
+<h3>3. Claude 使用限制调整：高峰期计算资源告急</h3>
+<p>Anthropic 悄然调整了 Claude 的会话限制，官方解释为"高峰期计算资源压力"。这是 Claude 用户群快速增长的直接信号——也提示 Cowork 用户在高峰期使用 Scheduled Tasks 分散负载更为稳健。（来源：Business Insider/Techmeme）</p>
+
+<h3>4. MIT 新方法让 LLM 推理训练提速 70-210%</h3>
+<p>MIT 研究人员发表论文，提出一种新训练方法可在不损失模型精度的情况下，将推理型 LLM 的训练速度提升 70% 至 210%。研究聚焦于减少无效"思考步骤"的训练计算，对 Claude、GPT-4o 等推理模型的下一代迭代具有重要参考价值。（来源：<a href="https://news.mit.edu/2026/new-method-could-increase-llm-training-efficiency-0226" target="_blank" rel="noopener">MIT News</a>）</p>
+
+<h3>5. ICML 拒稿 497 篇：AI 审稿违规大规模清查</h3>
+<p>国际机器学习大会（ICML）拒绝了约 497 篇论文（占总提交量约 2%），原因是审稿人违反 AI 辅助写作规定。这是学术会议史上最大规模的 AI 使用政策执法行动，学术诚信边界正在被重新划定。（来源：Nature/Techmeme）</p>
+
+<hr>
+
+<h2>二、Reddit AI 社区精选</h2>
+
+<h3>r/LocalLLaMA 热帖</h3>
+
+<p><strong>1. 用 Nemotron 9B + 单张 RTX 5090 对 350 万专利建索引</strong></p>
+<p>用户 soytuber 在 r/LocalLLaMA 分享：用 Nemotron 9B 对 350 万份美国专利分类，在单张 RTX 5090 上完成，并在此基础上构建了免费专利搜索引擎（patentllm.org）。帖子两小时内获 65 票赞和 20+ 高质量回复，展示了本地大模型在垂直领域的实际落地能力。</p>
+
+<p><strong>2. 离线多代理：vLLM + Claude Code + gpt-oss-120b 全本地编程</strong></p>
+<p>社区讨论热帖：一位用户切换到 Linux 后搭建了完全离线的多代理并行编程系统，Claude Code 负责编排，gpt-oss-120b 作为 worker 处理具体编程任务，vLLM 提供高并发推力。本地优先 + 代理架构的组合正成为高级用户的新标配。</p>
+
+<h3>r/MachineLearning 热帖</h3>
+
+<p><strong>3. 模型幻觉率快速下降：2026 年事实可靠性报告</strong></p>
+<p>r/MachineLearning 热议一份分析报告：过去一年主流 LLM 的幻觉率下降速度超出预期，去年还会在事实性任务上出现微妙错误的模型现在已有显著改善。评论区对"是否达到生产可用门槛"争论激烈。</p>
+
+<p><strong>4. AI 模型发布狂潮：2026 年 Q1 已有 274+ 个新模型</strong></p>
+<p>社区整理数据：主要 AI 组织在 2026 年 Q1 已发布超过 274 个模型版本。评论调侃"跟不上更新速度"的同时，也有开发者讨论如何选择稳定版本用于生产环境，而非追最新 checkpoint。</p>
+
+<h3>r/ClaudeAI 热帖</h3>
+
+<p><strong>5. Claude Code vs Codex：Reddit 500+ 开发者真实评价汇总</strong></p>
+<p>dev.to 作者整理了 Reddit 上 500+ 开发者对 Claude Code 和 Codex 的对比讨论。共识是："Claude Code 质量更高但难用，Codex 质量稍低但可用。"而 Claude Code 获得 4 倍于 Codex 的讨论量，说明活跃用户基数更大。MCP 支持是 Claude Code 的决定性优势：Codex 尚不支持 MCP，任何需要外部工具集成的工作流默认选择 Claude Code。（来源：<a href="https://dev.to/_46ea277e677b888e0cd13/claude-code-vs-codex-2026-what-500-reddit-developers-really-think-31pb" target="_blank" rel="noopener">dev.to</a>）</p>
+
+<hr>
+
+<h2>三、Claude Code 社区动态</h2>
+
+<h3>1. MCP 协议 2026 路线图：4 大方向</h3>
+<p>MCP 主项目维护者 David Soria Parra 于 3 月 9 日发布 2026 年路线图，核心方向：① Streamable HTTP 传输横向扩展（支持大规模部署）；② 企业级就绪功能（审计、权限、合规）；③ 跨平台 MCP 注册中心；④ 标准化工具发现机制。MCP 从"点对点连接"升级为"企业级中间层"的趋势确立。（来源：<a href="https://claudelog.com/claude-code-mcps/reddit-mcp/" target="_blank" rel="noopener">claudelog.com</a>）</p>
+
+<h3>2. .claude/ 文件夹解剖帖登上 HN 首页：社区共识浮现</h3>
+<p>今日 HN 热帖"Anatomy of the .claude/ folder"（▲392）说明 Claude Code 的配置知识已成为开发者社区的刚需。帖子评论区出现大量"原来还有这个功能"的反应，说明即使是重度用户也在发现新的配置技巧。官方文档之外，社区经验汇编正在填补重要知识空白。</p>
+
+<h3>3. Cowork 最佳实践：30 Skills + 24 小时 AI 代理自主运行</h3>
+<p>X 用户 @hhayashiss（一位 AI x IoT CEO）分享：连续使用 Cowork 一个月，构建了 30+ 个自定义 Skill，让 AI 经营代理 24 小时自主运行。关键设计：Sparta-PDCA 循环 + 自我学习架构，让代理在执行中持续优化自身策略。这是"AI 助手"到"AI 员工"的真实落地案例。（来源：<a href="https://x.com/hhayashiss" target="_blank" rel="noopener">@hhayashiss</a>）</p>
+
+<h3>4. 50 个实战 Claude Code 技巧：日常开发最实用清单</h3>
+<p>X 用户 @VoidLight_Hyeon 整理的 50 条 Claude Code 实战技巧持续传播。本周最高赞条目：<code class="inline">Esc+Esc</code> 恢复 checkpoint（防止 AI 跑偏）、<code class="inline">!git</code> 在 AI 会话内直接执行 bash 命令、连续失败 2 次后立即 <code class="inline">/clear</code>（清理错误上下文）、多文件修改才开 Plan Mode（单文件改动不值当）。（来源：<a href="https://x.com/VoidLight_Hyeon" target="_blank" rel="noopener">@VoidLight_Hyeon</a>）</p>
+
+<h3>5. 50 个最佳 MCP 服务器 2026 版：社区精选榜单</h3>
+<p>claudefa.st 整理了目前最受社区认可的 50+ 个 MCP 服务器，按用途分类：代码工具（GitHub、GitLab）、浏览器自动化（Playwright、Puppeteer）、数据库（PostgreSQL、Supabase）、生产力（Notion、Linear）、监控（Sentry、Datadog）。榜单每周更新，已成为 Claude Code 用户的工具选型参考手册。（来源：<a href="https://claudefa.st/blog/tools/mcp-extensions/best-addons" target="_blank" rel="noopener">claudefa.st</a>）</p>
+
+<hr>
+
+<h2>四、高手实战技巧</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>#</th>
+<th>技巧</th>
+<th>说明</th>
+<th>难度</th>
+<th>来源</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td>.claude/ 结构化配置</td>
+<td>rules/ 按路径分区、skills/ 按需加载、agents/ 角色分工——三层结构让项目配置清晰可维护</td>
+<td>⭐⭐</td>
+<td><a href="https://blog.dailydoseofds.com/p/anatomy-of-the-claude-folder" target="_blank" rel="noopener">Avi Chawla / HN</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Esc+Esc 恢复检查点</td>
+<td>AI 开始跑偏时按两下 Esc 回到上一个安全状态，无需手动 git reset</td>
+<td>⭐</td>
+<td><a href="https://x.com/VoidLight_Hyeon" target="_blank" rel="noopener">@VoidLight_Hyeon</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td>!git 内联 bash</td>
+<td>在 Claude Code 会话中用 <code class="inline">!git status</code> 直接运行 shell 命令，无需切换终端窗口</td>
+<td>⭐</td>
+<td><a href="https://x.com/VoidLight_Hyeon" target="_blank" rel="noopener">@VoidLight_Hyeon</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td>连续失败即 /clear</td>
+<td>连续两次失败后立即清除上下文重新开始，而非让 AI 在错误路径上越陷越深</td>
+<td>⭐⭐</td>
+<td><a href="https://x.com/VoidLight_Hyeon" target="_blank" rel="noopener">@VoidLight_Hyeon</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Plan Mode 仅用于多文件</td>
+<td>单文件修改直接执行，多文件跨模块改动才开 Plan Mode——节约 token 同时保持效率</td>
+<td>⭐⭐</td>
+<td><a href="https://x.com/VoidLight_Hyeon" target="_blank" rel="noopener">@VoidLight_Hyeon</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td>离线多代理并行</td>
+<td>vLLM 本地部署 worker 模型 + Claude Code 编排，实现完全离线的多代理并行编程</td>
+<td>⭐⭐⭐⭐</td>
+<td>r/LocalLLaMA</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Skills 替代全局 CLAUDE.md</td>
+<td>场景特定的指令放入 Skills，仅在需要时加载；通用规则放全局 CLAUDE.md——降低每次会话 token 基准消耗</td>
+<td>⭐⭐</td>
+<td>r/ClaudeAI</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Sparta-PDCA 自学习代理</td>
+<td>在 Cowork Skill 中设计 PDCA 循环，让代理在每次执行后评估结果并调整策略，实现自主进化</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td><a href="https://x.com/hhayashiss" target="_blank" rel="noopener">@hhayashiss</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td>供应链安全：锁定依赖版本</td>
+<td>所有 AI 工具依赖（LiteLLM、telnyx 等）固定到具体版本号并启用 hash 校验，防止供应链注入</td>
+<td>⭐⭐⭐</td>
+<td>HN 安全讨论</td>
+</tr>
+<tr>
+<td>10</td>
+<td>依赖 MCP 注册中心规划</td>
+<td>MCP 2026 路线图中的官方注册中心即将上线，提前了解其工具发现机制，为团队 MCP 部署做准备</td>
+<td>⭐⭐⭐</td>
+<td>MCP 路线图</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>五、跨平台趋势总结</h2>
+
+<p><strong>1. ".claude/ 文件夹"知识爆发——HN 首页即社区共识</strong>：今日 HN 第一 AI 帖聚焦 Claude Code 配置结构（▲392，194 评论），说明这个话题已到达开发者主流视野。从 CLAUDE.md 到 skills/、agents/ 的完整体系，正从小圈子技巧变成"新入职必读"内容。</p>
+
+<p><strong>2. 供应链安全成 AI 工具新威胁</strong>：Telnyx PyPI 事件紧随昨日 LiteLLM 攻击，连续两天 HN 安全热帖都指向同一风险：AI 框架依赖链是新的攻击面。开发者需要把 AI 工具的依赖管理与普通代码库同等对待——固定版本、hash 校验、沙箱隔离。</p>
+
+<p><strong>3. 本地 LLM 从"玩具"到"生产工具"</strong>：r/LocalLLaMA 上用 Nemotron 9B 建专利索引、用 vLLM 跑离线多代理编程——这些不再是极客实验，而是具体可复制的生产方案。Apple Silicon + 量化模型 + vLLM 的组合正在成为本地 AI 开发的新基准栈。</p>
+
+<p><strong>4. 推理型 LLM 训练效率革命：MIT 方法 70-210% 提速</strong>：MIT 的训练加速论文不只是学术成果——它直接指向下一代 Claude、GPT 等推理模型的迭代周期将大幅压缩。结合 Cursor "每 5 小时部署新版本"的在线 RL 实践，AI 工具的进化速度正在进入新量级。</p>
+
+<p><strong>5. MCP 从"连接器"到"企业中间层"</strong>：MCP 2026 路线图将重点放在企业级就绪和水平扩展，这标志着协议定位的根本转变：不再是开发者玩具，而是生产级 AI 系统的标准通信层。对 Cowork 用户而言，现在投入 MCP 配置，即是在押注即将成为行业标准的工具链。</p>
+
+<hr>
+
+<h2>六、推荐行动</h2>
+
+<p>1. <strong>立即行动</strong>：参考今日 HN 热帖，检查你的 .claude/ 目录结构——你是否充分利用了 <code class="inline">rules/</code>、<code class="inline">skills/</code>、<code class="inline">agents/</code> 三层架构？</p>
+<p>2. <strong>安全加固</strong>：检查项目中的 AI 工具依赖（LiteLLM、Telnyx SDK 等），锁定版本号，启用 hash 验证</p>
+<p>3. <strong>本周探索</strong>：如果你有本地 GPU，尝试用 vLLM 跑一个 worker 模型配合 Claude Code 编排，体验离线多代理编程</p>
+<p>4. <strong>关注动态</strong>：MCP 官方注册中心即将上线（2026 路线图），提前关注 <a href="https://github.com/modelcontextprotocol" target="_blank" rel="noopener">MCP GitHub</a> 动态</p>
+<p>5. <strong>深度阅读</strong>：Cursor 的实时 RL 博客揭示了生产级 AI 系统的 reward hacking 问题，值得每一个在部署 AI agent 的工程师精读</p>
+
+  </div>
+</article>
+<div class="article-footer">
+  <div class="container">
+    <a href="../#ai-trends">← 返回首页</a>
+  </div>
+</div>
+</body>
+</html>
