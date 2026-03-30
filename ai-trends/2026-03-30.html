@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 动态追踪日报 — Claude Cowork & Claude Code | 张翰之</title>
+<meta name="description" content="Claude Code 社区进入"知识沉淀期" — 各平台不再只是"哇，这个工具好酷"的初始兴奋阶段，而是开始系统性地整理最佳实践（GitHub 开源课程、40+ Tips 合集、awesome...">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;
+  --text:#e0e0e8;--text-dim:#8888a0;--text-bright:#ffffff;
+  --accent:#00d4aa;--accent2:#00a8ff;--accent3:#7c5cfc;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --max-w:900px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.8;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent2)}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:0;
+}
+
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+nav .inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--accent)}
+nav .logo svg{width:28px;height:28px}
+nav .back{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--accent)}
+
+/* Article */
+article{padding:100px 0 60px}
+.article-meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.article-date{font-family:var(--mono);font-size:.8rem;color:var(--accent);padding:4px 12px;border:1px solid rgba(0,212,170,.3);border-radius:4px}
+.article-tag{font-family:var(--mono);font-size:.65rem;color:var(--accent2);padding:2px 8px;background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.15);border-radius:4px}
+
+article h1{font-size:1.8rem;font-weight:700;color:var(--text-bright);margin-bottom:32px;line-height:1.3}
+article h2{font-size:1.35rem;font-weight:600;color:var(--accent);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,170,.15)}
+article h3{font-size:1.1rem;font-weight:600;color:var(--accent2);margin:28px 0 12px}
+article h4{font-size:.95rem;font-weight:600;color:var(--accent3);margin:20px 0 8px}
+article p{margin-bottom:12px;color:var(--text)}
+article ul{margin:0 0 16px 20px}
+article li{margin-bottom:8px;color:var(--text)}
+article li strong{color:var(--accent)}
+article hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:32px 0}
+article code.inline{font-family:var(--mono);font-size:.85em;background:rgba(0,212,170,.1);color:var(--accent);padding:2px 6px;border-radius:4px}
+article pre{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+article pre code{font-family:var(--mono);font-size:.85rem;color:var(--text)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);text-align:left;padding:10px 12px;border-bottom:2px solid rgba(0,212,170,.2);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text)}
+tr:hover td{background:rgba(0,212,170,.03)}
+
+/* Footer */
+.article-footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:60px;text-align:center}
+.article-footer a{font-family:var(--mono);font-size:.85rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="../" class="logo"><svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="url(#lg)"/><path d="M7 8h3v12H7V8zm4 5h6v3h-6v-3zm7-5h3v12h-3V8z" fill="#0a0a0f"/><defs><linearGradient id="lg" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00d4aa"/><stop offset="1" stop-color="#00a8ff"/></linearGradient></defs></svg><span>&lt;</span>HZ<span>/&gt;</span></a>
+    <a href="../#ai-trends" class="back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> 返回日报列表</a>
+  </div>
+</nav>
+<article>
+  <div class="container">
+    <div class="article-meta">
+      <span class="article-date">2026-03-30</span>
+      <span class="article-tag">CLAUDE.md</span> <span class="article-tag">Skills</span> <span class="article-tag">Scheduled Tasks</span> <span class="article-tag">MCP</span> <span class="article-tag">Hooks</span>
+    </div>
+    <h1>AI 动态追踪日报 — Claude Cowork & Claude Code</h1>
+    <hr>
+
+<h2>一、高级用法精选（按难度分层）</h2>
+
+<h3>Level 1 — 基础配置</h3>
+
+<p><strong>CLAUDE.md 自动搜索最佳实践</strong></p>
+<p>不必手动整理 Claude Code 的使用技巧——直接让 Claude Code 去搜索最新的运用 Tips，然后写入 CLAUDE.md。日本开发者深津貴之（@fladdict，THE GUILD / note CXO）在 X 上分享了这一方法：让 Claude Code 自行搜索网络上的最佳实践，生成适合自己的运用计划。评论区多人验证有效，称"比逐个尝试 SNS 上的技巧快得多"。</p>
+
+<p><strong>Claude Code Setup for Beginners</strong></p>
+<p>Tech With Tim 最新发布（13小时前）的入门教程，从零开始设置 Claude Code 环境，适合 2026 年想入门的新手。视频已获 1.7 万次观看，是当前最新的新手引导资源。</p>
+
+<h3>Level 2 — Skills 技巧</h3>
+
+<p><strong>Skills 构建完全指南</strong></p>
+<p>Nate Herk（AI Automation）发布 28 分钟深度教程，覆盖 Claude Code Skills 的 95% 用法：从创建第一个 Skill 到高级参数配置、Skill 之间的组合调用。视频已获 11 万次观看，是目前最全面的 Skills 教程。</p>
+
+<p><strong>Claude Code Mastery — 免费开源课程</strong></p>
+<p>ShipWithAI 在 GitHub 上发布免费开源的 Claude Code 完全课程，包含 16 个阶段、55 个模块、136 节课，覆盖从零基础到生产级部署的全路径。英文+越南文双语版本。（来源：<a href="https://github.com/ShipWithAI/claude-code-mastery" target="_blank" rel="noopener">GitHub - ShipWithAI/claude-code-mastery</a>）</p>
+
+<h3>Level 3 — 定时任务</h3>
+
+<p><strong>Scheduled Tasks 实战</strong></p>
+<p>Cowork 的定时任务功能是 2026 年最实用的特性之一：描述一次任务逻辑，Cowork 按 cron 表达式自动执行。只要电脑唤醒且 Claude Desktop 保持打开，任务就会准时运行。典型用例：每日自动生成报告、定时数据采集、自动化日志清理。</p>
+
+<h3>Level 4 — Connectors & MCP</h3>
+
+<p><strong>MCP 服务器添加方式详解</strong></p>
+<p>日本 AI 工程师 Kotaro（@kotaro_ai_lab）在 X 上发布 Claude Code Tips 系列，详解如何用 <code class="inline">claude mcp add</code> 命令注册 MCP 服务器，或直接编辑 <code class="inline">.claude/mcp.json</code> 配置文件。添加后，MCP 服务器提供的工具可直接被 Claude 调用，实现与外部服务的无缝集成。</p>
+
+<p><strong>Cowork Connectors 生态</strong></p>
+<p>Claude Desktop 的 Cowork 模式支持 Connectors（类似 MCP 的简化版），非技术用户可通过 UI 直接连接 Slack、Google Drive、Figma 等服务。与 Claude Code 的 MCP 配置相比，Connectors 零代码、即连即用，但灵活性稍低。</p>
+
+<h3>Level 5 — Hooks 自动化控制</h3>
+
+<p><strong>Hooks 12 事件全解析</strong></p>
+<p>Claude Code Hooks 提供 12 种事件钩子（UserPromptSubmit、SubagentStart/Stop、PreToolUse、PostToolUse 等），可在不修改 Claude 本身的情况下，对 AI 行为进行编程级控制。典型应用：强制团队编码规范、记录每一步操作用于合规审计、构建自定义通知流水线。（来源：<a href="https://www.pixelmojo.io/blogs/claude-code-hooks-production-quality-ci-cd-patterns" target="_blank" rel="noopener">Pixelmojo Hooks Reference</a>）</p>
+
+<p><strong>Hooks Mastery 开源项目</strong></p>
+<p>disler 在 GitHub 发布 claude-code-hooks-mastery 项目，提供完整的 Hook 开发模板和生产级模式，覆盖 CI/CD 集成、代码质量门禁、自动化测试触发等场景。（来源：<a href="https://github.com/disler/claude-code-hooks-mastery" target="_blank" rel="noopener">GitHub - disler/claude-code-hooks-mastery</a>）</p>
+
+<h3>Level 6 — 子代理编排</h3>
+
+<p><strong>Sub-Agents 工作原理</strong></p>
+<p>子代理（Sub-Agents）是 Claude Code 的核心高级特性：每个子代理在独立上下文窗口中运行，拥有自定义系统提示、独立工具访问权限和独立权限模式。主代理像"技术负责人"一样分配任务，多个子代理并行工作——例如一个负责 SQL 查询、一个负责性能分析、一个负责报告生成。（来源：<a href="https://code.claude.com/docs/en/sub-agents" target="_blank" rel="noopener">Claude Code Docs - Sub-Agents</a>）</p>
+
+<h3>Level 7 — 专家级工作流</h3>
+
+<p><strong>"AI OS" 蓝图</strong></p>
+<p>DEV Community 上的系统性文章 "Claude Code to AI OS Blueprint" 提出将 Claude Code 构建为完整的 AI 操作系统：Skills 是应用、Hooks 是系统调用、MCP 是设备驱动、Sub-Agents 是进程。这一架构思维将 Claude Code 从"编程助手"提升到"AI 驱动的开发操作系统"层面。（来源：<a href="https://dev.to/jan_lucasandmann_bb9257c/claude-code-to-ai-os-blueprint-skills-hooks-agents-mcp-setup-in-2026-46gg" target="_blank" rel="noopener">dev.to - AI OS Blueprint</a>）</p>
+
+<p><strong>Claude Cowork vs OpenClaw 对比</strong></p>
+<p>Nate Balcom（@lukeslytalker）在 X 上发文对比 Claude Cowork 与 OpenClaw，讨论"2026 年最佳 AI Agent"的定位之争。Claude Cowork 在稳定性和集成深度上领先，但 OpenClaw 在开源灵活性上有优势。</p>
+
+<hr>
+
+<h2>二、高手实战技巧表格</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>#</th>
+<th>技巧</th>
+<th>说明</th>
+<th>难度</th>
+<th>来源</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td>CLAUDE.md 自动更新</td>
+<td>让 Claude Code 自行搜索最佳实践并写入 CLAUDE.md</td>
+<td>⭐⭐</td>
+<td>X @fladdict</td>
+</tr>
+<tr>
+<td>2</td>
+<td>MCP 服务器热添加</td>
+<td>用 <code class="inline">claude mcp add</code> 命令或编辑 .claude/mcp.json</td>
+<td>⭐⭐⭐</td>
+<td>X @kotaro_ai_lab</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Hooks 质量门禁</td>
+<td>PreToolUse hook 在代码提交前自动运行 lint/test</td>
+<td>⭐⭐⭐⭐</td>
+<td>GitHub disler</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Sub-Agent 并行编排</td>
+<td>主 Agent 分拆任务，多子代理并行执行</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>Claude Code Docs</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Cowork 定时任务</td>
+<td>用 cron 表达式自动执行重复性工作流</td>
+<td>⭐⭐⭐</td>
+<td>Anthropic 官方</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Dispatch 远程控制</td>
+<td>手机扫码配对，远程触发桌面 Cowork 任务</td>
+<td>⭐⭐⭐</td>
+<td>Cowork 官方</td>
+</tr>
+<tr>
+<td>7</td>
+<td>多终端并行会话</td>
+<td>同时运行多个 Claude Code 终端窗口，不触发限速</td>
+<td>⭐⭐</td>
+<td>X @himcramer</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Figma-to-Code 工作流</td>
+<td>Claude Code + Figma 实现设计稿到代码的转换</td>
+<td>⭐⭐⭐⭐</td>
+<td>X @lilfrogdev</td>
+</tr>
+<tr>
+<td>9</td>
+<td>容器化实验环境</td>
+<td>在容器中运行高风险实验任务，隔离影响</td>
+<td>⭐⭐⭐</td>
+<td>r/ClaudeAI</td>
+</tr>
+<tr>
+<td>10</td>
+<td>dx 插件一键安装</td>
+<td>社区 dx 插件包含 clone/handoff/gha 等常用命令</td>
+<td>⭐⭐</td>
+<td>r/ClaudeAI</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>三、YouTube 教程推荐</h2>
+
+<p>> 以下数据通过 Chrome 浏览器实时采集于 YouTube 搜索页面（2026-03-30）</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>视频标题</th>
+<th>作者</th>
+<th>观看量</th>
+<th>时长</th>
+<th>特色内容</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=9+Hacks+Claude+Code+Chase+AI" target="_blank" rel="noopener">9 Hacks to Use Claude Code Better Than 90% of People</a></td>
+<td>Chase AI</td>
+<td>1.3万次</td>
+<td>8:42</td>
+<td>9个高效技巧，2天前发布，最新4K</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Master+80+Claude+Code+26+Minutes+Skill+Leap+AI" target="_blank" rel="noopener">Master 80% of Claude Code in 26 Minutes</a></td>
+<td>Skill Leap AI</td>
+<td>8.2万次</td>
+<td>26:33</td>
+<td>Skills、Plugins、Connectors、GitHub、VS Code 全覆盖</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Claude+Code+Setup+Beginners+Tech+With+Tim" target="_blank" rel="noopener">Claude Code Setup for Beginners</a></td>
+<td>Tech With Tim</td>
+<td>1.7万次</td>
+<td>—</td>
+<td>13小时前发布，最新入门教程</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=6+Levels+Claude+Code+Explained+Chase+AI" target="_blank" rel="noopener">The 6 Levels of Claude Code Explained</a></td>
+<td>Chase AI</td>
+<td>9.8万次</td>
+<td>32:36</td>
+<td>8章节分层讲解，从入门到专家级</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Master+95+Claude+Code+Skills+Nate+Herk" target="_blank" rel="noopener">Master 95% of Claude Code Skills in 28 Minutes</a></td>
+<td>Nate Herk \</td>
+<td>AI Automation</td>
+<td>11万次</td>
+<td>28:xx</td>
+<td>Skills 构建完全指南</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=top+6+tips+Claude+Code+efficiently+Academind" target="_blank" rel="noopener">My top 6 tips & ways of using Claude Code efficiently</a></td>
+<td>Academind / Maximilian Schwarzmüller</td>
+<td>13万次</td>
+<td>17:44</td>
+<td>高效使用6大技巧</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=800+hours+Learning+Claude+Code+8+minutes+Edmund+Yong" target="_blank" rel="noopener">800+ hours of Learning Claude Code in 8 minutes</a></td>
+<td>Edmund Yong</td>
+<td>69万次</td>
+<td>8:01</td>
+<td>6章节：DRY原则、MCP服务器、功能发布</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=567+Hours+Claude+Code+Lessons+20+Minutes+Chase+AI" target="_blank" rel="noopener">567 Hours of Claude Code Lessons in 20 Minutes</a></td>
+<td>Chase AI</td>
+<td>5.8万次</td>
+<td>20:48</td>
+<td>17章节：Install/IDE/Permissions/Plan Mode 等</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=21+Essential+Tips+Claude+Code+2026+Productive+Dude" target="_blank" rel="noopener">21 Essential Tips for Claude Code in 2026!</a></td>
+<td>Productive Dude</td>
+<td>1,698次</td>
+<td>27:17</td>
+<td>23章节，从 Warp Terminal 到高级技巧</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>四、Reddit 讨论精选</h2>
+
+<p>> Reddit 因浏览器安全限制无法直接访问，以下数据通过 WebSearch 采集</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>帖子标题</th>
+<th>子版块</th>
+<th>要点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://github.com/shanraisshan/claude-code-best-practice" target="_blank" rel="noopener">Claude Code Best Practice 开源指南</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>GitHub 社区维护的最佳实践合集，持续更新</td>
+</tr>
+<tr>
+<td><a href="https://coworkhow.com/guides/user-feedback-summary" target="_blank" rel="noopener">Cowork 用户反馈汇总：好的、坏的、危险的</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>社区整理 Cowork 发布以来的真实用户反馈，含"11GB 文件删除事件"</td>
+</tr>
+<tr>
+<td><a href="https://aiblewmymind.substack.com/p/claude-cowork-use-cases-guide" target="_blank" rel="noopener">Cowork 10 大用例实测 + 67 个职业场景</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>覆盖不同职业的 Cowork 实际应用场景</td>
+</tr>
+<tr>
+<td><a href="https://github.com/disler/claude-code-hooks-mastery" target="_blank" rel="noopener">Claude Code Hooks Mastery 开源项目</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>Hook 开发模板和生产级 CI/CD 模式</td>
+</tr>
+<tr>
+<td><a href="https://github.com/hesreallyhim/awesome-claude-code" target="_blank" rel="noopener">awesome-claude-code 资源汇总</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>Skills、Hooks、Slash 命令、Agent 编排器等资源列表</td>
+</tr>
+<tr>
+<td><a href="https://colobu.com/2026/01/01/40+%20Claude%20Code%20Tips%EF%BC%9A%20From%20Basics%20to%20Advanced/index/" target="_blank" rel="noopener">40+ Claude Code Tips 从基础到高级</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>中文社区最全面的 Claude Code 技巧合集</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>五、X 热门帖子</h2>
+
+<p>> 以下数据通过 Chrome 浏览器实时采集于 X 搜索页面（2026-03-30）</p>
+
+<h3>Claude Code Tips 热帖</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>作者</th>
+<th>内容摘要</th>
+<th>互动</th>
+<th>亮点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://x.com/victor_explore" target="_blank" rel="noopener">@victor_explore</a></td>
+<td>分享 YouTube 视频"27 expert tips for mastering Claude Code"，涵盖克隆网站、子代理并行执行、Quality Gates 设置</td>
+<td>💬1 🔁0 ❤️4 👁172</td>
+<td>AI Agent Builders 社区管理员</td>
+</tr>
+<tr>
+<td><a href="https://x.com/saboten_ai_" target="_blank" rel="noopener">@saboten_ai_</a></td>
+<td>引用深津貴之的方法：让 Claude Code 搜索最新 Tips 并写入 CLAUDE.md，比逐个尝试 SNS 技巧快得多</td>
+<td>💬0 🔁0 ❤️0 👁26</td>
+<td>日本 AI 活用 Tips 博主</td>
+</tr>
+<tr>
+<td><a href="https://x.com/Dai_Challenge" target="_blank" rel="noopener">@Dai_Challenge</a></td>
+<td>观察到时间线被 Claude Code 界隈淹没，长文 Tips 投稿大多由 Claude Code 本身生成</td>
+<td>💬0 🔁2 ❤️2 👁809</td>
+<td>渡辺大知，创业者视角</td>
+</tr>
+<tr>
+<td><a href="https://x.com/kotaro_ai_lab" target="_blank" rel="noopener">@kotaro_ai_lab</a></td>
+<td>Claude Code Tips 系列：MCP 服务器添加方式详解（claude mcp add 命令 + .claude/mcp.json 配置）</td>
+<td>💬0 🔁0 ❤️0 👁18</td>
+<td>AI × 工程师，技术深度</td>
+</tr>
+<tr>
+<td><a href="https://x.com/CharlCharg" target="_blank" rel="noopener">@CharlCharg</a></td>
+<td>商业人士分享：接触 Claude Code 两个月，已能独立构建完整产品（网站、自动化、workflow、pipeline）</td>
+<td>💬2 🔁0 ❤️0 👁19</td>
+<td>法语用户，商业视角</td>
+</tr>
+<tr>
+<td><a href="https://x.com/lilfrogdev" target="_blank" rel="noopener">@lilfrogdev</a></td>
+<td>Claude 仍无法完美复现 Figma 设计，整个周末在 Claude Code 和 Figma 之间反复调试 landing page</td>
+<td>💬0 🔁0 ❤️0 👁21</td>
+<td>Figma-to-Code 痛点</td>
+</tr>
+<tr>
+<td><a href="https://x.com/KnowledgeBookma" target="_blank" rel="noopener">@KnowledgeBookma</a></td>
+<td>推荐 ShipWithAI/claude-code-mastery：GitHub 评分 31.3 的免费开源课程</td>
+<td>💬1 🔁0 ❤️0 👁16</td>
+<td>开发者资源推荐</td>
+</tr>
+<tr>
+<td><a href="https://x.com/gudanglifehack" target="_blank" rel="noopener">@gudanglifehack</a></td>
+<td>分享使用 Claude 分析竞争对手定价页、客户评价、财务数据的方法："数据才是真正的作弊码"</td>
+<td>💬0 🔁0 ❤️0 👁—</td>
+<td>Tips Excel 博主</td>
+</tr>
+</tbody></table></div>
+
+<h3>Claude Cowork 热帖</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>作者</th>
+<th>内容摘要</th>
+<th>互动</th>
+<th>亮点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://x.com/a45a45amg" target="_blank" rel="noopener">@a45a45amg</a></td>
+<td>展开使用 Claude Cowork 的体验报告（note.com 链接），中小企业 DX 与 M365 视角</td>
+<td>💬0 🔁0 ❤️0 👁1</td>
+<td>温泉ソムリエ，实体业务视角</td>
+</tr>
+<tr>
+<td><a href="https://x.com/dimqtdl" target="_blank" rel="noopener">@dimqtdl</a></td>
+<td>"Your guide to mastering Claude Cowork effortlessly (BOOKMARK)."</td>
+<td>💬0 🔁0 ❤️0 👁5</td>
+<td>0xww，资源推荐</td>
+</tr>
+<tr>
+<td><a href="https://x.com/ischca_dev" target="_blank" rel="noopener">@ischca_dev</a></td>
+<td>指出税理士等非程序员适合用 Claude Desktop 的 Cowork 功能，而非 Claude Code 黑屏终端</td>
+<td>💬1 🔁0 ❤️2 👁28</td>
+<td>职业分层建议</td>
+</tr>
+<tr>
+<td><a href="https://x.com/nestymee" target="_blank" rel="noopener">@nestymee</a></td>
+<td>Building in public Day 84：用 Claude Cowork 研究竞争对手的 web funnels，575/1000 付费订阅者</td>
+<td>💬0 🔁0 ❤️1 👁11</td>
+<td>Nadia Zueva，创业实战</td>
+</tr>
+<tr>
+<td><a href="https://x.com/FutureAiSutra" target="_blank" rel="noopener">@FutureAiSutra</a></td>
+<td>Anthropic 发布 macOS "computer use" 研究预览：Claude Code & Cowork 可控制鼠标/键盘、自动化工作流、远程分配任务</td>
+<td>💬1 🔁0 ❤️0 👁21</td>
+<td>RAG and AI Agent Developers 社区</td>
+</tr>
+<tr>
+<td><a href="https://x.com/himcramer" target="_blank" rel="noopener">@himcramer</a></td>
+<td>通常同时运行多个 Claude Code 终端窗口不触发限速，但在 Cowork 中 5 小时会话就撞上了限制</td>
+<td>💬0 🔁0 ❤️0 👁20</td>
+<td>Cowork 限速差异</td>
+</tr>
+<tr>
+<td><a href="https://x.com/kotosearch" target="_blank" rel="noopener">@kotosearch</a></td>
+<td>分析 Claude Code 在 X 上成为趋势：先发者优势 + Cowork/Connectors 对非工程师友好的自动化功能，使 Claude 在 UX 设计上胜出</td>
+<td>💬0 🔁1 ❤️2 👁64</td>
+<td>趋势分析</td>
+</tr>
+<tr>
+<td><a href="https://x.com/NowTechPulse" target="_blank" rel="noopener">@NowTechPulse</a></td>
+<td>转发 The Verge 报道：Anthropic 的 Claude Code 和 Cowork 现在可以控制你的电脑</td>
+<td>💬0 🔁0 ❤️0 👁18</td>
+<td>科技新闻转发</td>
+</tr>
+<tr>
+<td><a href="https://x.com/lukeslytalker" target="_blank" rel="noopener">@lukeslytalker</a></td>
+<td>Claude Cowork vs OpenClaw：2026年最佳AI Agent之争</td>
+<td>💬0 🔁0 ❤️0 👁—</td>
+<td>Nate Balcom，对比分析</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>六、跨平台趋势总结</h2>
+
+<p><strong>1. Claude Code 社区进入"知识沉淀期"</strong></p>
+<p>各平台不再只是"哇，这个工具好酷"的初始兴奋阶段，而是开始系统性地整理最佳实践（GitHub 开源课程、40+ Tips 合集、awesome-claude-code 列表）。这表明社区正在从早期尝鲜转向生产级使用。</p>
+
+<p><strong>2. Cowork 正在成为"非程序员的 Claude Code"</strong></p>
+<p>多条 X 帖子明确指出：税理士、中小企业主、市场营销人员应选择 Cowork 而非 Claude Code。Anthropic 的产品线分层策略（Code → 开发者，Cowork → 知识工作者）正在被社区自然接受和传播。</p>
+
+<p><strong>3. Computer Use（macOS 预览）引爆讨论</strong></p>
+<p>Anthropic 发布的 macOS computer use 研究预览（鼠标/键盘控制能力）是本周最大新闻点，X 上多个科技媒体和开发者社区在转发讨论。"The race to replace your mouse is ON" 成为热门观点。</p>
+
+<p><strong>4. Hooks + Sub-Agents = AI 工程新范式</strong></p>
+<p>从 YouTube 教程到 GitHub 项目，Hooks 和 Sub-Agents 的组合使用正在形成标准化的"AI 工程"开发模式：Hook 负责控制和审计，Sub-Agent 负责并行执行，Skills 负责知识封装。</p>
+
+<p><strong>5. 日本社区活跃度持续上升</strong></p>
+<p>本次 X 采集中，日语内容占比显著（@saboten_ai_, @kotaro_ai_lab, @Dai_Challenge, @ischca_dev, @kotosearch 等），ClaudeCode JP 信息门户持续产出高质量内容。日本开发者社区可能是 Claude Code 在非英语市场的最大用户群。</p>
+
+<hr>
+
+<h2>七、进阶路线图</h2>
+
+<pre><code>
+Week 1: 基础配置
+  ├── 安装 Claude Code / 开通 Cowork
+  ├── 编写第一个 CLAUDE.md
+  └── 熟悉 /init、/stats、/compact 命令
+
+Week 2: Skills & 定时任务
+  ├── 创建第一个 Skill（带 frontmatter）
+  ├── 设置 Cowork Scheduled Task
+  └── 学习 Skill 参数和组合调用
+
+Week 3: MCP & Connectors
+  ├── 添加第一个 MCP 服务器
+  ├── 配置 Cowork Connectors
+  └── 尝试 GitHub、Slack、Figma 集成
+
+Week 4: Hooks 自动化
+  ├── 编写 PreToolUse hook（代码质量门禁）
+  ├── 配置 PostToolUse hook（操作日志）
+  └── 学习 .claude/settings.json 配置层级
+
+Week 5-6: Sub-Agent 编排
+  ├── 创建自定义子代理
+  ├── 实现并行任务分配
+  └── 构建完整的多代理工作流
+
+Week 7-8: 生产级工作流
+  ├── CI/CD 集成（Hook + GitHub Actions）
+  ├── 团队级 CLAUDE.md + 项目规范
+  └── 构建 "AI OS" 式开发环境
+</code></pre>
+
+<hr>
+
+<h2>八、推荐行动</h2>
+
+<p>1. <strong>立即可做</strong>：用 Claude Code 搜索最新 Tips 并自动更新你的 CLAUDE.md（@fladdict 方法）</p>
+<p>2. <strong>本周目标</strong>：观看 Chase AI 的 "9 Hacks" 视频（8分42秒，最新发布），挑选 3 个技巧实际应用</p>
+<p>3. <strong>进阶探索</strong>：阅读 <a href="https://github.com/disler/claude-code-hooks-mastery" target="_blank" rel="noopener">claude-code-hooks-mastery</a> 项目，尝试为你的项目配置第一个 Hook</p>
+<p>4. <strong>资源收藏</strong>：Star <a href="https://github.com/hesreallyhim/awesome-claude-code" target="_blank" rel="noopener">awesome-claude-code</a> 和 <a href="https://github.com/ShipWithAI/claude-code-mastery" target="_blank" rel="noopener">claude-code-mastery</a> 两个 GitHub 项目</p>
+<p>5. <strong>非技术用户</strong>：如果你不写代码，直接使用 Cowork 模式——它能完成 80% 的 Claude Code 功能，无需终端操作</p>
+
+  </div>
+</article>
+<div class="article-footer">
+  <div class="container">
+    <a href="../#ai-trends">← 返回首页</a>
+  </div>
+</div>
+</body>
+</html>
