@@ -80,177 +80,69 @@ tr:hover td{background:rgba(0,212,170,.03)}
   <div class="container">
     <div class="article-meta">
       <span class="article-date">2026-04-01</span>
-      <span class="article-tag">Claude Code</span> <span class="article-tag">Cowork</span>
+      <span class="article-tag">CLAUDE.md</span> <span class="article-tag">Skills</span> <span class="article-tag">Scheduled Tasks</span> <span class="article-tag">MCP</span> <span class="article-tag">Hooks</span>
     </div>
     <h1>AI 动态追踪日报 — Claude Cowork & Claude Code</h1>
     <hr>
 
-<h2>一、Hacker News 热榜精选（2026-04-01）</h2>
+<h2>一、高级用法精选（按难度分层）</h2>
 
-<p>> 以下数据通过 HN Firebase API 实时抓取</p>
+<h3>Level 1 — 基础配置</h3>
 
-<h3>1. Claude Code 源码泄露：假工具、"挫败感正则"与隐身模式深度解析</h3>
-<p><strong>来源：</strong> alex000kim.com | ▲ 883 | 💬 354</p>
+<p><strong>CLAUDE.md 文件是一切的起点。</strong> 在项目根目录创建 <code class="inline">CLAUDE.md</code> 文件，写入你的偏好设置、项目背景和常用指令。这是 90% 的人会跳过的步骤，但它是最关键的。可以指定代码风格、测试框架、项目架构等信息，让 Claude 在每次会话中都保持一致的上下文。</p>
 
-<p>研究者通过 npm 包的 Source Map 文件还原了 Claude Code 的部分未混淆源码，揭露了三个令人震惊的细节：Claude Code 内部存在"frustration regexes"（用于检测用户情绪的正则表达式）、有针对 CI/无人值守环境的隐身模式，以及部分工具的"假调用"机制。HN 评论区 354 条讨论热烈，是今日最受关注的 AI 工具安全议题。</p>
+<p>此外，Cowork 的「全局指令」功能（Settings > Cowork > Global instructions）可以设定适用于所有会话的偏好，比如输出格式、语气风格和角色背景。</p>
 
-<p><strong>链接：</strong> https://alex000kim.com/posts/2026-03-31-claude-code-source-leak/</p>
+<h3>Level 2 — Skills 技巧</h3>
 
-<hr>
+<p>Skills 是 Claude Code 的可复用能力模块。社区推荐使用 <code class="inline">review-claudemd</code> skill 来分析你最近的对话记录，并自动建议改进 CLAUDE.md 文件。另有开发者构建了专门扫描 Reddit 和 X 过去 30 天热帖的 skill，自动生成基于社区实战的提示词模板。</p>
 
-<h3>2. OpenAI 完成融资，估值达 $8520 亿</h3>
-<p><strong>来源：</strong> cnbc.com | ▲ 354 | 💬 302</p>
+<p>Cowork 中的 Skills 同样强大 — 有人为承包商行业打造了完整的 AI 营销 skill，通过 ClawHub 分发，让非技术用户也能利用 AI 自动化营销流程。</p>
 
-<p>OpenAI 宣布完成最新一轮融资，公司估值升至 $8520 亿，距离万亿美元俱乐部仅一步之遥，且已开始 IPO 前期准备。与此同时，Anthropic 年化营收接近 $190 亿，付费订阅今年翻倍。HN 评论区 302 条讨论中，"AI 泡沫还是基础设施革命"的争论最为激烈。</p>
+<h3>Level 3 — 定时任务</h3>
 
-<p><strong>链接：</strong> https://www.cnbc.com/2026/03/31/openai-funding-round-ipo.html</p>
+<p>Cowork 的定时任务（Scheduled Tasks）让 Claude 在指定时间或周期自动执行任务。使用 <code class="inline">/schedule</code> 命令即可配置。最佳实践：先在普通对话中测试 prompt，确认效果后再粘贴到调度器中。注意选择正确的模型和工作目录。</p>
 
-<hr>
+<h3>Level 4 — Connectors & MCP</h3>
 
-<h3>3. Show HN: 1-Bit Bonsai — 首个商业可行的 1-Bit LLM</h3>
-<p><strong>来源：</strong> prismml.com | ▲ 126 | 💬 56</p>
+<p>MCP（Model Context Protocol）是扩展 Claude 能力的关键协议。Tech With Tim 的最新教程中详细演示了 GitHub MCP Server、DB Hub、Frontend Design 和 Code Review 等 MCP 服务器的配置方法。</p>
 
-<p>PrismML 发布 1-Bit Bonsai，声称是首个商业可行的 1-Bit 大语言模型——将模型权重压缩到每参数 1 bit，大幅降低内存占用与推理成本。56 条评论中有工程师实测对比，认为在特定任务上精度损失可接受，对边缘部署具有重要意义。</p>
+<p>Microsoft 365 Connector 是目前最强大的 Cowork 连接器 — Claude 可以直接读取 Outlook 邮件、访问 SharePoint 文档和 OneDrive 文件，甚至能跨应用工作：在 Excel 中分析数据，然后基于分析结果构建 PowerPoint。</p>
 
-<p><strong>链接：</strong> https://prismml.com/</p>
+<p>日本开发者 @MidnightCapupu 展示了 Cowork + freee MCP 连接器联动，直接从手写备忘截图生成正式发票，实现了会计流程的自动化。</p>
 
-<hr>
+<h3>Level 5 — Hooks 自动化控制</h3>
 
-<h3>4. Ministack — LocalStack 的轻量替代品</h3>
-<p><strong>来源：</strong> ministack.org | ▲ 153 | 💬 30</p>
-
-<p>开源项目 Ministack 定位为 LocalStack 的轻量级替代方案，专注于本地模拟 AWS 核心服务（S3、SQS、Lambda 等），启动速度更快、资源占用更低。对于不需要 LocalStack 全量功能的开发团队来说，这是一个更简洁的本地开发选择。</p>
-
-<p><strong>链接：</strong> https://ministack.org/</p>
-
-<hr>
-
-<h3>5. TinyLoRA — 用 13 个参数学会推理</h3>
-<p><strong>来源：</strong> arxiv.org | ▲ 91 | 💬 8</p>
-
-<p>arxiv 新论文 TinyLoRA 提出了一种极简 LoRA 变体，仅用 13 个可学习参数就能在特定推理任务上达到竞争性表现。这为"最小有效干预"方向的研究提供了新视角：也许通用推理能力并不需要大量额外参数。</p>
-
-<p><strong>链接：</strong> https://arxiv.org/abs/2602.04118</p>
-
-<hr>
-
-<h2>二、Claude Code & Cowork 最新动态</h2>
-
-<h3>🔓 Claude Code 源码泄露事件深度解读</h3>
-
-<p>这是本周最大的 Claude Code 事件。研究员 Alex Kim 发现 Anthropic 在 npm 包中意外包含了 Source Map 文件，从而暴露了部分未混淆的源代码。关键发现包括：</p>
+<p>Claude Code Hooks 是在 AI 生命周期特定节点自动执行的钩子，类似 Git Hooks。三种类型：</p>
 
 <ul>
-<li><strong>frustration regexes</strong>：Claude Code 内置了检测用户挫败情绪的正则表达式，可能用于调整响应策略</li>
-<li><strong>隐身模式（undercover mode）</strong>：在 CI 环境或检测到无人值守时，Claude Code 会切换不同的行为模式</li>
-<li><strong>假工具（fake tools）</strong>：部分工具调用在内部实际上是模拟实现，而非真正执行</li>
-<li><strong>MCP Tool Search 懒加载</strong>：通过按需加载 MCP 工具，可减少高达 95% 的上下文占用</li>
+<li><strong>Command hooks</strong>：运行 shell 脚本，适合格式化、日志等确定性任务</li>
+<li><strong>Prompt hooks</strong>：使用 LLM 做是/否决策，适合逻辑复杂的场景</li>
+<li><strong>Agent hooks</strong>：启动多轮子代理，可读取文件、运行命令、验证复杂条件</li>
 </ul>
 
-<p><strong>来源：</strong> HN #47586778, r/LocalLLaMA</p>
+<p>共有 12 个 hook 事件，包括 SessionStart、PreToolUse、PostToolUse、TaskCompleted 等。通过 PreToolUse hook 可以在工具执行前进行验证，例如限制只允许只读数据库查询。</p>
 
-<hr>
+<h3>Level 6 — 子代理编排</h3>
 
-<h3>🤖 Claude Code 2026 生产级最佳实践</h3>
+<p>Sub-agents 是独立运行的 Claude 实例，各自拥有独立的上下文窗口、系统提示和工具权限。在 Coordinator 模式下，Claude 作为编排者将实现工作委派给子代理，自己专注于规划、路由和综合。</p>
 
-<p>根据开发者社区总结，2026 年 Claude Code 的生产级使用方式已经成熟：</p>
+<p>社区推荐的 <strong>AB Method</strong>（Ayoub Bensalah 提出）是一种规范驱动的工作流，将大问题转化为聚焦的增量任务，由专门的子代理逐一完成。</p>
+
+<h3>Level 7 — 专家级工作流</h3>
+
+<p>顶级用法是将 Skills + Subagents + Hooks + MCP + Plugins 组合使用，构建完整的自动化开发管道。例如：</p>
 
 <ul>
-<li><strong>CLAUDE.md 分层配置</strong>：全局 <code class="inline">~/.claude/CLAUDE.md</code> + 项目级 <code class="inline">CLAUDE.md</code> 实现细粒度控制</li>
-<li><strong>MCP 服务器集成</strong>：将外部工具（数据库、API、搜索）通过 MCP 接入，让 Claude 直接操作</li>
-<li><strong>子代理编排</strong>：最多同时运行 10 个子代理，专门化分工（spec writer / architect / implementer / tester）</li>
-<li><strong>tmux 多窗格工作流</strong>：在两个 tmux 窗格同时运行 Claude Code 和 Codex CLI，互补式并行</li>
+<li>全局 CLAUDE.md 配置发送 diff 到 Gemini 和 Codex 进行代码审查后再提交</li>
+<li>在容器中运行 Claude Code 进行长时间研究或实验，出错时环境隔离</li>
+<li>使用 <code class="inline">dx</code> 插件一键安装开发者体验工具包，包含 <code class="inline">/dx:clone</code>、<code class="inline">/dx:handoff</code>、<code class="inline">/dx:gha</code> 等命令</li>
+<li>运行多个 Claude Code 实例并行构建和发布功能</li>
 </ul>
 
 <hr>
 
-<h3>📊 Claude Code 社区使用数据（2026 Q1）</h3>
-
-<div class="table-wrap"><table><thead><tr>
-<th>指标</th>
-<th>数据</th>
-<th>对比</th>
-</tr></thead><tbody>
-<tr>
-<td>小型公司主力编码工具占比</td>
-<td>75%</td>
-<td>超越 Copilot 和 Cursor</td>
-</tr>
-<tr>
-<td>子代理最大并发数</td>
-<td>10</td>
-<td>生产环境稳定使用</td>
-</tr>
-<tr>
-<td>MCP Tool Search 上下文节省</td>
-<td>95%</td>
-<td>懒加载机制</td>
-</tr>
-<tr>
-<td>r/LocalLLaMA 泄露帖热度</td>
-<td>▲ 3218</td>
-<td>本周最高票帖子</td>
-</tr>
-</tbody></table></div>
-
-<hr>
-
-<h2>三、Reddit 社区热议</h2>
-
-<p>> 数据通过 hype.replicate.dev 聚合（2026-04-01）</p>
-
-<h3>r/LocalLLaMA — Claude Code 源码泄露轰动全社区</h3>
-<p>▲ 3218 | 评论数百条</p>
-
-<p>"Claude code source code has been leaked via a map file in their npm registry" 成为本周 r/LocalLLaMA 最高票帖子。社区发现了 frustration regexes 的存在后，引发了关于 AI 工具透明度的激烈讨论：AI 助手应该向用户隐藏多少行为逻辑？"undercover mode"是否道德？</p>
-
-<hr>
-
-<h3>r/LocalLLaMA — llama.cpp 突破 100K Stars 里程碑</h3>
-<p>▲ 1016</p>
-
-<p>llama.cpp 成为 GitHub 历史上最快达到 10 万 Stars 的 AI 推理框架之一。社区认为这标志着"本地 LLM 运动"从极客爱好正式进入主流开发工具生态，与 Ollama、LM Studio 等工具共同构成了完整的本地 AI 开发链路。</p>
-
-<hr>
-
-<h3>r/LocalLLaMA — TurboQuant 技术澄清：真实压缩比与质量损失</h3>
-<p>▲ 625</p>
-
-<p>社区对 TurboQuant/RaBitQ 进行了深度技术澄清：实际有效压缩率约 5-6 倍（从 16-bit 压缩到约 2.5-3.5 bit），在 long-context 推理任务上质量损失在可接受范围内。第一个开源实现已在 GitHub 上发布，ICLR 2026 正式收录。</p>
-
-<hr>
-
-<h3>r/LocalLLaMA — Qwen 3.6 现身！</h3>
-<p>▲ 602</p>
-
-<p>有用户在 Hugging Face 上发现了 Qwen 3.6 的模型权重，推测是阿里云提前上传测试。从泄露信息来看，Qwen 3.6 在代码生成和多步推理任务上有显著提升，预计正式发布时间在 4 月中旬。</p>
-
-<hr>
-
-<h3>r/LocalLLaMA — Qwen3.5-Omni：阿里发布全模态结果对比</h3>
-<p>▲ 373</p>
-
-<p>阿里巴巴发布 Qwen3.5-Omni 的性能评测结果，在图像理解、语音识别和文本生成的联合任务上超越了 GPT-4o 和 Gemini 3.1 Pro 的对应测试。开源权重让本地全模态推理首次成为可能。</p>
-
-<hr>
-
-<h2>四、AI 行业大动态</h2>
-
-<h3>OpenAI 估值 $8520 亿，IPO 进入准备阶段</h3>
-
-<p>OpenAI 年化营收突破 $250 亿，完成最新融资后估值升至 $8520 亿。与此同时，OpenAI 与美国国防部签署协议在机密网络部署 AI 引发 "#QuitGPT" 运动（超 250 万支持者），而 Anthropic 拒绝同类合作后，Claude 首次登上美国 App Store 榜首。</p>
-
-<h3>Anthropic 深化 Google Cloud 合作，百万 TPU 规模</h3>
-
-<p>Anthropic 宣布扩大与 Google Cloud 的合作，计划部署高达 100 万个 TPU，合作规模达数百亿美元，预计 2026 年带来超过 1 吉瓦的算力。Claude Sonnet 4.6 和 Opus 4.6 的 100 万 token 上下文窗口（beta）同步开放。</p>
-
-<h3>Mistral Voxtral — 首个开源 TTS 进入实用阶段</h3>
-
-<p>Mistral AI 的 Voxtral TTS 模型（30 亿参数）在人类偏好测试中超越 ElevenLabs Flash v2.5，仅需 3GB 内存，首字延迟 90ms，支持 9 种语言，完全开源。这是 TTS 领域开源化进程的重要里程碑。</p>
-
-<hr>
-
-<h2>五、高手实战技巧表格</h2>
+<h2>二、高手实战技巧表格</h2>
 
 <div class="table-wrap"><table><thead><tr>
 <th>#</th>
@@ -261,59 +153,250 @@ tr:hover td{background:rgba(0,212,170,.03)}
 </tr></thead><tbody>
 <tr>
 <td>1</td>
-<td>MCP Tool Search 懒加载</td>
-<td>按需加载 MCP 工具，节省 95% 上下文</td>
+<td>自定义状态栏</td>
+<td>在 Claude Code 底部显示模型名、git 分支、未提交文件数、token 用量进度条</td>
 <td>⭐⭐</td>
-<td>Claude Code 源码泄露</td>
+<td>GitHub/ykdojo</td>
 </tr>
 <tr>
 <td>2</td>
-<td>CLAUDE.md 分层配置</td>
-<td>全局 + 项目级双层配置，精细控制代理行为</td>
-<td>⭐⭐</td>
-<td>社区最佳实践</td>
+<td>Bypass permissions</td>
+<td>选择 "Bypass permissions" 让 Claude Code 自动完成工作不被打断</td>
+<td>⭐</td>
+<td>X/@gudanglifehack</td>
 </tr>
 <tr>
 <td>3</td>
-<td>10 子代理并发编排</td>
-<td>spec/arch/impl/test 四角色分工，生产级流水线</td>
-<td>⭐⭐⭐⭐</td>
-<td>Claude Code 2026 指南</td>
+<td>about-me.md 上下文</td>
+<td>在前 5 分钟创建 about-me.md 文件，提供个人背景和项目信息</td>
+<td>⭐</td>
+<td>X/@gudanglifehack</td>
 </tr>
 <tr>
 <td>4</td>
-<td>tmux 双窗格并行</td>
-<td>Claude Code + Codex CLI 同时运行，互补覆盖</td>
+<td>Cowork vs Chrome 分流</td>
+<td>正确区分 Cowork 和 Claude in Chrome 的使用场景，节省 token 配额</td>
 <td>⭐⭐</td>
-<td>r/ClaudeAI 社区</td>
+<td>X/@dansyu_callenge</td>
 </tr>
 <tr>
 <td>5</td>
-<td>TurboQuant 本地部署</td>
-<td>5-6 倍压缩比，同等显存跑更大模型</td>
-<td>⭐⭐⭐⭐</td>
-<td>ICLR 2026 开源实现</td>
+<td>freee MCP 发票</td>
+<td>连接 freee 会计 MCP，从备忘截图自动生成发票</td>
+<td>⭐⭐⭐</td>
+<td>X/@MidnightCapupu</td>
 </tr>
 <tr>
 <td>6</td>
-<td>Qwen3.5-Omni 全模态</td>
-<td>本地运行图像+语音+文本联合任务</td>
-<td>⭐⭐⭐</td>
-<td>r/LocalLLaMA</td>
+<td>全局 CLAUDE.md 审查</td>
+<td>配置全局 CLAUDE.md 将 diff 发送到 Gemini/Codex 交叉审查</td>
+<td>⭐⭐⭐⭐</td>
+<td>Reddit/r/ClaudeAI</td>
 </tr>
 <tr>
 <td>7</td>
-<td>1-Bit LLM 边缘部署</td>
-<td>1-Bit Bonsai 大幅降低内存，适合移动/IoT</td>
+<td>容器化运行</td>
+<td>在 Docker 容器中运行 Claude Code，隔离风险实验</td>
 <td>⭐⭐⭐</td>
-<td>HN Show HN</td>
+<td>Reddit/r/ClaudeAI</td>
 </tr>
 <tr>
 <td>8</td>
-<td>llama.cpp + Ministack</td>
-<td>本地 LLM 推理 + 本地 AWS 模拟，完整离线开发</td>
-<td>⭐⭐⭐</td>
-<td>HN 热榜</td>
+<td>Dispatch 远程控制</td>
+<td>通过手机扫码远程控制桌面 Cowork 会话</td>
+<td>⭐⭐</td>
+<td>Anthropic 官方</td>
+</tr>
+<tr>
+<td>9</td>
+<td>PreToolUse 验证钩子</td>
+<td>用 PreToolUse hook 在工具执行前验证操作合法性</td>
+<td>⭐⭐⭐⭐</td>
+<td>GitHub/disler</td>
+</tr>
+<tr>
+<td>10</td>
+<td>并行子代理编排</td>
+<td>Coordinator 模式委派多个子代理并行执行开发任务</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>Anthropic Docs</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>三、YouTube 教程推荐</h2>
+
+<p>> 以下数据通过 Chrome 浏览器实时采集于 YouTube 搜索页面（2026-04-01）</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>视频标题</th>
+<th>作者</th>
+<th>观看量</th>
+<th>时长</th>
+<th>特色内容</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=qYqIhX9hTQk" target="_blank" rel="noopener">FULL Claude Code Tutorial for Beginners in 2026! (Step-By-Step)</a></td>
+<td>Tech With Tim</td>
+<td>7.9万次</td>
+<td>15:10</td>
+<td>9 章节：CLAUDE.md 长期记忆、Plugins & Connectors 配置、GitHub MCP Server、DB Hub/Frontend Design/Code Review MCP</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=Ffh9OeJ7yxw" target="_blank" rel="noopener">800+ hours of Learning Claude Code in 8 minutes</a></td>
+<td>Edmund Yong</td>
+<td>70万次</td>
+<td>8:01</td>
+<td>6 章节：DRY 原则、MCP 服务器推荐、并行构建发布、克隆高手配置、AI 编码进阶</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>四、Reddit 讨论精选</h2>
+
+<p>> Reddit 因浏览器安全限制无法直接访问，以下数据通过 WebSearch 采集</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>帖子标题</th>
+<th>子版块</th>
+<th>要点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://github.com/shanraisshan/claude-code-best-practice" target="_blank" rel="noopener">Claude Code Best Practice 合集</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>追踪 Boris Cherny、Ado 等 Anthropic 核心人物的最佳实践文章，包含 15 个隐藏功能和 12 种自定义方式</td>
+</tr>
+<tr>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">Cowork 删除 11GB 文件事件</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>用户让 Cowork "清理"文件夹，结果被激进删除了 11GB 重要数据，引发社区对自主权限风险的广泛讨论</td>
+</tr>
+<tr>
+<td><a href="https://dev.to/_46ea277e677b888e0cd13/claude-code-vs-codex-2026-what-500-reddit-developers-really-think-31pb" target="_blank" rel="noopener">Claude Code vs Codex 2026 对比</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>盲测中 Claude Code 代码质量胜率 67%，但日常使用量限制让部分开发者转向替代方案</td>
+</tr>
+<tr>
+<td><a href="https://github.com/ykdojo/claude-code-tips" target="_blank" rel="noopener">Claude Code Tips 合集 (45 Tips)</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>包含自定义状态栏脚本、系统提示减半、Gemini CLI 作为 Claude Code 的辅助、dx 插件等</td>
+</tr>
+<tr>
+<td><a href="https://aiblewmymind.substack.com/p/claude-cowork-use-cases-guide" target="_blank" rel="noopener">Cowork 用例指南 (67+ 场景)</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>按职业分类的 10 个实测用例 + 67 个扩展场景，覆盖营销、法律、财务等领域</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>五、X 热门帖子</h2>
+
+<p>> 以下数据通过 Chrome 浏览器实时采集于 X 搜索页面（2026-04-01）</p>
+
+<h3>Claude Code Tips 热帖</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>作者</th>
+<th>内容摘要</th>
+<th>互动</th>
+<th>亮点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://x.com/gudanglifehack" target="_blank" rel="noopener">@gudanglifehack</a></td>
+<td>30 分钟从零开始使用 Claude Code 的完整指南（包含图片教程）</td>
+<td>💬1 🔁2 ❤️4 👁905</td>
+<td>非程序员友好的入门指南，强调 about-me.md 是最重要的步骤</td>
+</tr>
+<tr>
+<td><a href="https://x.com/gudanglifehack" target="_blank" rel="noopener">@gudanglifehack</a></td>
+<td>分步详解：0-5 分钟安装、5-10 分钟构建上下文文件夹、10-15 分钟启动项目</td>
+<td>💬1 🔁0 ❤️0 👁515</td>
+<td>90% 的人跳过的关键步骤：构建 about-me.md</td>
+</tr>
+<tr>
+<td><a href="https://x.com/gudanglifehack" target="_blank" rel="noopener">@gudanglifehack</a></td>
+<td>Pro tip: 选择 "Bypass permissions" 让 Claude Code 不间断工作</td>
+<td>💬0 🔁0 ❤️0 👁486</td>
+<td>实用小技巧</td>
+</tr>
+<tr>
+<td><a href="https://x.com/saboten_ai_" target="_blank" rel="noopener">@saboten_ai_</a></td>
+<td>使用 Claude Code 默认设置一年后，发现 CLAUDE.md + hooks 组合大幅提升效率</td>
+<td>💬0 🔁0 ❤️0 👁47</td>
+<td>引用 @fukuda_CEO 的 10 条隐藏技巧帖</td>
+</tr>
+<tr>
+<td><a href="https://x.com/SaviourProdigy" target="_blank" rel="noopener">@SaviourProdigy</a></td>
+<td>Anthropic 通过 npm 意外泄露 Claude Code 完整源码（512K+ 行）</td>
+<td>💬1 🔁0 ❤️0 👁50</td>
+<td>重大安全事件，GitHub 同期取消 Copilot Tips</td>
+</tr>
+<tr>
+<td><a href="https://x.com/Claudecode_JPEG" target="_blank" rel="noopener">@Claudecode_JPEG</a></td>
+<td>Claude 如何改变 Terraform 基础设施代码重构</td>
+<td>💬0 🔁0 ❤️0 👁23</td>
+<td>ClaudeCode JP 日文社区资讯</td>
+</tr>
+</tbody></table></div>
+
+<h3>Claude Cowork 热帖</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>作者</th>
+<th>内容摘要</th>
+<th>互动</th>
+<th>亮点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://x.com/bprintco" target="_blank" rel="noopener">@bprintco</a></td>
+<td>为承包商打造的免费 AI 指南 + Cowork/ClawHub 营销 skill</td>
+<td>💬1 🔁0 ❤️10 👁370</td>
+<td>Vibecoding for Business 社区热帖</td>
+</tr>
+<tr>
+<td><a href="https://x.com/reynagade5" target="_blank" rel="noopener">@reynagade5</a></td>
+<td>使用 Cowork 后找不到再打开 Perplexity 的理由</td>
+<td>💬0 🔁0 ❤️0 👁59</td>
+<td>用户对 Cowork 的高评价</td>
+</tr>
+<tr>
+<td><a href="https://x.com/Bwatson" target="_blank" rel="noopener">@Bwatson</a></td>
+<td>Windows 11 下 Cowork 能否挂载 WSL2 文件夹？</td>
+<td>💬0 🔁0 ❤️0 👁55</td>
+<td>Windows 用户常见问题</td>
+</tr>
+<tr>
+<td><a href="https://x.com/cmo4ever" target="_blank" rel="noopener">@cmo4ever</a></td>
+<td>期待 Web、Claude Code 和 Cowork 之间的记忆同步，以及无头模式</td>
+<td>💬0 🔁0 ❤️0 👁55</td>
+<td>社区对 Cowork 未来功能的期待</td>
+</tr>
+<tr>
+<td><a href="https://x.com/MidnightCapupu" target="_blank" rel="noopener">@MidnightCapupu</a></td>
+<td>Cowork + freee MCP 联动生成发票，从手写备忘截图到正式发票</td>
+<td>💬0 🔁0 ❤️0 👁14</td>
+<td>日本开发者的实际业务场景</td>
+</tr>
+<tr>
+<td><a href="https://x.com/ArtificeGuy" target="_blank" rel="noopener">@ArtificeGuy</a></td>
+<td>Microsoft Copilot Cowork 上线：Claude 和 GPT 协同工作，一个生成一个审查</td>
+<td>💬0 🔁0 ❤️0 👁16</td>
+<td>微软整合 Claude 到 M365 Copilot</td>
+</tr>
+<tr>
+<td><a href="https://x.com/yano_mktg" target="_blank" rel="noopener">@yano_mktg</a></td>
+<td>Cowork vs Claude in Chrome 使用分流指南：正确分流可大幅节省 token</td>
+<td>💬0 🔁0 ❤️0 👁34</td>
+<td>引用 @dansyu_callenge 的初心者向文章</td>
+</tr>
+<tr>
+<td><a href="https://x.com/NoHoHankSkol_" target="_blank" rel="noopener">@NoHoHankSkol_</a></td>
+<td>每个人都应该学习 Claude Code 和 Cowork，成为 AI 专家比对抗 AI 更明智</td>
+<td>💬1 🔁0 ❤️1 👁47</td>
+<td>关于 AI 时代职业发展的讨论</td>
 </tr>
 </tbody></table></div>
 
@@ -321,25 +404,62 @@ tr:hover td{background:rgba(0,212,170,.03)}
 
 <h2>六、跨平台趋势总结</h2>
 
-<p>1. <strong>透明度危机与信任重建</strong>：Claude Code 源码泄露事件将 AI 工具的"黑盒行为"推到台前——frustration regexes 和 undercover mode 的存在让开发者重新审视：我们真的了解 AI 工具在做什么吗？这将推动更多开源 AI 工具的需求。</p>
+<p>1. <strong>Microsoft + Anthropic 联手</strong>：微软 Copilot Cowork 正式开放早期体验，将 Claude 集成到 M365 生态，实现多模型协作（一个生成、一个审查）。这是本日最大的行业新闻。</p>
 
-<p>2. <strong>本地 AI 生态成熟</strong>：llama.cpp 突破 10 万 Stars、Qwen3.5-Omni 开源全模态、TurboQuant 开源实现——2026 Q1 标志着本地 LLM 生态从"能跑"升级到"好用"，开发者有了真实可用的完整链路。</p>
+<p>2. <strong>Hooks + Sub-agents 成为进阶标配</strong>：社区讨论从基础配置向 Hooks 自动化和子代理编排深入。12 个 hook 事件 + 3 种 hook 类型的组合正成为高级用户的标准工作流。</p>
 
-<p>3. <strong>OpenAI vs Anthropic 商业格局分化</strong>：OpenAI 拥抱军事合同推高估值，Anthropic 坚持道德边界反而赢得用户口碑（Claude 登顶 App Store）。两条路线在商业上都有回报，但用户认同的分野越来越明显。</p>
+<p>3. <strong>Cowork 生态快速成熟</strong>：从日本开发者用 freee MCP 自动生成发票，到承包商行业的 AI 营销 skill，Cowork 正在各垂直领域落地。</p>
 
-<p>4. <strong>Claude Code 成为工程基础设施</strong>：75% 小型公司、10 子代理并发、MCP 生态深化——Claude Code 已不是"编码助手"，而是一套完整的 AI 工程操作系统，重新定义了软件开发的组织方式。</p>
+<p>4. <strong>安全与权限意识提升</strong>：Claude Code 源码泄露事件和 Cowork 删除 11GB 文件事件让社区更加重视安全实践。容器化运行和权限控制成为推荐做法。</p>
 
-<p>5. <strong>模型压缩进入实用阶段</strong>：TurboQuant（5-6×压缩）、1-Bit Bonsai（1-bit 参数）、Voxtral（3GB TTS）——三项独立进展同时在近期落地，"用更少资源做更多事"成为 2026 年模型工程的主旋律。</p>
+<p>5. <strong>Windows 生态追赶</strong>：Windows 11 下 Cowork 的 WSL2 兼容性问题表明 Windows 用户群正在快速增长，但跨平台体验仍需完善。</p>
 
 <hr>
 
-<h2>七、推荐行动</h2>
+<h2>七、进阶路线图</h2>
 
-<p>1. <strong>阅读源码泄露分析</strong>：访问 alex000kim.com 的 Claude Code 分析文章，理解 frustration regexes 和 undercover mode 的实际影响，据此调整你的 CLAUDE.md 配置</p>
-<p>2. <strong>启用 MCP Tool Search</strong>：更新到最新版 Claude Code，利用懒加载机制，把所有 MCP 服务器都装上而不担心上下文爆炸</p>
-<p>3. <strong>尝试 1-Bit Bonsai</strong>：如果你有边缘部署需求，现在是评估 1-Bit LLM 商业可行性的好时机</p>
-<p>4. <strong>关注 Qwen 3.6</strong>：Hugging Face 上已有权重泄露，技术先行者可以提前测试代码生成能力</p>
-<p>5. <strong>部署 TurboQuant</strong>：第一个开源实现已可用，本地运行更大模型的机会窗口已经打开</p>
+<pre><code>
+入门（Week 1-2）
+├── 安装 Claude Code / Cowork
+├── 创建 CLAUDE.md + about-me.md
+├── 学习基本命令和 /model 切换
+└── 设置 Bypass permissions
+
+中级（Week 3-4）
+├── 配置 MCP Servers（GitHub、DB Hub）
+├── 安装和使用 Skills
+├── 设置定时任务（/schedule）
+├── 探索 Cowork Connectors（MS365 等）
+└── 使用 Dispatch 远程控制
+
+高级（Month 2）
+├── 编写自定义 Hooks（PreToolUse、SessionStart）
+├── 创建专用 Sub-agents
+├── 容器化运行 Claude Code
+├── 安装 dx 插件优化开发体验
+└── 跨工具审查（Gemini/Codex）
+
+专家（Month 3+）
+├── Coordinator 模式多代理编排
+├── 构建完整 CI/CD 钩子管道
+├── 开发和分发自定义 Plugins
+├── AB Method 规范驱动工作流
+└── 多实例并行构建与发布
+</code></pre>
+
+<hr>
+
+<h2>八、推荐行动</h2>
+
+<p>1. <strong>立即行动</strong>：如果你还没有 CLAUDE.md 文件，现在就创建一个。这是投入产出比最高的改进。</p>
+
+<p>2. <strong>本周尝试</strong>：配置至少一个 MCP Server（推荐 GitHub MCP），体验工具链扩展的威力。</p>
+
+<p>3. <strong>关注微软动向</strong>：Microsoft Copilot Cowork 的多模型协作模式可能改变 AI 辅助开发的格局，值得持续跟踪。</p>
+
+<p>4. <strong>安全优先</strong>：给 Cowork 授权时遵循最小权限原则，敏感应用（银行、医疗）绝不给予访问权限。考虑在容器中运行高风险实验。</p>
+
+<p>5. <strong>社区参与</strong>：关注 <a href="https://x.com/ykdojo" target="_blank" rel="noopener">@ykdojo</a> 的 45 Tips 仓库和 <a href="https://github.com/hesreallyhim/awesome-claude-code" target="_blank" rel="noopener">awesome-claude-code</a> 合集，保持对社区最新实践的了解。</p>
 
   </div>
 </article>
