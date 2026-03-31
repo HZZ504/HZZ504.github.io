@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 动态追踪日报 — Claude Cowork & Claude Code | 张翰之</title>
+<meta name="description" content="2026-03-31 Claude Code / Cowork 社区最新动态、高级用法和实战技巧汇总">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;
+  --text:#e0e0e8;--text-dim:#8888a0;--text-bright:#ffffff;
+  --accent:#00d4aa;--accent2:#00a8ff;--accent3:#7c5cfc;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --max-w:900px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.8;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent2)}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:0;
+}
+
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+nav .inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--accent)}
+nav .logo svg{width:28px;height:28px}
+nav .back{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--accent)}
+
+/* Article */
+article{padding:100px 0 60px}
+.article-meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.article-date{font-family:var(--mono);font-size:.8rem;color:var(--accent);padding:4px 12px;border:1px solid rgba(0,212,170,.3);border-radius:4px}
+.article-tag{font-family:var(--mono);font-size:.65rem;color:var(--accent2);padding:2px 8px;background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.15);border-radius:4px}
+
+article h1{font-size:1.8rem;font-weight:700;color:var(--text-bright);margin-bottom:32px;line-height:1.3}
+article h2{font-size:1.35rem;font-weight:600;color:var(--accent);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,170,.15)}
+article h3{font-size:1.1rem;font-weight:600;color:var(--accent2);margin:28px 0 12px}
+article h4{font-size:.95rem;font-weight:600;color:var(--accent3);margin:20px 0 8px}
+article p{margin-bottom:12px;color:var(--text)}
+article ul{margin:0 0 16px 20px}
+article li{margin-bottom:8px;color:var(--text)}
+article li strong{color:var(--accent)}
+article hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:32px 0}
+article code.inline{font-family:var(--mono);font-size:.85em;background:rgba(0,212,170,.1);color:var(--accent);padding:2px 6px;border-radius:4px}
+article pre{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+article pre code{font-family:var(--mono);font-size:.85rem;color:var(--text)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);text-align:left;padding:10px 12px;border-bottom:2px solid rgba(0,212,170,.2);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text)}
+tr:hover td{background:rgba(0,212,170,.03)}
+
+/* Footer */
+.article-footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:60px;text-align:center}
+.article-footer a{font-family:var(--mono);font-size:.85rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="../" class="logo"><svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="url(#lg)"/><path d="M7 8h3v12H7V8zm4 5h6v3h-6v-3zm7-5h3v12h-3V8z" fill="#0a0a0f"/><defs><linearGradient id="lg" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00d4aa"/><stop offset="1" stop-color="#00a8ff"/></linearGradient></defs></svg><span>&lt;</span>HZ<span>/&gt;</span></a>
+    <a href="../#ai-trends" class="back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> 返回日报列表</a>
+  </div>
+</nav>
+<article>
+  <div class="container">
+    <div class="article-meta">
+      <span class="article-date">2026-03-31</span>
+      <span class="article-tag">MCP</span>
+    </div>
+    <h1>AI 动态追踪日报 — Claude Cowork & Claude Code</h1>
+    <hr>
+
+<h2>一、Hacker News 热榜精选（2026-03-31）</h2>
+
+<p>> 以下数据通过 HN Firebase API 实时抓取</p>
+
+<h3>1. 万物皆可变路由：网络底层原理深度解析</h3>
+<p><strong>来源：</strong> nbailey.ca | ▲ 576 | 💬 207</p>
+
+<p>一篇深入探讨"把任何设备变成路由器"的技术文章，从网络底层协议出发，解释 IP 转发、NAT 和路由表的工作原理。评论区 207 条讨论热烈，涵盖家庭网络优化、数据包调试等实战技巧，是今日 HN 评论最多的技术文章之一。</p>
+
+<p><strong>链接：</strong> https://nbailey.ca/post/router/</p>
+
+<hr>
+
+<h3>2. Fedware：政府应用比它们所封禁的应用窥探更深</h3>
+<p><strong>来源：</strong> sambent.com | ▲ 390 | 💬 121</p>
+
+<p>调查发现，白宫官方 App 内嵌了华为相关代码和 ICE 举报热线，数据收集行为远超它声称封禁的 TikTok。这篇文章引发 HN 社区对政府 App 安全与隐私的激烈讨论，是当前最受关注的隐私安全议题之一。</p>
+
+<p><strong>链接：</strong> https://www.sambent.com/the-white-house-app-has-huawei-spyware-and-an-ice-tip-line/</p>
+
+<hr>
+
+<h3>3. 亲自写作：不要让 AI 替你写</h3>
+<p><strong>来源：</strong> alexhwoods.com | ▲ 342 | 💬 105</p>
+
+<p>作者主张用写作来锻炼和外化思维——AI 代写虽然高效，却剥夺了这个过程。文章引发了 HN 社区关于 AI 写作边界的深度讨论：什么时候用 AI 辅助是合适的？写作的价值究竟在哪里？105 条评论反映出开发者群体对 AI 过度使用的反思。</p>
+
+<p><strong>链接：</strong> https://alexhwoods.com/dont-let-ai-write-for-you/</p>
+
+<hr>
+
+<h3>4. 通过实践而非阅读学习 Claude Code</h3>
+<p><strong>来源：</strong> claude.nagdy.me | ▲ 130 | 💬 76</p>
+
+<p>一个互动式 Claude Code 学习平台，通过实际操作而非文档阅读来掌握 Claude Code。课程涵盖从基础命令到高级代理编排的完整路径，被社区评价为目前最有效的 Claude Code 入门方式之一，76 条评论中多人分享了自己的学习心得。</p>
+
+<p><strong>链接：</strong> https://claude.nagdy.me/</p>
+
+<hr>
+
+<h3>5. Cherri：编译到 Apple Shortcuts 的编程语言</h3>
+<p><strong>来源：</strong> github.com/electrikmilk/cherri | ▲ 246 | 💬 47</p>
+
+<p>开源项目 Cherri 是一门编译到 Apple Shortcuts 的编程语言，让开发者用真正的编程方式来编写 Shortcuts——支持变量、条件、循环、函数等完整语言特性。对于喜欢自动化但厌倦 Shortcuts 图形界面的 Apple 用户来说，这是一个很有吸引力的工具。</p>
+
+<p><strong>链接：</strong> https://github.com/electrikmilk/cherri</p>
+
+<hr>
+
+<h2>二、Claude Code & Cowork 最新动态</h2>
+
+<h3>🚀 Claude Code Channels 正式发布 — Telegram/Discord 原生集成</h3>
+
+<p>Anthropic 发布 <strong>Claude Code Channels</strong>，允许用户将 Claude Code 的完整代理能力接入个人的 Discord 或 Telegram，随时随地通过消息指挥 Claude 写代码、执行任务。这被视为对 OpenClaw 的直接竞争回应——不再需要打开终端，手机上发消息就能驱动 AI 完成复杂工程任务。</p>
+
+<p><strong>来源：</strong> VentureBeat</p>
+
+<hr>
+
+<h3>🖥️ Computer Use 正式进入 Claude Code（3 月 23 日）</h3>
+
+<p>Anthropic 为 <strong>Pro 和 Max 用户</strong>开放了 Claude Code 的 Computer Use 能力：Claude 现在可以自主打开文件、运行开发工具、操控鼠标点击和屏幕导航——无需任何额外配置。这意味着 Claude Code 从"代码代理"升级为"计算机代理"，可以处理原本需要人工操作的 GUI 任务。</p>
+
+<hr>
+
+<h3>📡 MCP 生态系统扩展更新</h3>
+
+<p>3 月 Claude Code changelog 包含多项 MCP 相关更新：</p>
+<ul>
+<li><strong>MCP elicitation 支持</strong>：MCP 服务器可主动向用户请求补充信息</li>
+<li><strong>StopFailure 处理</strong>：更稳定的任务终止机制</li>
+<li><strong>transcript search</strong>：对话历史全文搜索</li>
+<li><strong>更多 Hook 事件</strong>：子代理生命周期追踪更精细</li>
+<li><strong>subprocess credential scrubbing</strong>：子进程凭证安全清理</li>
+</ul>
+
+<hr>
+
+<h3>🤖 Claude 新模型里程碑</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>模型</th>
+<th>关键指标</th>
+<th>亮点</th>
+</tr></thead><tbody>
+<tr>
+<td>Claude Opus 4.6</td>
+<td>SWE-bench 75.6%</td>
+<td>1M token 上下文窗口（beta），代理编码能力最强</td>
+</tr>
+<tr>
+<td>Claude Sonnet 4.6</td>
+<td>Claude Code 默认</td>
+<td>59% 使用中被优先选择，取代 Opus 4.5 成为免费默认</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>三、Reddit 社区热议</h2>
+
+<p>> Reddit 直接访问受限，以下数据通过 WebSearch 综合采集（2026-03-31）</p>
+
+<h3>r/MachineLearning — TurboQuant：6倍内存压缩，不损失性能</h3>
+
+<p>Google 与 NYU 联合研究 <strong>TurboQuant</strong> 将在 ICLR 2026 发表：将 AI 模型的内存使用压缩至 2.5-3.5 bits（相比标准 16-bit 减少约 6 倍），且无需重新训练。这项技术有望大幅降低长上下文对话的成本，让移动端和边缘部署更大的模型成为可能。</p>
+
+<p><strong>来源：</strong> r/MachineLearning 热帖汇总</p>
+
+<hr>
+
+<h3>r/LocalLLaMA — 2026 开源模型格局：多强并立</h3>
+
+<p>本周 r/LocalLLaMA 社区热议的开源模型格局，主力军包括：</p>
+<ul>
+<li><strong>Meta Llama 4</strong>：新一代开源基础模型</li>
+<li><strong>DeepSeek V3.2-Exp</strong>：实验性版本引发 2300+ 高赞讨论</li>
+<li><strong>Qwen3-Coder-480B</strong>：专为代理编码优化的超大模型</li>
+<li><strong>Kimi-K2</strong> 与 <strong>Mistral Large 3</strong>：中欧开源模型新力量</li>
+</ul>
+
+<p>社区核心需求仍是：隐私优先、API 成本控制、离线运行能力。</p>
+
+<hr>
+
+<h3>r/ClaudeAI — Claude Code 已超越 Copilot 和 Cursor</h3>
+
+<p>根据社区调研，在小型公司中 <strong>75% 的开发者</strong>以 Claude Code 作为主要编码工具，超过 GitHub Copilot 和 Cursor。Claude Code Channels（Telegram/Discord）的发布进一步降低了使用门槛，非技术背景用户也开始通过手机消息驱动 AI 完成任务。</p>
+
+<hr>
+
+<h2>四、AI 行业大动态</h2>
+
+<h3>Google Gemini 3.1 系列发布</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>模型</th>
+<th>关键参数</th>
+<th>价格</th>
+</tr></thead><tbody>
+<tr>
+<td>Gemini 3.1 Flash-Lite</td>
+<td>响应速度 2.5× 提升，输出速度 45% 更快</td>
+<td>$0.25/M 输入 token</td>
+</tr>
+<tr>
+<td>Gemini 3.1 Pro</td>
+<td>1M context，ARC-AGI-2 达 77.1%，全模态推理</td>
+<td>—</td>
+</tr>
+</tbody></table></div>
+
+<h3>Mistral Voxtral TTS — 首个开源语音合成模型</h3>
+
+<p>Mistral AI 发布 <strong>Voxtral</strong>，这是该公司进入音频生成领域的首次重大突破，开源权重，标志着文本→语音领域的开源化进程加速。</p>
+
+<h3>收入数据：AI 订阅爆发式增长</h3>
+
+<ul>
+<li><strong>OpenAI</strong>：年化营收突破 $250 亿，启动 IPO 前期准备</li>
+<li><strong>Anthropic</strong>：年化营收接近 $190 亿，付费订阅今年<strong>翻倍</strong>增长</li>
+</ul>
+
+<hr>
+
+<h2>五、高手实战技巧表格</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>#</th>
+<th>技巧</th>
+<th>说明</th>
+<th>难度</th>
+<th>来源</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td>Claude Code Channels</td>
+<td>通过 Telegram/Discord 远程驱动 Claude Code，无需打开终端</td>
+<td>⭐</td>
+<td>Anthropic</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Computer Use 无配置启用</td>
+<td>Pro/Max 用户直接启用屏幕操控，处理 GUI 任务</td>
+<td>⭐⭐</td>
+<td>Claude Code Changelog</td>
+</tr>
+<tr>
+<td>3</td>
+<td>MCP elicitation</td>
+<td>让 MCP 服务器主动向用户请求补充信息</td>
+<td>⭐⭐⭐</td>
+<td>Claude Code 3月更新</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Hooks 子代理追踪</td>
+<td>SubagentStart/SubagentStop 精细监控子代理生命周期</td>
+<td>⭐⭐⭐</td>
+<td>Claude Code 3月更新</td>
+</tr>
+<tr>
+<td>5</td>
+<td>transcript search</td>
+<td>对话历史全文搜索，快速定位上下文</td>
+<td>⭐⭐</td>
+<td>Claude Code 3月更新</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Cherri 自动化</td>
+<td>用编程语言写 Apple Shortcuts，替代图形界面</td>
+<td>⭐⭐</td>
+<td>HN 热榜</td>
+</tr>
+<tr>
+<td>7</td>
+<td>TurboQuant 部署</td>
+<td>用 2.5-3.5 bit 量化压缩模型，本地运行更大模型</td>
+<td>⭐⭐⭐⭐</td>
+<td>ICLR 2026</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Qwen3-Coder-480B 代理</td>
+<td>专为长任务代理编码设计的开源巨模</td>
+<td>⭐⭐⭐⭐</td>
+<td>r/LocalLLaMA</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>六、跨平台趋势总结</h2>
+
+<p>1. <strong>Claude Code 进入"全终端"时代</strong>：Channels（消息驱动）+ Computer Use（GUI 操控）使得 Claude Code 的使用场景从终端扩展到手机、桌面、任意界面。</p>
+
+<p>2. <strong>MCP 生态深化</strong>：MCP elicitation 支持让 MCP 服务器从被动工具升级为主动协作者，这是从"工具调用"到"协作对话"的质变。</p>
+
+<p>3. <strong>开源与闭源齐头并进</strong>：Google Gemini 3.1、Mistral Voxtral 的发布表明主流 AI 厂商在全模态能力上加速冲刺，同时 DeepSeek/Qwen3 等开源模型形成不可忽视的竞争。</p>
+
+<p>4. <strong>AI 写作反思潮</strong>：HN 上"亲自写作"文章引发 100+ 评论，反映出开发者群体中日益明显的"AI 过度使用反思"——如何在效率与能力保留之间找到平衡。</p>
+
+<p>5. <strong>商业化加速</strong>：Anthropic 付费订阅今年翻倍，Claude Code 在小型团队覆盖率 75%，说明 AI 工具从试验品变成了核心基础设施。</p>
+
+<hr>
+
+<h2>七、推荐行动</h2>
+
+<p>1. <strong>立即测试</strong>：如果你是 Pro/Max 用户，开启 Claude Code 的 Computer Use，体验 GUI 任务自动化（无需额外配置）</p>
+<p>2. <strong>设置 Channels</strong>：将 Claude Code 接入你的 Telegram，用手机消息驱动编码任务——告别必须坐在电脑前的约束</p>
+<p>3. <strong>关注 TurboQuant</strong>：如果你在跑本地模型，关注 ICLR 2026 的 TurboQuant 实现——6 倍压缩比意味着同样显存可以跑更大模型</p>
+<p>4. <strong>使用 MCP elicitation</strong>：更新 MCP 服务器实现，让工具主动向用户提问，而不是静默失败</p>
+<p>5. <strong>写作实践</strong>：读一读今日 HN 热帖"Do your own writing"——在 AI 时代保持亲自写作的习惯，是维持深度思维的核心手段</p>
+
+  </div>
+</article>
+<div class="article-footer">
+  <div class="container">
+    <a href="../#ai-trends">← 返回首页</a>
+  </div>
+</div>
+</body>
+</html>
