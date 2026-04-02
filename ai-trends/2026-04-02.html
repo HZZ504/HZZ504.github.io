@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 动态追踪日报 — 模型军备竞赛·Claude Mythos·阿尔忒弥斯二号 | 张翰之</title>
+<meta name="description" content="2026-04-02 Claude Code / Cowork 社区最新动态、高级用法和实战技巧汇总">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;
+  --text:#e0e0e8;--text-dim:#8888a0;--text-bright:#ffffff;
+  --accent:#00d4aa;--accent2:#00a8ff;--accent3:#7c5cfc;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --max-w:900px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.8;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent2)}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:0;
+}
+
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+nav .inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--accent)}
+nav .logo svg{width:28px;height:28px}
+nav .back{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--accent)}
+
+/* Article */
+article{padding:100px 0 60px}
+.article-meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.article-date{font-family:var(--mono);font-size:.8rem;color:var(--accent);padding:4px 12px;border:1px solid rgba(0,212,170,.3);border-radius:4px}
+.article-tag{font-family:var(--mono);font-size:.65rem;color:var(--accent2);padding:2px 8px;background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.15);border-radius:4px}
+
+article h1{font-size:1.8rem;font-weight:700;color:var(--text-bright);margin-bottom:32px;line-height:1.3}
+article h2{font-size:1.35rem;font-weight:600;color:var(--accent);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,170,.15)}
+article h3{font-size:1.1rem;font-weight:600;color:var(--accent2);margin:28px 0 12px}
+article h4{font-size:.95rem;font-weight:600;color:var(--accent3);margin:20px 0 8px}
+article p{margin-bottom:12px;color:var(--text)}
+article ul{margin:0 0 16px 20px}
+article li{margin-bottom:8px;color:var(--text)}
+article li strong{color:var(--accent)}
+article hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:32px 0}
+article code.inline{font-family:var(--mono);font-size:.85em;background:rgba(0,212,170,.1);color:var(--accent);padding:2px 6px;border-radius:4px}
+article pre{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+article pre code{font-family:var(--mono);font-size:.85rem;color:var(--text)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);text-align:left;padding:10px 12px;border-bottom:2px solid rgba(0,212,170,.2);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text)}
+tr:hover td{background:rgba(0,212,170,.03)}
+
+/* Footer */
+.article-footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:60px;text-align:center}
+.article-footer a{font-family:var(--mono);font-size:.85rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="../" class="logo"><svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="url(#lg)"/><path d="M7 8h3v12H7V8zm4 5h6v3h-6v-3zm7-5h3v12h-3V8z" fill="#0a0a0f"/><defs><linearGradient id="lg" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00d4aa"/><stop offset="1" stop-color="#00a8ff"/></linearGradient></defs></svg><span>&lt;</span>HZ<span>/&gt;</span></a>
+    <a href="../#ai-trends" class="back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> 返回日报列表</a>
+  </div>
+</nav>
+<article>
+  <div class="container">
+    <div class="article-meta">
+      <span class="article-date">2026-04-02</span>
+      <span class="article-tag">Workflows</span>
+    </div>
+    <h1>AI 动态追踪日报 — 模型军备竞赛·Claude Mythos·阿尔忒弥斯二号</h1>
+    <hr>
+
+<h2>一、Hacker News 热榜精选（2026-04-02）</h2>
+
+<p>> 以下数据通过 HN Firebase API 实时抓取</p>
+
+<h3>1. 阿尔忒弥斯二号发射实况更新</h3>
+<p><strong>来源：</strong> nasa.gov | ▲ 926 | 💬 796</p>
+
+<p>NASA 阿尔忒弥斯二号载人月球任务在今日正式发射，这是半个世纪以来首次将宇航员送往月球轨道的任务。HN 社区开帖实时跟进发射进程，评论数量突破 796 条，成为今日最热门的讨论帖——技术界对这一历史性航天事件给予了高度关注。</p>
+
+<p><strong>链接：</strong> https://www.nasa.gov/blogs/missions/2026/04/01/live-artemis-ii-launch-day-updates/</p>
+
+<hr>
+
+<h3>2. EmDash — Cloudflare 推出 WordPress 精神继承者</h3>
+<p><strong>来源：</strong> blog.cloudflare.com | ▲ 577 | 💬 421</p>
+
+<p>Cloudflare 推出 EmDash，定位为解决 WordPress 插件安全问题的新一代 CMS 平台。作为 WordPress 的"精神继承者"，EmDash 从架构层面重新设计了插件生态系统的安全模型，将安全边界内置于平台而非依赖第三方插件自律。421 条评论展示了开发者对 Web CMS 未来走向的热切关注。</p>
+
+<p><strong>链接：</strong> https://blog.cloudflare.com/emdash-wordpress/</p>
+
+<hr>
+
+<h3>3. Steam Linux 用户份额首次突破 5%</h3>
+<p><strong>来源：</strong> phoronix.com | ▲ 396 | 💬 179</p>
+
+<p>根据 2026 年 3 月的 Steam 硬件调查，Linux 用户占比首次突破 5% 大关，创历史新高。这一里程碑的背后，是 Proton 兼容层持续完善、Steam Deck 渗透率提升以及游戏开发商对 Linux 原生支持增加等多重因素共同推动。</p>
+
+<p><strong>链接：</strong> https://www.phoronix.com/news/Steam-On-Linux-Tops-5p</p>
+
+<hr>
+
+<h3>4. OCaml 编译器新增 C++ 后端</h3>
+<p><strong>来源：</strong> github.com/ocaml | ▲ 183 | 💬 15</p>
+
+<p>OCaml 核心团队合并了为 <code class="inline">ocamlc</code> 添加 C++ 后端的 PR，允许 OCaml 代码编译为 C++ 中间表示，大幅提升跨平台部署能力和与 C++ 生态系统的互操作性。这是 OCaml 编译器多年来最重要的架构扩展之一。</p>
+
+<p><strong>链接：</strong> https://github.com/ocaml/ocaml/pull/14701</p>
+
+<hr>
+
+<h3>5. 量子计算重大突破（不是愚人节玩笑）</h3>
+<p><strong>来源：</strong> scottaaronson.blog | ▲ 177 | 💬 60</p>
+
+<p>理论计算机科学家 Scott Aaronson 在博客发文，详述多项真实的量子计算突破成果，特别强调这些不是 4 月 1 日的愚人节玩笑。文章涵盖量子纠错、量子优越性新进展等技术细节，引发 HN 社区 60 条专业讨论。</p>
+
+<p><strong>链接：</strong> https://scottaaronson.blog/?p=9665</p>
+
+<hr>
+
+<h2>二、Claude Code & Cowork 最新动态</h2>
+
+<h3>🔥 Claude Code 源码泄露余震持续发酵</h3>
+
+<p>Anthropic 昨日（3 月 31 日）意外将 Claude Code 的完整 TypeScript 源码随 npm 包 <code class="inline">@anthropic-ai/claude-code v2.1.88</code> 一同发布，一个 59.8 MB 的 <code class="inline">.map</code> 调试文件暴露了约 <strong>512,000 行</strong>内部代码。Anthropic 随即发表声明称"未涉及客户数据或凭证，属于人为打包失误"。</p>
+
+<p>代码分析揭示了几个重要细节：</p>
+<ul>
+<li><strong>KAIROS 守护进程模式</strong>：Claude Code 内置了一个名为 "KAIROS"（古希腊语"恰当时机"）的自主后台守护模式，可让 Claude 以"始终在线"代理身份运行，而非仅响应用户指令</li>
+<li><strong>多层记忆架构</strong>：权限系统、上下文记忆、IDE 桥接、MCP 管道和多代理编排的完整实现</li>
+<li><strong>整体定位更像操作系统</strong>：远不只是编码辅助工具，而是围绕模型构建的软件工作操作系统</li>
+</ul>
+
+<p><strong>来源：</strong> Bloomberg, VentureBeat, Gizmodo</p>
+
+<hr>
+
+<h3>📈 Cowork 商业规模预计超越 Claude Code</h3>
+
+<p>Anthropic 首席商务官 Paul Smith 在接受 Bloomberg 采访时表示，通用 AI 代理 <strong>Cowork</strong> 的市场渗透速度在同期比较下远超 Claude Code 当年的表现，预计将覆盖更广泛的非技术用户群体。这标志着 Anthropic 战略重心正从开发者工具向全用户群体 AI 代理转移。</p>
+
+<p><strong>来源：</strong> Bloomberg</p>
+
+<hr>
+
+<h3>🤫 Claude Mythos — 超越 Opus 的神秘新模型</h3>
+
+<p>泄露的代码库中包含对一个内部代号为 <strong>Claude Mythos</strong> 的新模型的多处引用，被描述为"相对 Opus 的阶跃式提升"，目前处于与网络安全合作伙伴的早期访问阶段，尚无公开发布日期。</p>
+
+<hr>
+
+<h2>三、AI 模型军备竞赛（2026 年 4 月最新态势）</h2>
+
+<p>> 数据来源：llm-stats.com/ai-news, renovateqr.com/blog/ai-models-april-2026</p>
+
+<h3>🏆 当前排行榜</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>模型</th>
+<th>机构</th>
+<th>核心亮点</th>
+</tr></thead><tbody>
+<tr>
+<td>Gemini 3.1 Pro</td>
+<td>Google DeepMind</td>
+<td>16 项主流基准 13 项领先；ARC-AGI-2 77.1%；API 成本仅 GPT-5.4 的 1/3</td>
+</tr>
+<tr>
+<td>GPT-5.4</td>
+<td>OpenAI</td>
+<td>100 万 token 上下文；OSWorld 桌面任务基准 75%；自主多步工作流</td>
+</tr>
+<tr>
+<td>Claude Sonnet 4.6</td>
+<td>Anthropic</td>
+<td>真实编程工作评测领先；配合 Claude Code 生态</td>
+</tr>
+<tr>
+<td>Llama 4 Maverick</td>
+<td>Meta</td>
+<td>400B 参数；1000 万 token 上下文；完全开源可自部署</td>
+</tr>
+<tr>
+<td>Grok 4.20</td>
+<td>xAI</td>
+<td>全新多代理架构</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h3>🇨🇳 中国 AI 动态</h3>
+
+<p><strong>阿里 Qwen3.6-Plus</strong>：三天内发布的第三款闭源模型，强化了 Agentic 编程能力，显示出阿里在 AI 竞速中的高频发布策略。</p>
+
+<p><strong>Mistral Voxtral TTS</strong>：30 亿参数文字转语音模型，仅需约 3 GB 显存，支持九种语言，为本地化部署提供了新选择。</p>
+
+<p><strong>中国 GPU 市场格局变化</strong>：中国本土 GPU 及 AI 芯片厂商在 2025 年已占据中国 AI 服务器市场的 <strong>41%</strong> 份额，相比之下英伟达此前约有 55% 的主导地位显著下滑。</p>
+
+<hr>
+
+<h2>四、AI 社区热点（Reddit r/LocalLLaMA · r/MachineLearning）</h2>
+
+<p>> Reddit 直接访问受限，以下数据通过 WebSearch 采集</p>
+
+<h3>1. Llama 4 Maverick 400B 本地部署实测</h3>
+<p>r/LocalLLaMA 社区掀起 Llama 4 Maverick 400B 本地部署热潮。该模型支持 1000 万 token 超长上下文，在单台配备 RTX 5090 集群的工作站上可运行完整模型，社区成员分享了多种量化方案和 llama.cpp 部署指南。</p>
+
+<h3>2. LiteLLM 供应链攻击引发 AI 工具链安全讨论</h3>
+<p>开源 AI 路由库 LiteLLM 遭受供应链攻击，导致使用该项目的 AI 招聘平台 Mercor 也受到波及。r/MachineLearning 和 r/LocalLLaMA 社区就 AI 工具链的安全审查问题展开深入讨论，呼吁开发者对所使用的开源 AI 中间件进行更严格的依赖审计。</p>
+
+<p><strong>HN 来源：</strong> techcrunch.com | ▲47 | 💬15</p>
+
+<h3>3. 自组织 Agent 工作流 2026 实战总结</h3>
+<p>社区研究总结了 2026 年 AI Agent 构建者在 Reddit 分享的经验：性能指标很容易看，但可靠部署很难做，真正胜出的团队都是那些围绕约束而非对抗约束来设计系统的。"Coordinator-Worker" 多代理架构正成为可靠 AI 系统的标准范式。</p>
+
+<h3>4. Mistral Voxtral 本地 TTS 3B 模型 — 隐私友好的语音方案</h3>
+<p>r/LocalLLaMA 热议 Mistral 发布的 Voxtral TTS，仅需 3GB 显存即可在本地运行九语言高质量语音合成，成为隐私优先场景下替代云端 TTS 的新选择，被评为"2026 年上半年最实用的小模型"之一。</p>
+
+<h3>5. 专利搜索 AI：RTX 5090 对 350 万份美国专利分类</h3>
+<p>开发者在 r/LocalLLaMA 分享了使用 Nemotron 9B 在单张 RTX 5090 上完成 350 万份美国专利分类的项目，发帖后获得 65 个赞和 20+ 个技术问题讨论，展示了本地大模型在专业垂直领域知识处理上的实际价值。</p>
+
+<hr>
+
+<h2>五、今日趋势总结</h2>
+
+<p>1. <strong>Claude Code 泄露的深层意义</strong>：KAIROS 守护进程模式的曝光揭示了 AI 编码工具的进化方向——从响应式工具转向主动式代理操作系统。这不仅是 Anthropic 的路线，也预示着整个行业的走向。</p>
+
+<p>2. <strong>模型竞争进入白热化阶段</strong>：4 月首周同时有 Gemini 3.1、GPT-5.4、Grok 4.20 出现，加上 Llama 4 Maverick 的开源冲击，AI 能力边界在这个月内发生了多次重置。</p>
+
+<p>3. <strong>AI 安全意识升级</strong>：LiteLLM 供应链攻击是今年第一起影响广泛的 AI 工具链安全事件，提醒开发者对 AI 中间件采取与传统软件同等级别的安全审查。</p>
+
+<p>4. <strong>本地部署生态成熟</strong>：Llama 4 Maverick 400B + Voxtral TTS 的组合，让 2026 年的本地 AI 方案在能力和私密性上都达到了前所未有的水准，"不依赖云端"正从信念变为可行选项。</p>
+
+<p>5. <strong>航天 × 技术的文化共振</strong>：阿尔忒弥斯二号发射登顶 HN 榜首，技术社区对太空探索保持着与 AI 热潮并行的高度热情——这两件事都代表着人类能力的边界扩展。</p>
+
+  </div>
+</article>
+<div class="article-footer">
+  <div class="container">
+    <a href="../#ai-trends">← 返回首页</a>
+  </div>
+</div>
+</body>
+</html>
