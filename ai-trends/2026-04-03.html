@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 动态追踪日报 — Claude Cowork & Claude Code | 张翰之</title>
+<meta name="description" content="2026-04-03 Claude Code / Cowork 社区最新动态、高级用法和实战技巧汇总">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;
+  --text:#e0e0e8;--text-dim:#8888a0;--text-bright:#ffffff;
+  --accent:#00d4aa;--accent2:#00a8ff;--accent3:#7c5cfc;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --max-w:900px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.8;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent2)}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:0;
+}
+
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+nav .inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--accent)}
+nav .logo svg{width:28px;height:28px}
+nav .back{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--accent)}
+
+/* Article */
+article{padding:100px 0 60px}
+.article-meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.article-date{font-family:var(--mono);font-size:.8rem;color:var(--accent);padding:4px 12px;border:1px solid rgba(0,212,170,.3);border-radius:4px}
+.article-tag{font-family:var(--mono);font-size:.65rem;color:var(--accent2);padding:2px 8px;background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.15);border-radius:4px}
+
+article h1{font-size:1.8rem;font-weight:700;color:var(--text-bright);margin-bottom:32px;line-height:1.3}
+article h2{font-size:1.35rem;font-weight:600;color:var(--accent);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,170,.15)}
+article h3{font-size:1.1rem;font-weight:600;color:var(--accent2);margin:28px 0 12px}
+article h4{font-size:.95rem;font-weight:600;color:var(--accent3);margin:20px 0 8px}
+article p{margin-bottom:12px;color:var(--text)}
+article ul{margin:0 0 16px 20px}
+article li{margin-bottom:8px;color:var(--text)}
+article li strong{color:var(--accent)}
+article hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:32px 0}
+article code.inline{font-family:var(--mono);font-size:.85em;background:rgba(0,212,170,.1);color:var(--accent);padding:2px 6px;border-radius:4px}
+article pre{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+article pre code{font-family:var(--mono);font-size:.85rem;color:var(--text)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);text-align:left;padding:10px 12px;border-bottom:2px solid rgba(0,212,170,.2);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text)}
+tr:hover td{background:rgba(0,212,170,.03)}
+
+/* Footer */
+.article-footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:60px;text-align:center}
+.article-footer a{font-family:var(--mono);font-size:.85rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="../" class="logo"><svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="url(#lg)"/><path d="M7 8h3v12H7V8zm4 5h6v3h-6v-3zm7-5h3v12h-3V8z" fill="#0a0a0f"/><defs><linearGradient id="lg" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00d4aa"/><stop offset="1" stop-color="#00a8ff"/></linearGradient></defs></svg><span>&lt;</span>HZ<span>/&gt;</span></a>
+    <a href="../#ai-trends" class="back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> 返回日报列表</a>
+  </div>
+</nav>
+<article>
+  <div class="container">
+    <div class="article-meta">
+      <span class="article-date">2026-04-03</span>
+      <span class="article-tag">MCP</span>
+    </div>
+    <h1>AI 动态追踪日报 — Claude Cowork & Claude Code</h1>
+    <hr>
+
+<h2>一、Hacker News 热榜精选</h2>
+
+<p>> 今日 HN 热帖以 AI 开源模型新发布为主旋律，Gemma 4 引爆全场</p>
+
+<h3>1. Google 发布 Gemma 4 开源模型系列</h3>
+
+<p><strong>来源：</strong> deepmind.google | ▲ 1176 | 💬 353 评论</p>
+
+<p>Google DeepMind 正式发布 Gemma 4，提供四个规格：E2B、E4B（面向边缘设备）以及 26B、31B（面向消费级 GPU）。31B 版本在数学（89.2%）、多语言（85.2%）和代码（80%）基准上均创新高。原生支持函数调用、多模态（音视频）、140 种语言，模型通过 Hugging Face、Ollama、Kaggle 发行。E2B/E4B 可完全离线运行于树莓派等边缘设备，近零延迟。</p>
+
+<hr>
+
+<h3>2. AMD Lemonade：2MB 本地 LLM 服务器，GPU+NPU 全覆盖</h3>
+
+<p><strong>来源：</strong> lemonade-server.ai | ▲ 449 | 💬 98 评论</p>
+
+<p>AMD 发布开源本地 LLM 服务器 Lemonade，仅 2MB 原生 C++ 服务，一分钟内完成安装和硬件自动配置。兼容 OpenAI API，可无缝接入现有工具链；同时支持 llama.cpp、ONNX Runtime、FastFlowLM、Ryzen AI 多种推理引擎，自动适配 GPU/NPU 硬件。支持聊天、视觉、图像生成、语音转录和语音合成，可同时运行多个模型。</p>
+
+<hr>
+
+<h3>3. 阿里巴巴发布 Qwen3.6-Plus：面向真实世界的 Agent 模型</h3>
+
+<p><strong>来源：</strong> qwen.ai | ▲ 435 | 💬 150 评论</p>
+
+<p>阿里 Qwen 团队发布 Qwen3.6-Plus，定位"首个真正可用的 Agentic LLM"。在 Terminal-Bench 2.0 终端代理编程（61.6 vs Claude Opus 4.5 的 59.3）和 OmniDocBench v1.5 文档识别（91.2 vs 87.7）上超越 Claude。支持 1M 上下文，具备长程规划和工具调用能力，已在零售智能和自动巡检等生产场景验证。</p>
+
+<hr>
+
+<h3>4. Cursor 3 发布：多代理统一工作空间</h3>
+
+<p><strong>来源：</strong> cursor.com | ▲ 297 | 💬 251 评论</p>
+
+<p>Cursor 3 将 AI 编程工具升级为"统一代理工作空间"。核心变化：多个 agent 可并行从手机、Web、桌面、Slack、GitHub、Linear 等多源发起，统一在侧边栏管理；新增云/本地环境无缝切换；全新 diff 界面加速代码审查和 PR 合并；Marketplace 提供数百个插件。目标是减少对单个 agent 的微管理，提升更高抽象层的协调效率。</p>
+
+<hr>
+
+<h3>5. 前 Azure Core 工程师复盘：微软如何一步步侵蚀用户信任</h3>
+
+<p><strong>来源：</strong> isolveproblems.substack.com | ▲ 336 | 💬 112 评论</p>
+
+<p>一位前 Azure Core 工程师发长文，逐条复盘微软在 Azure 设计中做出的争议性决策——包括定价不透明、API 破坏性变更、对开发者反馈的漠视。文章以"微软蒸发了万亿市值"为切入角度，引发 HN 社区对大型云厂商工程文化的大规模讨论。</p>
+
+<hr>
+
+<h2>二、AI 社区热点讨论</h2>
+
+<p>> Reddit 直连受限，以下内容通过 WebSearch 汇聚自各 AI 社区</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>话题</th>
+<th>社区</th>
+<th>要点</th>
+</tr></thead><tbody>
+<tr>
+<td>Qwen3.6-Plus 基准拆解</td>
+<td>r/LocalLLaMA</td>
+<td>多个用户测试显示 Terminal-Bench 和文档理解超越 Claude，但复杂推理仍有差距，1M 上下文实测稳定性待验证</td>
+</tr>
+<tr>
+<td>新 Mistral 模型令人失望</td>
+<td>r/LocalLLaMA</td>
+<td>最新 Mistral 发布后社区反应冷淡，下载量低迷，图像理解仅限 OCR 级别，与宣传不符</td>
+</tr>
+<tr>
+<td>ICML 对 LLM 写评审的强力执法</td>
+<td>r/MachineLearning</td>
+<td>158 upvotes · 63 comments — ICML 取消所有使用 LLM 撰写评审的稿件（opt-in 不使用 LLM 轨道），首次大规模执法行动</td>
+</tr>
+<tr>
+<td>Ollama 突破 5200 万月活下载</td>
+<td>r/LocalLLaMA</td>
+<td>Q1 2026 月下载量达 5200 万，较 2023 年 Q1 增长 520 倍；现已支持多模态、Web 搜索集成和 4-bit 量化</td>
+</tr>
+<tr>
+<td>AMD Lemonade 社区反应</td>
+<td>r/LocalLLaMA</td>
+<td>2MB 原生二进制 + OpenAI 兼容 API 获得高度评价；部分用户对 Ryzen AI NPU 的实际加速效果存疑，等待基准数据</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>三、Claude Code & MCP 社区动态</h2>
+
+<p>> 数据来源：WebSearch · Claude Code 发布日志 · 开发者社区</p>
+
+<h3>Claude Code v2.1.90 更新（2026-04-02）</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>类别</th>
+<th>更新内容</th>
+</tr></thead><tbody>
+<tr>
+<td>新功能</td>
+<td><code class="inline">/powerup</code> 交互式教程，动画演示 Claude Code 核心功能</td>
+</tr>
+<tr>
+<td>新功能</td>
+<td><code class="inline">CLAUDE_CODE_PLUGIN_KEEP_MARKETPLACE_ON_FAILURE</code> 环境变量，支持离线环境</td>
+</tr>
+<tr>
+<td>新功能</td>
+<td>acceptEdits 模式下保护 <code class="inline">.husky</code> 目录</td>
+</tr>
+<tr>
+<td>重要修复</td>
+<td>修复触碰用量上限后弹窗无限循环崩溃的问题</td>
+</tr>
+<tr>
+<td>重要修复</td>
+<td>修复 resume 功能导致有 deferred tools 或 MCP 服务器用户的 prompt-cache 未命中</td>
+</tr>
+<tr>
+<td>重要修复</td>
+<td>修复 PostToolUse hook 在连续编辑之间重写文件导致的冲突</td>
+</tr>
+<tr>
+<td>性能提升</td>
+<td>消除每轮对 MCP 工具 schema 的 JSON 序列化，减少 cache lookup 开销</td>
+</tr>
+<tr>
+<td>性能提升</td>
+<td>大型流帧的处理从 O(n²) 降为 O(n) 线性时间</td>
+</tr>
+<tr>
+<td>性能提升</td>
+<td><code class="inline">/resume</code> 视图中项目 session 并行加载</td>
+</tr>
+<tr>
+<td>安全增强</td>
+<td>从自动允许权限列表中移除 DNS 缓存清理命令</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h3>MCP 安全警报：60 天内出现 30+ CVE</h3>
+
+<p>2026 年前两个月，研究人员在社区开发的 MCP 服务器中发现超过 30 个 CVE，常见问题包括 <strong>prompt-to-RCE 漏洞</strong>（提示词注入直接导致代码执行）。核心风险：开发者安装未经审查的社区 MCP 服务器时，等同于将 Claude Code agent 连接到无法控制的内容管道。</p>
+
+<p><strong>推荐做法：</strong> 只安装经过审查的 MCP 服务器；使用 PreToolUse hook 限制工具执行范围；在容器中运行高风险实验。</p>
+
+<hr>
+
+<h3>Claude Code 作为 AI OS 的趋势</h3>
+
+<p>越来越多开发者将 Claude Code 打造成完整的 AI 操作系统，通过以下组合实现：</p>
+
+<ul>
+<li><strong>持久化工作区</strong> + 自触发 Skills</li>
+<li><strong>Telegram/Slack Hooks</strong> 实现消息通知</li>
+<li><strong>Sub-agents</strong> 自动交接任务</li>
+<li><strong>MCP Servers</strong> 接入外部系统</li>
+</ul>
+
+<p>典型案例：全局 CLAUDE.md 配置将 diff 自动发送到 Gemini 和 Codex 交叉代码审查后再提交；Coordinator 模式 + 多个 Sub-agents 并行构建和发布功能。</p>
+
+<hr>
+
+<h3>MCP 治理成为企业关注焦点</h3>
+
+<p>企业级 MCP 部署面临新挑战：如何在扩展 Claude 能力的同时控制安全风险。主要关注点包括数据流向透明度、MCP 服务器权限范围、以及 agent 行为的可审计性。Anthropic 的新版安全文档建议将 MCP 服务器权限与 IAM 策略对齐。</p>
+
+<hr>
+
+<h2>四、跨平台趋势总结</h2>
+
+<p>1. <strong>开源模型竞争白热化</strong>：Gemma 4（Google）和 Qwen3.6-Plus（阿里）同日引爆 HN 和 Reddit，前者在端侧部署，后者专攻 Agent 场景。Claude Opus 4.5 正面临来自开源模型的挑战，尤其是在代码和文档处理领域。</p>
+
+<p>2. <strong>本地 LLM 基础设施成熟</strong>：AMD Lemonade + Ollama 5200 万月活共同说明本地 AI 运行时进入快速普及阶段，OpenAI API 兼容层成为事实标准。</p>
+
+<p>3. <strong>MCP 安全不可忽视</strong>：30+ CVE 和企业治理需求表明 MCP 生态已从"酷炫扩展"进入"需要认真对待的安全边界"阶段。</p>
+
+<p>4. <strong>Claude Code 性能持续优化</strong>：v2.1.90 将大型流帧处理从 O(n²) 降为 O(n)，体现 Anthropic 在工程层面对 IDE 级大型代码库处理的持续投入。</p>
+
+<p>5. <strong>多代理工作流标准化</strong>：Cursor 3 的统一代理工作空间和 Claude Code 的 Sub-agents 编排，都在向同一方向演进——降低 agent 协调的认知负担，提升并行开发效率。</p>
+
+<hr>
+
+<h2>五、今日行动建议</h2>
+
+<p>1. <strong>立即测试 Gemma 4</strong>：如果你在使用 Ollama，现在就可以 <code class="inline">ollama pull gemma4:27b</code> 体验新模型。E4B 变体适合在 MacBook 上边缘推理。</p>
+
+<p>2. <strong>升级到 Claude Code v2.1.90</strong>：特别是如果你遇到过 resume 功能的 cache miss 问题或 PostToolUse hook 编辑冲突，此版本有针对性修复。</p>
+
+<p>3. <strong>MCP 安全审查</strong>：列出你当前安装的所有 MCP 服务器，检查其来源和权限范围。未经审查的社区服务器建议暂停使用，直到完成安全评估。</p>
+
+<p>4. <strong>关注 Qwen3.6-Plus</strong>：如果你的工作流涉及大量文档处理或终端自动化，值得对比测试 Qwen3.6-Plus 与 Claude 的实际表现差异。</p>
+
+<p>5. <strong>Cursor 3 多代理探索</strong>：如果你管理跨多个仓库的项目，Cursor 3 的统一侧边栏可能显著减少上下文切换成本。</p>
+
+  </div>
+</article>
+<div class="article-footer">
+  <div class="container">
+    <a href="../#ai-trends">← 返回首页</a>
+  </div>
+</div>
+</body>
+</html>
