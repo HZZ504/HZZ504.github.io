@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 动态追踪日报 — Claude Cowork & Claude Code | 张翰之</title>
+<meta name="description" content="2026-04-04 Claude Code / Cowork 社区最新动态、高级用法和实战技巧汇总">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;
+  --text:#e0e0e8;--text-dim:#8888a0;--text-bright:#ffffff;
+  --accent:#00d4aa;--accent2:#00a8ff;--accent3:#7c5cfc;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --max-w:900px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.8;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent2)}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:0;
+}
+
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+nav .inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--accent)}
+nav .logo svg{width:28px;height:28px}
+nav .back{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--accent)}
+
+/* Article */
+article{padding:100px 0 60px}
+.article-meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.article-date{font-family:var(--mono);font-size:.8rem;color:var(--accent);padding:4px 12px;border:1px solid rgba(0,212,170,.3);border-radius:4px}
+.article-tag{font-family:var(--mono);font-size:.65rem;color:var(--accent2);padding:2px 8px;background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.15);border-radius:4px}
+
+article h1{font-size:1.8rem;font-weight:700;color:var(--text-bright);margin-bottom:32px;line-height:1.3}
+article h2{font-size:1.35rem;font-weight:600;color:var(--accent);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,170,.15)}
+article h3{font-size:1.1rem;font-weight:600;color:var(--accent2);margin:28px 0 12px}
+article h4{font-size:.95rem;font-weight:600;color:var(--accent3);margin:20px 0 8px}
+article p{margin-bottom:12px;color:var(--text)}
+article ul{margin:0 0 16px 20px}
+article li{margin-bottom:8px;color:var(--text)}
+article li strong{color:var(--accent)}
+article hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:32px 0}
+article code.inline{font-family:var(--mono);font-size:.85em;background:rgba(0,212,170,.1);color:var(--accent);padding:2px 6px;border-radius:4px}
+article pre{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+article pre code{font-family:var(--mono);font-size:.85rem;color:var(--text)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);text-align:left;padding:10px 12px;border-bottom:2px solid rgba(0,212,170,.2);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text)}
+tr:hover td{background:rgba(0,212,170,.03)}
+
+/* Footer */
+.article-footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:60px;text-align:center}
+.article-footer a{font-family:var(--mono);font-size:.85rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="../" class="logo"><svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="url(#lg)"/><path d="M7 8h3v12H7V8zm4 5h6v3h-6v-3zm7-5h3v12h-3V8z" fill="#0a0a0f"/><defs><linearGradient id="lg" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00d4aa"/><stop offset="1" stop-color="#00a8ff"/></linearGradient></defs></svg><span>&lt;</span>HZ<span>/&gt;</span></a>
+    <a href="../#ai-trends" class="back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> 返回日报列表</a>
+  </div>
+</nav>
+<article>
+  <div class="container">
+    <div class="article-meta">
+      <span class="article-date">2026-04-04</span>
+      <span class="article-tag">MCP</span>
+    </div>
+    <h1>AI 动态追踪日报 — Claude Cowork & Claude Code</h1>
+    <hr>
+
+<h2>一、Hacker News 热榜精选（2026-04-04）</h2>
+
+<p>> 以下数据通过 HN Firebase API 实时抓取</p>
+
+<h3>1. Mintlify 用"虚拟文件系统"替代 RAG 构建 AI 文档助手</h3>
+<p><strong>来源：</strong> mintlify.com | ▲ 216 | 💬 96</p>
+
+<p>Mintlify 工程团队详述了他们如何放弃传统 RAG（检索增强生成）架构，改用虚拟文件系统来构建 AI 文档助手。核心洞察是：文档的结构关系比纯文本检索更重要——虚拟文件系统能保留章节层级、交叉引用等语义结构，使 AI 回答的准确性和上下文连贯性大幅提升。这篇文章为构建文档型 AI 产品提供了极具实用价值的架构参考。</p>
+
+<p><strong>链接：</strong> https://www.mintlify.com/blog/how-we-built-a-virtual-filesystem-for-our-assistant</p>
+
+<hr>
+
+<h3>2. Tell HN：Anthropic 宣布 Claude Code 订阅不再包含 OpenClaw（4月4日起）</h3>
+<p><strong>来源：</strong> news.ycombinator.com | ▲ 197 | 💬 184</p>
+
+<p>Anthropic 宣布自 2026 年 4 月 4 日起，Claude Pro/Max/Team 订阅的用量配额不再涵盖第三方工具 OpenClaw。用户如需继续使用第三方集成，需切换至按量计费模式（pay-as-you-go）。Anthropic 提供了一次性补偿积分（金额与月订阅费相当），有效期至 4 月 17 日。这一政策调整旨在缓解外部工具对系统的压力，优先保障核心产品用户体验，引发评论区 184 条热烈讨论，争议明显。</p>
+
+<p><strong>链接：</strong> https://news.ycombinator.com/item?id=47633396</p>
+
+<hr>
+
+<h3>3. OpenClaw 特权提升漏洞（CVE-2026-33579）</h3>
+<p><strong>来源：</strong> nvd.nist.gov | ▲ 235 | 💬 153</p>
+
+<p>国家漏洞数据库披露 OpenClaw 存在严重的特权提升漏洞（CVE-2026-33579），允许攻击者在特定条件下获取超出授权范围的系统权限。此漏洞的曝光时间与 Anthropic 宣布限制 OpenClaw 集成的时间高度吻合，评论区大量讨论认为安全问题是这次政策调整的深层原因之一。结合上周 Claude Code 源码泄露引发的供应链攻击事件，本周 AI 工具链安全话题异常密集。</p>
+
+<p><strong>链接：</strong> https://nvd.nist.gov/vuln/detail/CVE-2026-33579</p>
+
+<hr>
+
+<h3>4. Show HN：我为个人博客建了一个专属首页聚合器</h3>
+<p><strong>来源：</strong> text.blogosphere.app | ▲ 645 | 💬 168</p>
+
+<p>Blogosphere 是一个展示个人博客的聚合平台，旨在在 AI 内容泛滥的时代重新彰显独立 Web 的价值。创作者提供了两个版本：极简静态版（加载极快）和功能丰富版（支持分类浏览）。这是本周 HN 最高赞帖子，168 条评论中涌现了大量个人博客作者和 IndieWeb 支持者，反映了开发者社区对算法内容的反弹情绪持续升温。</p>
+
+<p><strong>链接：</strong> https://text.blogosphere.app/</p>
+
+<hr>
+
+<h3>5. 阿尔忒弥斯 II 号宇航员从太空拍摄的地球震撼影像</h3>
+<p><strong>来源：</strong> bbc.com | ▲ 468 | 💬 192</p>
+
+<p>阿尔忒弥斯 II 号任务的宇航员在月球轨道飞行期间，拍摄了一组被 BBC 形容为"壮观"的地球照片，清晰展现了南美洲大陆轮廓与云层分布。这是人类时隔五十余年再次近距离目睹地球全貌，HN 社区 192 条评论呈现了极高的正向情绪，不少工程师表示这张照片重新燃起了他们对太空探索的热情。</p>
+
+<p><strong>链接：</strong> https://www.bbc.com/news/articles/ce8jzr423p9o</p>
+
+<hr>
+
+<h2>二、Claude Code & Cowork 最新动态</h2>
+
+<h3>🔐 Claude Code 源码泄露后续：恶意软件通过伪造 GitHub 仓库传播</h3>
+
+<p>上周（3 月 31 日）因 npm 打包失误导致 Claude Code 完整 TypeScript 源码（51.3 万行）外泄的事件持续发酵。BleepingComputer 报道，攻击者已利用泄露的源码伪造假冒 GitHub 仓库，向开发者推送含有 Vidar 信息窃取木马的恶意版本。与此同时，一个独立的 axios npm 供应链攻击（含 RAT 远程访问木马）与此次泄露事件几乎同时发生，进一步加剧了社区对 AI 工具链安全的担忧。如果你在 3 月 31 日 00:21–03:29 UTC 之间通过 npm 安装或更新了 Claude Code，请立即检查安全状态。</p>
+
+<p><strong>来源：</strong> BleepingComputer / The Hacker News</p>
+
+<hr>
+
+<h3>🚫 Anthropic 限制 OpenClaw 第三方集成（4 月 4 日起生效）</h3>
+
+<p>Anthropic 宣布自今日（2026-04-04）起调整订阅政策：Claude Pro、Max 和 Team 用户的月度用量配额不再涵盖 OpenClaw 等第三方工具的 API 调用。用户将获得一次性等额补偿积分（有效期至 4 月 17 日），此后需切换至按量计费。这一决策被外界解读为多重因素叠加的结果：OpenClaw 漏洞（CVE-2026-33579）、系统负载优化、以及 Anthropic 推进自有生态（Claude Code Channels）战略。</p>
+
+<p><strong>来源：</strong> Hacker News / Anthropic 支持页面</p>
+
+<hr>
+
+<h3>🎁 Claude Pro/Max/Team 使用包上线，发布庆典积分同步赠出</h3>
+
+<p>Anthropic 同步发布了新的"使用包"（Usage Bundles）购买选项，允许用户按需购买额外用量，而非完全依赖月度订阅配额。配合使用包上线，Anthropic 向现有 Pro、Max 和 Team 用户赠送了额外积分作为庆典活动。对于重度用户和企业开发者而言，使用包提供了更灵活的费用控制方式。</p>
+
+<p><strong>来源：</strong> Anthropic 支持文档</p>
+
+<hr>
+
+<h3>⚡ Claude Code v2.1.90 更新：/powerup 互动教学功能上线</h3>
+
+<p>4 月 1 日发布的 Claude Code v2.1.90 引入了 <code class="inline">/powerup</code> 命令——一套包含动画演示的互动式功能教学模块，覆盖 Hooks、Sub-agents、MCP 等高级特性。此次更新还包含多项针对 MCP 服务器、代理功能和性能的 bug 修复。社区反馈认为 <code class="inline">/powerup</code> 对新用户入门特别有帮助，降低了高级功能的学习曲线。</p>
+
+<p><strong>来源：</strong> Claude Code 官方 Changelog</p>
+
+<hr>
+
+<h2>三、Reddit 社区热议</h2>
+
+<p>> Reddit 直接访问受限，以下数据通过 WebSearch 综合采集（2026-04-04）</p>
+
+<h3>r/ClaudeAI — Claude Code 源码泄露揭示的 MCP 架构秘密</h3>
+
+<p>本周 r/ClaudeAI 讨论最热的话题仍是源码泄露的技术细节。泄露确认了一个此前社区长期猜测的结论：<strong>Claude Code 并非构建在 MCP 之上，而是本身就是 MCP</strong>——Computer Use、文件读写、shell 执行等每一项能力都以 MCP tool call 的形式实现，具备高度统一的接口标准。这一架构设计被社区评价为"优雅但也令人意外"，并引发了关于如何安全使用 Claude Code 的广泛讨论。</p>
+
+<p><strong>来源：</strong> r/ClaudeAI 热帖汇总 / DEV Community</p>
+
+<hr>
+
+<h3>r/MachineLearning — NVIDIA Nemotron 3 Super：12B 激活参数的 120B 混合架构</h3>
+
+<p>NVIDIA 发布 <strong>Nemotron 3 Super</strong>，这是一个 120B 参数的混合 Mamba-Transformer MoE 架构，但激活参数仅 12B，支持 1M token 上下文窗口。在多项基准测试上超越同等规模的 Llama 和 Qwen 模型，且推理成本接近小型模型水平。这一设计被视为"以少胜多"架构设计的典型案例，r/MachineLearning 讨论认为混合架构将成为 2026 年旗舰模型的主流范式。</p>
+
+<p><strong>来源：</strong> r/MachineLearning 热帖</p>
+
+<hr>
+
+<h3>r/LocalLLaMA — 后训练技术栈革命：GRPO/DAPO/RLVR 正在取代 RLHF</h3>
+
+<p>r/LocalLLaMA 本周的技术深度讨论聚焦在后训练方法的快速迭代：GRPO（Group Relative Policy Optimization）、DAPO、RLVR 等新范式正在系统性地替代 RLHF 成为主流后训练技术栈。社区研究者指出，这些新方法在推理能力（尤其是数学和代码）上的提升幅度显著高于传统 RLHF，且训练稳定性更好。Qwen 和 DeepSeek 是这一新技术栈最活跃的应用者。</p>
+
+<p><strong>来源：</strong> r/LocalLLaMA 技术讨论精选</p>
+
+<hr>
+
+<h3>r/programming — 史上最大编程社区封禁 AI LLM 话题</h3>
+
+<p>坐拥数百万用户的 r/programming 社区宣布屏蔽所有与 AI LLM 相关的内容，转而只保留高质量的技术深度讨论。这一决策被 Tom's Hardware 等媒体广泛报道，引发行业内对"AI 内容过载"的深度反思。值得注意的是，这一趋势与 HN 上个人博客聚合器 Blogosphere 走红同步发生，表明开发者社区正在集体寻找 AI 噪声以外的信息来源。</p>
+
+<p><strong>来源：</strong> Tom's Hardware / r/programming 公告</p>
+
+<hr>
+
+<h3>r/ClaudeAI — 社区自发的安全告警线程</h3>
+
+<p>针对 Claude Code 源码泄露引发的供应链攻击，r/ClaudeAI 社区出现了大量安全告警帖子，用户相互提醒检查已安装的 npm 包版本、审查 axios 依赖，以及避免从非官方渠道安装 Claude Code。社区志愿者整理了一份完整的安全检查清单，包括如何验证当前安装版本是否受影响。</p>
+
+<p><strong>来源：</strong> r/ClaudeAI 安全讨论汇总</p>
+
+<hr>
+
+<h2>四、AI 行业大动态</h2>
+
+<h3>🔒 AI 工具链安全警报：一周内三起重大事件</h3>
+
+<p>本周 AI 开发工具链的安全状况引发广泛关注，集中爆发了三个关联事件：</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>事件</th>
+<th>时间</th>
+<th>影响</th>
+</tr></thead><tbody>
+<tr>
+<td>Claude Code 源码泄露（npm 打包失误）</td>
+<td>3月31日</td>
+<td>51.3万行 TypeScript 代码公开，架构秘密暴露</td>
+</tr>
+<tr>
+<td>axios 供应链攻击（含 RAT 木马）</td>
+<td>3月31日同期</td>
+<td>影响同期安装 Claude Code 的用户</td>
+</tr>
+<tr>
+<td>OpenClaw CVE-2026-33579 特权提升漏洞</td>
+<td>4月4日披露</td>
+<td>触发 Anthropic 调整第三方集成政策</td>
+</tr>
+</tbody></table></div>
+
+<p>安全专家建议所有 Claude Code 用户立即验证安装来源，并将 axios 依赖更新至最新安全版本。</p>
+
+<hr>
+
+<h3>📊 Claude Code 使用数据：75% 小型团队以其为主力工具</h3>
+
+<p>最新社区调研显示，在小型技术公司（50人以下）中，<strong>75% 的开发者</strong>已将 Claude Code 作为首选编码工具，超过 GitHub Copilot 和 Cursor。这一数字相比半年前的调研（约 40%）有显著跳升，主要驱动因素包括：SWE-bench 77.2% 的评测分数、多文件重构能力、以及 MCP 生态扩展性。</p>
+
+<hr>
+
+<h3>🧠 大模型后训练技术栈加速迭代</h3>
+
+<p>2026 年 Q1 最重要的技术趋势之一是后训练方法的快速演进。GRPO（Group Relative Policy Optimization）已被多个顶级实验室证明在推理任务上优于传统 RLHF，NVIDIA 的 Nemotron 3 Super、阿里的 Qwen 3.6 系列均采用新型后训练技术。业界预测 Q2 将有多个采用这套新训练栈的旗舰模型发布，性能对标当前 Claude Opus 4.6。</p>
+
+<hr>
+
+<h2>五、今日重点摘要</h2>
+
+<p>1. <strong>安全警报</strong>：如果你在 3 月 31 日安装过 Claude Code，请立即检查 axios 依赖是否受供应链攻击影响。</p>
+
+<p>2. <strong>政策变更</strong>：OpenClaw 集成自今日起不含在 Claude 订阅用量内，第三方工具用户需做好费用预算调整。</p>
+
+<p>3. <strong>架构洞见</strong>：Claude Code 泄露源码确认其核心是"MCP-native"设计，这一理解有助于开发者更高效地扩展和集成 Claude Code。</p>
+
+<p>4. <strong>趋势信号</strong>：r/programming 封禁 AI 话题 + Blogosphere 走红 + HN 上关于写作与 AI 边界的讨论，共同表明开发者社区对 AI 内容质量的要求正在显著提高。</p>
+
+<p>5. <strong>技术前瞻</strong>：混合 Mamba-Transformer MoE 架构（如 Nemotron 3 Super）和 GRPO 后训练技术将成为下一代大模型的主流方向。</p>
+
+  </div>
+</article>
+<div class="article-footer">
+  <div class="container">
+    <a href="../#ai-trends">← 返回首页</a>
+  </div>
+</div>
+</body>
+</html>
