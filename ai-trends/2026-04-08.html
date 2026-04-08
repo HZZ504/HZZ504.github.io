@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 动态追踪日报 — Project Glasswing·Claude Mythos上线·GLM-5.1长视野·Cloudflare后量子2029·MCP破9700万装机 | 张翰之</title>
+<meta name="description" content="2026-04-08 Claude Code / Cowork 社区最新动态、高级用法和实战技巧汇总">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;
+  --text:#e0e0e8;--text-dim:#8888a0;--text-bright:#ffffff;
+  --accent:#00d4aa;--accent2:#00a8ff;--accent3:#7c5cfc;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --max-w:900px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.8;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent2)}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:0;
+}
+
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+nav .inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--accent)}
+nav .logo svg{width:28px;height:28px}
+nav .back{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--accent)}
+
+/* Article */
+article{padding:100px 0 60px}
+.article-meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.article-date{font-family:var(--mono);font-size:.8rem;color:var(--accent);padding:4px 12px;border:1px solid rgba(0,212,170,.3);border-radius:4px}
+.article-tag{font-family:var(--mono);font-size:.65rem;color:var(--accent2);padding:2px 8px;background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.15);border-radius:4px}
+
+article h1{font-size:1.8rem;font-weight:700;color:var(--text-bright);margin-bottom:32px;line-height:1.3}
+article h2{font-size:1.35rem;font-weight:600;color:var(--accent);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,170,.15)}
+article h3{font-size:1.1rem;font-weight:600;color:var(--accent2);margin:28px 0 12px}
+article h4{font-size:.95rem;font-weight:600;color:var(--accent3);margin:20px 0 8px}
+article p{margin-bottom:12px;color:var(--text)}
+article ul{margin:0 0 16px 20px}
+article li{margin-bottom:8px;color:var(--text)}
+article li strong{color:var(--accent)}
+article hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:32px 0}
+article code.inline{font-family:var(--mono);font-size:.85em;background:rgba(0,212,170,.1);color:var(--accent);padding:2px 6px;border-radius:4px}
+article pre{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+article pre code{font-family:var(--mono);font-size:.85rem;color:var(--text)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);text-align:left;padding:10px 12px;border-bottom:2px solid rgba(0,212,170,.2);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text)}
+tr:hover td{background:rgba(0,212,170,.03)}
+
+/* Footer */
+.article-footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:60px;text-align:center}
+.article-footer a{font-family:var(--mono);font-size:.85rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="../" class="logo"><svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="url(#lg)"/><path d="M7 8h3v12H7V8zm4 5h6v3h-6v-3zm7-5h3v12h-3V8z" fill="#0a0a0f"/><defs><linearGradient id="lg" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00d4aa"/><stop offset="1" stop-color="#00a8ff"/></linearGradient></defs></svg><span>&lt;</span>HZ<span>/&gt;</span></a>
+    <a href="../#ai-trends" class="back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> 返回日报列表</a>
+  </div>
+</nav>
+<article>
+  <div class="container">
+    <div class="article-meta">
+      <span class="article-date">2026-04-08</span>
+      <span class="article-tag">Workflows</span>
+    </div>
+    <h1>AI 动态追踪日报 — Project Glasswing·Claude Mythos上线·GLM-5.1长视野·Cloudflare后量子2029·MCP破9700万装机</h1>
+    <hr>
+
+<h2>一、Hacker News 热帖精选</h2>
+
+<h3>1. Project Glasswing：Anthropic 用 AI 守护关键软件安全（HN ▲865 · 💬391）</h3>
+
+<p><strong>来源：</strong> <a href="https://www.anthropic.com/glasswing" target="_blank" rel="noopener">anthropic.com/glasswing</a> | ▲ 865 | 💬 391</p>
+
+<p>Anthropic 正式发布 Project Glasswing——一项联合主流科技公司、使用 Claude Mythos Preview 前沿模型防御性扫描关键软件漏洞的重大安全倡议。Anthropic 承诺投入 1 亿美元使用额度，并与 40 家合作伙伴（含 Apple、CrowdStrike 等 12 家核心成员）共同运行，覆盖操作系统、浏览器和开源基础设施。Mythos Preview 能识别并利用所有主流 OS 和浏览器的零日漏洞——而 Anthropic 选择将这种能力率先用于防御，不对外公开发布，直到配套的安全护栏就绪。</p>
+
+<h3>2. System Card: Claude Mythos Preview（HN ▲524 · 💬373）</h3>
+
+<p><strong>来源：</strong> <a href="https://www-cdn.anthropic.com/53566bf5440a10affd749724787c8913a2ae0841.pdf" target="_blank" rel="noopener">anthropic.com 系统卡 PDF</a> | ▲ 524 | 💬 373</p>
+
+<p>Anthropic 同步发布 Claude Mythos Preview 系统卡，详细披露了这一「跨代能力跃升」模型的技术评估。系统卡显示：Mythos 在推理、Agentic 搜索、代码生成方面全面超越 Claude Opus 4.6，且其网络安全能力并非专项训练，而是强编码推理的自然涌现——可链接四个漏洞构造复杂浏览器 JIT 利用链，并能自主完成 Linux KASLR 绕过。HN 评论区聚焦于「负责任发布」边界：在已知能力远超现有护栏的情况下，系统卡的透明度是安全实践的标杆，还是一种风险？</p>
+
+<h3>3. GLM-5.1: Towards Long-Horizon Tasks（HN ▲404 · 💬132）</h3>
+
+<p><strong>来源：</strong> <a href="https://z.ai/blog/glm-5.1" target="_blank" rel="noopener">z.ai/blog/glm-5.1</a> | ▲ 404 | 💬 132</p>
+
+<p>Z.AI（智谱 AI 旗下）发布 GLM-5.1，核心定位是「长视野任务」——跨越数十步骤、需要持续推理和工具调用的复杂 Agentic 场景。这与当前行业把长视野任务视为 LLM 下一个主战场的判断高度吻合：不是把模型做大，而是让模型在更长时间跨度内保持连贯性和目标锁定。GLM-5.1 在 HN 获得 404 分，说明海外开发者对「非 OpenAI/Anthropic 路线」的工具备受关注——尤其当其在 Agentic 工作流基准上表现有竞争力时。</p>
+
+<h3>4. Cloudflare 锁定 2029 年完成全面后量子安全迁移（HN ▲274 · 💬85）</h3>
+
+<p><strong>来源：</strong> <a href="https://blog.cloudflare.com/post-quantum-roadmap/" target="_blank" rel="noopener">blog.cloudflare.com/post-quantum-roadmap</a> | ▲ 274 | 💬 85</p>
+
+<p>Cloudflare 发布详细的后量子密码学路线图，承诺在 2029 年前将全平台、全协议迁移至 NIST PQC 标准（ML-KEM、ML-DSA 等），同时披露内部迁移进度和技术挑战。这是继昨日 Filippo Valsorda 量子威胁时间线分析之后，工业界的具体行动响应。Cloudflare 的 2029 目标给整个行业确立了参照系——如果互联网基础设施领头羊定 3 年完成迁移，那么依赖 Cloudflare CDN 和 SSL 的所有服务实际上将被自动迁移，但自有加密实现仍需独立规划。</p>
+
+<h3>5. S3 Files：AWS 把 S3 存储桶变成文件系统挂载点（HN ▲182 · 💬55）</h3>
+
+<p><strong>来源：</strong> <a href="https://www.allthingsdistributed.com/2026/04/s3-files-and-the-changing-face-of-s3.html" target="_blank" rel="noopener">allthingsdistributed.com</a> | ▲ 182 | 💬 55</p>
+
+<p>AWS 发布 S3 Files，允许将任意 S3 存储桶或前缀挂载为 EC2、容器、Lambda 函数的本地文件系统——开发者可以直接用标准 POSIX 文件 API 读写 S3 对象，无需手动 <code class="inline">aws s3 cp</code>。对 AI 工作负载来说意义重大：训练数据、模型 checkpoint、RAG 知识库等大规模 S3 资产可以无缝接入计算节点，消除了当前「数据在 S3 但计算需要本地路径」的架构摩擦。这一改变预计会让 SageMaker、ECS、Lambda 上的 AI 数据管道显著简化。</p>
+
+<hr>
+
+<h2>二、AI 行业动态（Reddit / Web 汇总）</h2>
+
+<p>> Reddit 直接访问受限，以下来自 WebSearch 聚合</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>#</th>
+<th>动态</th>
+<th>要点</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td><strong>Gemma 4 26B MoE 在 M5 MacBook Air 实测 300 t/s</strong></td>
+<td>32GB M5 MacBook Air 跑 Gemma 4 26B MoE + Opencode，PP 阶段 300 t/s、生成阶段 12 t/s，打破「旗舰笔记本跑不动 30B 级模型」的旧认知；31B Dense 需要 M5 Max 128GB 才流畅</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>MCP 装机量破 9700 万，全主流 AI 厂商完成适配</strong></td>
+<td>Anthropic Model Context Protocol 在 3 月突破 9700 万次安装，OpenAI、Google、微软均已发布 MCP 兼容工具链，MCP 正从 Anthropic 专属协议演变为行业标准层</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>r/programming 全月封禁 AI LLM 相关内容</strong></td>
+<td>拥有数百万用户的 r/programming 宣布 4 月全月屏蔽所有 AI/LLM 帖子，称「希望恢复高质量编程讨论」。此举在社区引发两极分化：支持者认为 AI 内容已泛滥成灾，反对者指出这本质上是在回避不可逆的技术现实</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>NVIDIA Nemotron 3 Super：120B Mamba-Transformer 混合 MoE</strong></td>
+<td>NVIDIA 发布 Nemotron 3 Super，120B 参数混合架构（Mamba + Transformer）、12B 激活参数、百万 Token 上下文，在长序列推理上大幅优于同参数 Transformer——这是 Mamba 架构首次出现在主流旗舰模型中</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Vitalik Buterin：我的 2026 年本地 AI 私密安全方案</strong></td>
+<td>以太坊创始人发文分享其本地 LLM 私密部署方案，涵盖气隙隔离、加密存储、推理隔离容器等细节。文章在 r/LocalLLaMA 和密码学社区同时爆火，体现出高价值用户对 AI 数据主权的极端重视</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>三、Claude Code 社区动态</h2>
+
+<h3>Claude Code v2.1.89–v2.1.92：四版本连发，性能与权限系统双升级</h3>
+
+<p>过去一周 Claude Code 连发四个版本，核心变化：</p>
+<ul>
+<li><strong><code class="inline">/powerup</code> 交互式学习系统</strong>：引导用户系统学习 Claude Code 高级能力，内置分阶段课程，填补了从「初学者」到「生产级用户」之间的技能断层</li>
+<li><strong>MCP 工具结果上限扩至 500K 字符</strong>：原来的 10K 限制导致大型代码库分析被截断，现在可以一次性传入完整的长文件或数据集</li>
+<li><strong><code class="inline">defer</code> 权限推迟系统</strong>：无头（headless）会话下，敏感操作不再阻塞 Claude Code 进程，而是记录待人工审核——这对长期自主运行的 Agentic 任务至关重要</li>
+<li><strong>diff 计算性能提升 60%</strong>、修复二次方级 SSE 传输复杂度，长会话稳定性显著改善</li>
+</ul>
+
+<h3>Project Glasswing 的 Claude Code 启示：Mythos 如何用于防御性代码扫描</h3>
+
+<p>Project Glasswing 的技术路径给 Claude Code 用户提供了直接参考——Mythos 的漏洞识别能力是从「强推理 + 强编码」涌现出来的，而这正是 Claude Code 日常工作流已经在做的事情。多位安全工程师已开始在 Claude Code 工作流中集成 SAST 工具调用，让 Claude 扮演「漏洞审查代理」角色：在每次 PR 前自动扫描新增代码、标注潜在风险路径、生成修复建议。</p>
+
+<h3>Codex vs Claude Code 工作流分工：「击键用 Codex，提交用 Claude」</h3>
+
+<p>OpenAI Codex CLI 上线后，r/ClaudeCode 社区涌现出大量对比测试。主流结论清晰：<strong>Codex CLI 胜在速度和成本</strong>（适合频繁触发的轻量编辑），<strong>Claude Code 胜在代码质量和深度推理</strong>（适合涉及多文件重构、架构决策的高价值提交）。一位重度用户描述的工作模式：tmux 左窗格跑 Codex 做快速补全，右窗格开 Claude Code 做 Code Review 和 PR 撰写，两个工具各司其职、互不干扰。</p>
+
+<h3>r/ClaudeCode 每周贡献者突破 4200 人，创历史新高</h3>
+
+<p>社区规模在过去 12 个月增长了 3.5 倍（从 1200 人到 4200 人）。最热门讨论主题仍然是：MCP 集成调试技巧、tmux 多代理并发工作流、如何在 Claude Code 中安全地授权 Shell 执行权限、以及用本地 Gemma 4 替代部分 API 调用来控制成本。</p>
+
+<h3>Gemma 4 Multimodal Fine-Tuner for Apple Silicon：Show HN 爆款工具</h3>
+
+<p>开发者 Matt Mireles 发布 <a href="https://github.com/mattmireles/gemma-tuner-multimodal" target="_blank" rel="noopener">gemma-tuner-multimodal</a>，专为 Apple Silicon 优化 Gemma 4 多模态微调，内置 OOM 保护机制（因 M 系芯片在长序列微调时极易爆内存）。这一工具让「本地微调 30B 级多模态模型」的门槛首次降低到 M4 Pro 级别 MacBook，HN ▲119 显示本地 AI 微调需求正在从服务器迁移至个人设备。</p>
+
+<hr>
+
+<h2>四、高手实战技巧</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>#</th>
+<th>技巧</th>
+<th>说明</th>
+<th>难度</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td>用 <code class="inline">defer</code> 权限推迟系统构建无人值守 Agentic 流水线</td>
+<td>在 Claude Code 无头模式中启用 <code class="inline">defer</code>，敏感 shell 操作不再中断任务、而是写入待审队列。配合定时任务，可让 Claude Code 在夜间自主完成代码生成，清晨审核一批 diff 后一键批准</td>
+<td>⭐⭐</td>
+</tr>
+<tr>
+<td>2</td>
+<td>利用 MCP 500K 字符上限做全仓库语义分析</td>
+<td>借助 MCP 工具结果新上限，可一次性把整个模块的代码（含测试、注释）传给 Claude 分析，而无需手动拆分。适合「架构 smell 扫描」「接口一致性检查」等过去因 Token 上限而不可行的分析任务</td>
+<td>⭐⭐</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code class="inline">/powerup</code> 学习系统作为新团队成员的 Claude Code 入门路径</td>
+<td>将 <code class="inline">/powerup</code> 课程设置为新工程师入职清单的一部分，在 1-2 小时内系统掌握工具调用、MCP 集成、多代理工作流、权限配置等核心功能，替代冗长的内部 Wiki</td>
+<td>⭐</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Gemma 4 26B MoE + Ollama 作为本地低成本补充层</td>
+<td>在 M5 MacBook Air 上部署 Gemma 4 26B MoE（Ollama 一行命令），把频繁调用的「中等难度任务」（代码补全、文档生成、简单 Q&A）路由到本地模型，把 Claude Code API 额度留给需要深度推理的复杂任务，可降低 40-60% API 成本</td>
+<td>⭐⭐</td>
+</tr>
+<tr>
+<td>5</td>
+<td>参考 Project Glasswing 范式构建 Claude 防御性漏洞扫描 Hook</td>
+<td>在 <code class="inline">PostToolUse</code> Hook 中加入安全扫描逻辑：每次 Write/Edit 完成后，调用 Claude 对新增代码执行「潜在漏洞检查」，输出风险评级（CRITICAL/HIGH/MEDIUM）。参考 Mythos 的能力边界设计 prompt，让检查逻辑覆盖 SQL 注入、XSS、路径遍历等 OWASP Top 10</td>
+<td>⭐⭐⭐</td>
+</tr>
+<tr>
+<td>6</td>
+<td>本地 Mamba-Transformer 混合架构适用场景识别</td>
+<td>NVIDIA Nemotron 3 Super 的 Mamba 组件在超长上下文（>100K token）时比纯 Transformer 效率高约 3 倍。在设计 RAG 管道时，可考虑将超长文档摘要（> 50K token 的 PDF、代码库）路由给支持 Mamba 的本地模型，短上下文推理仍用 Claude</td>
+<td>⭐⭐⭐⭐</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>五、跨平台趋势总结</h2>
+
+<p>1. <strong>「太危险，不发布」成为新常态</strong>：Claude Mythos Preview 能识别并利用所有主流 OS 的零日漏洞，却只通过 Project Glasswing 向 40 家伙伴开放访问。这标志着 AI 能力与 AI 部署之间的分离正在机构化——最强大的模型未必公开，但其能力可以通过「受控防御性应用」的形式惠及行业。</p>
+
+<p>2. <strong>MCP 成为 AI 生态的 USB 接口</strong>：9700 万装机量 + 全主流厂商跟进，MCP 已从 Anthropic 的内部协议演变为行业协议层。下一个问题不是「要不要用 MCP」，而是「如何在 MCP 生态中设计出高可靠、可审计的服务调用链」。</p>
+
+<p>3. <strong>本地 AI 推理成本曲线折叠</strong>：M5 MacBook Air 跑 300 t/s 的 30B 级模型、Gemma 4 微调工具无需 GPU 服务器——硬件进步正在让「本地优先」从理想主义转变为工程现实。未来 12 个月，「什么任务值得上云 API、什么任务留本地」将成为每个 AI 工程师的标准架构决策。</p>
+
+<p>4. <strong>后量子密码学：行动窗口已开</strong>：Cloudflare 定 2029 年目标、Filippo Valsorda 给出技术时间线——两大信号同时释出，意味着行业主流玩家已将后量子迁移从「未来议题」升级为「在途工程项目」。任何有长寿命密钥或敏感数据资产的团队，2026 年就是评估窗口的起点。</p>
+
+<p>5. <strong>Agentic 权限边界正在工程化</strong>：Claude Code 的 <code class="inline">defer</code> 系统、Project Glasswing 的受控访问框架、Freestyle 的沙箱基础设施——三个独立产品都在朝同一个方向演进：如何让 AI 代理拥有「足够做事的权限」同时保留「人类的最终否决权」。这个权限体系的设计将成为 2026 年 Agentic AI 工程的核心挑战。</p>
+
+<hr>
+
+<h2>六、推荐行动</h2>
+
+<p>1. <strong>注册 Project Glasswing 候补名单</strong>：如果你的团队维护开源项目或操作系统级代码，访问 <a href="https://www.anthropic.com/glasswing" target="_blank" rel="noopener">anthropic.com/glasswing</a> 申请使用 Mythos Preview 进行防御性漏洞扫描——1 亿美元使用额度将以合作方式分配。</p>
+
+<p>2. <strong>立即升级 Claude Code 并运行 <code class="inline">/powerup</code></strong>：v2.1.92 包含关键性能修复，<code class="inline">/powerup</code> 学习系统是目前最快掌握 defer 权限系统和 MCP 500K 上限新能力的路径。</p>
+
+<p>3. <strong>在 M 系 Mac 上部署 Gemma 4 26B MoE</strong>：运行 <code class="inline">ollama pull gemma4:26b-moe</code>，实测在 M4 Pro 以上机型的推理速度，评估哪些 Claude Code 任务可以路由到本地节省 API 额度。</p>
+
+<p>4. <strong>为核心加密实现启动 PQC 迁移评估</strong>：对照 NIST PQC 标准清单，列出所有使用 RSA/ECC 的加密场景，标注「长寿命数据」（5 年以上有效期的密钥、证书、身份凭据），制定 2026-2029 迁移路线图。</p>
+
+<p>5. <strong>在 PostToolUse Hook 中加入轻量安全检查</strong>：参考 Project Glasswing 的防御性漏洞发现思路，在 Claude Code 工作流中加入自动安全扫描步骤——即使只覆盖 SQL 注入和路径遍历，也比零防护强得多。</p>
+
+  </div>
+</article>
+<div class="article-footer">
+  <div class="container">
+    <a href="../#ai-trends">← 返回首页</a>
+  </div>
+</div>
+</body>
+</html>
