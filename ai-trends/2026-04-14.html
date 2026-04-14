@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 动态追踪日报 — GLM-5.1开源击败Opus 4.6·30个WP插件被植后门·Servo上架crates.io·AMD本地AI代理·GitHub堆叠PR | 张翰之</title>
+<meta name="description" content="2026-04-14 Claude Code / Cowork 社区最新动态、高级用法和实战技巧汇总">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;
+  --text:#e0e0e8;--text-dim:#8888a0;--text-bright:#ffffff;
+  --accent:#00d4aa;--accent2:#00a8ff;--accent3:#7c5cfc;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --max-w:900px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.8;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent2)}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:0;
+}
+
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+nav .inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--accent)}
+nav .logo svg{width:28px;height:28px}
+nav .back{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--accent)}
+
+/* Article */
+article{padding:100px 0 60px}
+.article-meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.article-date{font-family:var(--mono);font-size:.8rem;color:var(--accent);padding:4px 12px;border:1px solid rgba(0,212,170,.3);border-radius:4px}
+.article-tag{font-family:var(--mono);font-size:.65rem;color:var(--accent2);padding:2px 8px;background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.15);border-radius:4px}
+
+article h1{font-size:1.8rem;font-weight:700;color:var(--text-bright);margin-bottom:32px;line-height:1.3}
+article h2{font-size:1.35rem;font-weight:600;color:var(--accent);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,170,.15)}
+article h3{font-size:1.1rem;font-weight:600;color:var(--accent2);margin:28px 0 12px}
+article h4{font-size:.95rem;font-weight:600;color:var(--accent3);margin:20px 0 8px}
+article p{margin-bottom:12px;color:var(--text)}
+article ul{margin:0 0 16px 20px}
+article li{margin-bottom:8px;color:var(--text)}
+article li strong{color:var(--accent)}
+article hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:32px 0}
+article code.inline{font-family:var(--mono);font-size:.85em;background:rgba(0,212,170,.1);color:var(--accent);padding:2px 6px;border-radius:4px}
+article pre{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+article pre code{font-family:var(--mono);font-size:.85rem;color:var(--text)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);text-align:left;padding:10px 12px;border-bottom:2px solid rgba(0,212,170,.2);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text)}
+tr:hover td{background:rgba(0,212,170,.03)}
+
+/* Footer */
+.article-footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:60px;text-align:center}
+.article-footer a{font-family:var(--mono);font-size:.85rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="../" class="logo"><svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="url(#lg)"/><path d="M7 8h3v12H7V8zm4 5h6v3h-6v-3zm7-5h3v12h-3V8z" fill="#0a0a0f"/><defs><linearGradient id="lg" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00d4aa"/><stop offset="1" stop-color="#00a8ff"/></linearGradient></defs></svg><span>&lt;</span>HZ<span>/&gt;</span></a>
+    <a href="../#ai-trends" class="back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> 返回日报列表</a>
+  </div>
+</nav>
+<article>
+  <div class="container">
+    <div class="article-meta">
+      <span class="article-date">2026-04-14</span>
+      <span class="article-tag">Claude Code</span> <span class="article-tag">Cowork</span>
+    </div>
+    <h1>AI 动态追踪日报 — GLM-5.1开源击败Opus 4.6·30个WP插件被植后门·Servo上架crates.io·AMD本地AI代理·GitHub堆叠PR</h1>
+    <hr>
+
+<h2>一、Hacker News 今日热榜 TOP 5</h2>
+
+<h3>#1 — 有人买下 30 个 WordPress 插件并在其中全部植入后门</h3>
+<p><strong>来源:</strong> anchor.host | ▲ 658 | 💬 181 评论</p>
+<p><strong>链接:</strong> https://anchor.host/someone-bought-30-wordpress-plugins-and-planted-a-backdoor-in-all-of-them/</p>
+
+<p>攻击者通过收购 WordPress 插件的所有权（而非黑客手段），系统性地在 30 个插件中植入恶意后门代码，受影响的插件安装量涵盖大量生产网站。这是一种典型的软件供应链攻击——利用插件生态系统中的信任关系，以合法身份完成植入，极难被常规安全扫描发现。这一事件再次警示：开源插件生态的所有权转让机制存在严重安全盲区，使用任何第三方插件都需要持续的完整性验证机制。</p>
+
+<h3>#2 — Servo 正式上架 crates.io（v0.1.0 发布）</h3>
+<p><strong>来源:</strong> servo.org | ▲ 415 | 💬 18 评论</p>
+<p><strong>链接:</strong> https://servo.org/blog/2026/04/13/servo-0.1.0-release/</p>
+
+<p>Mozilla 原创、如今由独立基金会维护的 Rust 浏览器引擎 Servo 发布 v0.1.0，并正式上架 crates.io，标志着该项目进入可作为 Rust 库被嵌入其他项目的新阶段。Servo 的独特价值在于其完全用 Rust 编写、内置并发安全保证，是在非 Web 环境（如游戏引擎、桌面 GUI 框架）中嵌入网页渲染能力的有力候选。v0.1.0 的发布意味着 API 趋于稳定，社区期待它成为 Electron 替代方案生态的重要基础设施。</p>
+
+<h3>#3 — GitHub 推出 Stacked PRs 原生支持</h3>
+<p><strong>来源:</strong> github.github.com | ▲ 394 | 💬 238 评论</p>
+<p><strong>链接:</strong> https://github.github.com/gh-stack/</p>
+
+<p>GitHub 官方发布 <code class="inline">gh stack</code> 工具，原生支持"堆叠式 PR"（Stacked Pull Requests）工作流——即将一个大功能拆分成多个互相依赖的小 PR，依次审查合并。这是 GitHub 对 Graphite、Aviator 等独立工具长期占据这一需求的正面回应。堆叠式 PR 在大型团队和单体仓库中已是标准实践，原生支持意味着更低的工具链集成成本，以及与 GitHub Actions、代码审查流程的更深度整合。</p>
+
+<h3>#4 — Nothing Ever Happens：永远买 No 的 Polymarket 机器人</h3>
+<p><strong>来源:</strong> github.com | ▲ 351 | 💬 168 评论</p>
+<p><strong>链接:</strong> https://github.com/sterlingcrispin/nothing-ever-happens</p>
+
+<p>开发者发布了一个名为"Nothing Ever Happens"的开源 Polymarket 交易机器人，其策略极为简单：在所有非体育赛事市场上始终买入"否"（No）。背后逻辑基于一个反直觉的观察：人类对戏剧性事件的预期普遍偏高，导致"是"（Yes）选项长期被高估，系统性做空"事情会发生"反而能获得正期望收益。这一项目在 HN 引发大量讨论，兼具对预测市场有效性的质疑和对人类悲观偏差的幽默解读。</p>
+
+<h3>#5 — AMD GAIA：在本地构建并运行 AI 代理</h3>
+<p><strong>来源:</strong> amd-gaia.ai | ▲ 92 | 💬 7 评论</p>
+<p><strong>链接:</strong> https://amd-gaia.ai/docs</p>
+
+<p>AMD 发布 GAIA（GPU AI Agent）平台文档，提供基于 ROCm 的完整本地 AI 代理构建方案，支持在 AMD GPU 上运行 Agent 推理框架。文档涵盖 LLM 推理后端、工具调用集成和代理编排层，目标是让开发者无需 NVIDIA 硬件即可构建完整的本地 AI 代理系统。结合近期 AMD ROCm 生态的快速成熟，这一平台对希望摆脱 CUDA 锁定、本地部署代理工作流的团队具有实质参考价值。</p>
+
+<hr>
+
+<h2>二、Reddit AI 社区精选</h2>
+
+<p>> Reddit 因访问限制通过 WebSearch 采集（2026-04-14）</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>帖子/话题</th>
+<th>子版块</th>
+<th>要点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://www.marktechpost.com/2026/04/08/z-ai-introduces-glm-5-1/" target="_blank" rel="noopener">GLM-5.1：开源 754B MoE 模型，SWE-Bench Pro 排名全球第一</a></td>
+<td><a href="https://www.reddit.com/r/MachineLearning/" target="_blank" rel="noopener">r/MachineLearning</a></td>
+<td>Z.ai（原 Zhipu AI）发布 GLM-5.1，754B MoE 架构，SWE-Bench Pro 得分 58.4，超越 GPT-5.4（57.7）和 Claude Opus 4.6（57.3），MIT 许可证完全开源，可商用</td>
+</tr>
+<tr>
+<td><a href="https://dataconomy.com/2026/04/08/z-ais-glm-5-1-tops-swe-bench-pro-beating-major-ai-rivals/" target="_blank" rel="noopener">GLM-5.1 完全基于华为昇腾 910B 训练，零英伟达</a></td>
+<td><a href="https://www.reddit.com/r/LocalLLaMA/" target="_blank" rel="noopener">r/LocalLLaMA</a></td>
+<td>在美国持续出口管制背景下，GLM-5.1 证明国内算力可训练出前沿级模型；实际推理每 token 仅激活约 40B 参数，MoE 设计大幅降低本地运行硬件需求</td>
+</tr>
+<tr>
+<td><a href="https://fazm.ai/blog/new-ai-model-releases-open-source-projects-april-2026" target="_blank" rel="noopener">四月已发布七个主要开源模型：Apache 2.0 正在赢得许可证战争</a></td>
+<td><a href="https://www.reddit.com/r/LocalLLaMA/" target="_blank" rel="noopener">r/LocalLLaMA</a></td>
+<td>Qwen3 Coder、Codestral 2、OLMo 2 均选择 Apache 2.0，社区认为这是开源 AI 生态成熟的信号；Llama 4 Maverick（400B MoE）和 Arcee Trinity Large Thinking 同期上线</td>
+</tr>
+<tr>
+<td><a href="https://crescendo.ai/news/latest-ai-news-and-updates" target="_blank" rel="noopener">Gemma 4 发布：Google 最新开源系列，专为推理和代理工作流设计</a></td>
+<td><a href="https://www.reddit.com/r/MachineLearning/" target="_blank" rel="noopener">r/MachineLearning</a></td>
+<td>Gemma 4 基于 Apache 2.0 开源，重点优化复杂推理和多步骤代理任务，社区测试显示在工具调用和函数链方面有明显提升</td>
+</tr>
+<tr>
+<td><a href="https://techcrunch.com/2026/04/07/i-cant-help-rooting-for-tiny-open-source-ai-model-maker-arcee/" target="_blank" rel="noopener">Arcee Trinity Large Thinking：非中国公司发布的最强开源权重模型</a></td>
+<td><a href="https://www.reddit.com/r/MachineLearning/" target="_blank" rel="noopener">r/MachineLearning</a></td>
+<td>仅 26 人的小团队 Arcee 发布 Trinity Large Thinking，挑战大厂垄断；TechCrunch 专文报道，社区对小规模团队能与 Meta/Google 竞争感到振奋</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>三、Claude Code 社区动态</h2>
+
+<p>> 数据通过 WebSearch 采集（2026-04-14）</p>
+
+<h3>最新版本动态：v2.1.101 → v2.1.104</h3>
+
+<p><strong>v2.1.101 重要更新：</strong></p>
+<ul>
+<li><strong>/team-onboarding 命令</strong>：根据本地 Claude Code 使用历史自动生成团队成员快速上手指南，降低新人接入现有工作流的摩擦</li>
+<li><strong>OS CA 证书默认信任</strong>：企业级 TLS 代理无需额外配置即可正常工作，打通了大量企业内网环境的访问障碍</li>
+<li><strong>Bash 工具安全修复</strong>：修复反斜杠转义绕过权限检查的漏洞——此前攻击者可通过反斜杠转义的参数让 Claude 将危险命令误判为只读操作，存在任意代码执行风险</li>
+<li><strong>速率限制对话框无限循环修复</strong>：修复达到使用上限后对话框反复弹出最终导致会话崩溃的问题</li>
+</ul>
+
+<p><strong>v2.1.104 新增（最新）：</strong></p>
+<ul>
+<li>Brief 模式优化：Claude 的最终消息更具自足性（self-contained），更适合只看结果不看过程的场景</li>
+<li>/ultraplan 和远程会话现在自动创建默认云端环境，无需预先通过 Web 界面配置</li>
+</ul>
+
+<h3>生态重要事件</h3>
+
+<p><strong>Claude Managed Agents 持续扩展</strong>：Anthropic 代理托管平台进入深化 beta 阶段，越来越多的团队将生产代理从自建基础设施迁移至托管方案，ant CLI 工具链逐步完善。</p>
+
+<p><strong>GLM-5.1 超越 Claude 引发社区讨论</strong>：GLM-5.1 在 SWE-Bench Pro 上以 58.4 分超越 Claude Opus 4.6（57.3 分），r/ClaudeAI 社区对此反应分化——部分用户认为单一基准不代表真实体验，另一部分则开始测试迁移可行性。</p>
+
+<h3>社区讨论热点</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>话题</th>
+<th>要点</th>
+<th>来源</th>
+</tr></thead><tbody>
+<tr>
+<td>Claude Code 30+ 版本迭代深度解析</td>
+<td>涵盖 v2.1.69→v2.1.101 完整变更梳理，包括 Opus 4.6 百万 token 上下文、无闪烁渲染引擎、/powerup 教程系统等里程碑功能</td>
+<td><a href="https://help.apiyi.com/en/claude-code-changelog-2026-april-updates-en.html" target="_blank" rel="noopener">apiyi.com</a></td>
+</tr>
+<tr>
+<td>Bash 安全漏洞：反斜杠转义绕过权限检测</td>
+<td>v2.1.101 修复的高危漏洞，影响所有依赖 Claude Code 权限沙箱的生产部署，建议立即升级</td>
+<td><a href="https://releasebot.io/updates/anthropic/claude-code" target="_blank" rel="noopener">releasebot.io</a></td>
+</tr>
+<tr>
+<td>Agent Skills 完整使用指南</td>
+<td>面向 Claude Code、Cursor 和 MCP 的 Skills 体系详解，涵盖如何编写、注册和复用自定义 Skills</td>
+<td><a href="https://explainx.ai/blog/what-are-agent-skills-complete-guide" target="_blank" rel="noopener">explainx.ai</a></td>
+</tr>
+<tr>
+<td>OpenAI Responses API 代理能力扩展</td>
+<td>新增 shell 工具、内置代理执行循环、托管容器工作区和可复用 Skills，与 Claude Code Agent SDK 形成直接竞争</td>
+<td><a href="https://www.crescendo.ai/news/latest-ai-news-and-updates" target="_blank" rel="noopener">crescendo.ai</a></td>
+</tr>
+<tr>
+<td>Claude Code + steipete/claude-code-mcp</td>
+<td>将 Claude Code 封装为 MCP 服务器的开源项目，实现"代理中的代理"——让 Claude 作为工具被其他代理调用</td>
+<td><a href="https://github.com/steipete/claude-code-mcp" target="_blank" rel="noopener">GitHub</a></td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>四、跨平台趋势总结</h2>
+
+<p><strong>1. 开源前沿模型进入"性能奇偶"时代</strong>：GLM-5.1 以 58.4 分超越 Claude Opus 4.6 和 GPT-5.4，标志着开源模型在专业编码基准上首次全面追平商业 API 模型的顶尖水平。加上 Qwen3、Gemma 4、Arcee Trinity 同期密集发布，开源 vs 闭源的性能差距正快速收窄，API 提供商的护城河越来越依赖服务质量、上下文记忆和生态工具链而非模型能力本身。</p>
+
+<p><strong>2. 软件供应链攻击升级为主流威胁向量</strong>：30 个 WordPress 插件后门事件揭示了一种新型攻击路径：通过收购合法项目的所有权植入恶意代码，绕过所有传统的"第三方代码审查"机制。这与 2024 年 XZ Utils 事件异曲同工，提示开发者对"已信任依赖的所有权变更"需要建立独立的安全响应机制。</p>
+
+<p><strong>3. 华为昇腾完成前沿模型训练能力验证</strong>：GLM-5.1 完全基于昇腾 910B 训练的事实，在技术上证明了中国国内算力可独立完成 700B+ 级模型的训练。在 AI 算力地缘政治持续紧张的背景下，这一里程碑对全球 AI 供应链格局具有深远意义。</p>
+
+<p><strong>4. 开发者工具层"平台化"加速</strong>：GitHub 原生 Stacked PRs、Cloudflare 统一 CLI、Claude Managed Agents——多个技术栈的核心工具提供商正在将原本由独立工具填补的工作流需求收归平台内，减少开发者的工具链碎片化，但也带来更深的平台锁定风险。</p>
+
+<p><strong>5. Claude Code 安全修复与企业化并行推进</strong>：v2.1.101 同时修复 Bash 高危漏洞并新增企业 CA 证书支持，表明 Anthropic 在快速迭代的同时正将 Claude Code 往企业生产环境方向推进，安全性和合规性正成为新的优先级。</p>
+
+<hr>
+
+<h2>五、实用工具推荐</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>工具/资源</th>
+<th>用途</th>
+<th>链接</th>
+</tr></thead><tbody>
+<tr>
+<td>GLM-5.1 (Z.ai)</td>
+<td>开源 754B MoE 模型，SWE-Bench Pro 全球第一，MIT 许可</td>
+<td><a href="https://docs.z.ai/guides/llm/glm-5.1" target="_blank" rel="noopener">docs.z.ai</a></td>
+</tr>
+<tr>
+<td>gh stack (GitHub)</td>
+<td>原生堆叠式 PR 支持，简化大型功能的分步审查流程</td>
+<td><a href="https://github.github.com/gh-stack/" target="_blank" rel="noopener">github.github.com</a></td>
+</tr>
+<tr>
+<td>AMD GAIA</td>
+<td>基于 ROCm 的本地 AI 代理构建平台，无需 NVIDIA</td>
+<td><a href="https://amd-gaia.ai/docs" target="_blank" rel="noopener">amd-gaia.ai</a></td>
+</tr>
+<tr>
+<td>claude-code-mcp (steipete)</td>
+<td>将 Claude Code 封装为 MCP 服务器，实现代理套代理</td>
+<td><a href="https://github.com/steipete/claude-code-mcp" target="_blank" rel="noopener">GitHub</a></td>
+</tr>
+<tr>
+<td>Nothing Ever Happens</td>
+<td>Polymarket 做空"戏剧性事件"的开源机器人，学习预测市场策略</td>
+<td><a href="https://github.com/sterlingcrispin/nothing-ever-happens" target="_blank" rel="noopener">GitHub</a></td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>六、推荐行动</h2>
+
+<p>1. <strong>立即升级 Claude Code 至 v2.1.104</strong>：v2.1.101 修复了 Bash 工具权限绕过的高危安全漏洞，所有依赖 Claude Code 权限沙箱的生产部署应尽快更新</p>
+<p>2. <strong>评估 GLM-5.1 用于代码生成场景</strong>：SWE-Bench Pro 第一的表现值得实测，MIT 许可证允许完全商用，MoE 架构的实际推理成本可能低于预期</p>
+<p>3. <strong>检查 WordPress 插件所有权历史</strong>：如使用第三方插件，查看近期是否有所有权变更记录，对变更后的插件进行代码审计</p>
+<p>4. <strong>体验 GitHub Stacked PRs</strong>：如团队使用 GitHub 且有大功能拆分需求，尝试 <code class="inline">gh stack</code> 命令，评估能否替换现有的 Graphite/Aviator 工具</p>
+<p>5. <strong>关注 /team-onboarding 命令</strong>：如团队正在扩招或有新成员加入，运行此命令生成基于实际使用习惯的上手指南，比手写文档更贴合工作流现状</p>
+
+  </div>
+</article>
+<div class="article-footer">
+  <div class="container">
+    <a href="../#ai-trends">← 返回首页</a>
+  </div>
+</div>
+</body>
+</html>
