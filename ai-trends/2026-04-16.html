@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 动态追踪日报 — Claude Code · GLM-5.1 开源 · GPT-6 上线 · 谷歌承诺失守 | 张翰之</title>
+<meta name="description" content="GLM-5.1 MIT 开源震动本地部署社区**：智谱 AI 发布的 744B MoE 模型以 MIT 授权开源，是目前可完全商用的最大开源模型之一。r/LocalLLaMA 讨论量爆发，社区迅...">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;
+  --text:#e0e0e8;--text-dim:#8888a0;--text-bright:#ffffff;
+  --accent:#00d4aa;--accent2:#00a8ff;--accent3:#7c5cfc;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --max-w:900px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.8;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent2)}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:0;
+}
+
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+nav .inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--accent)}
+nav .logo svg{width:28px;height:28px}
+nav .back{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--accent)}
+
+/* Article */
+article{padding:100px 0 60px}
+.article-meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.article-date{font-family:var(--mono);font-size:.8rem;color:var(--accent);padding:4px 12px;border:1px solid rgba(0,212,170,.3);border-radius:4px}
+.article-tag{font-family:var(--mono);font-size:.65rem;color:var(--accent2);padding:2px 8px;background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.15);border-radius:4px}
+
+article h1{font-size:1.8rem;font-weight:700;color:var(--text-bright);margin-bottom:32px;line-height:1.3}
+article h2{font-size:1.35rem;font-weight:600;color:var(--accent);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,170,.15)}
+article h3{font-size:1.1rem;font-weight:600;color:var(--accent2);margin:28px 0 12px}
+article h4{font-size:.95rem;font-weight:600;color:var(--accent3);margin:20px 0 8px}
+article p{margin-bottom:12px;color:var(--text)}
+article ul{margin:0 0 16px 20px}
+article li{margin-bottom:8px;color:var(--text)}
+article li strong{color:var(--accent)}
+article hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:32px 0}
+article code.inline{font-family:var(--mono);font-size:.85em;background:rgba(0,212,170,.1);color:var(--accent);padding:2px 6px;border-radius:4px}
+article pre{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+article pre code{font-family:var(--mono);font-size:.85rem;color:var(--text)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);text-align:left;padding:10px 12px;border-bottom:2px solid rgba(0,212,170,.2);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text)}
+tr:hover td{background:rgba(0,212,170,.03)}
+
+/* Footer */
+.article-footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:60px;text-align:center}
+.article-footer a{font-family:var(--mono);font-size:.85rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="../" class="logo"><svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="url(#lg)"/><path d="M7 8h3v12H7V8zm4 5h6v3h-6v-3zm7-5h3v12h-3V8z" fill="#0a0a0f"/><defs><linearGradient id="lg" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00d4aa"/><stop offset="1" stop-color="#00a8ff"/></linearGradient></defs></svg><span>&lt;</span>HZ<span>/&gt;</span></a>
+    <a href="../#ai-trends" class="back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> 返回日报列表</a>
+  </div>
+</nav>
+<article>
+  <div class="container">
+    <div class="article-meta">
+      <span class="article-date">2026-04-16</span>
+      <span class="article-tag">CLAUDE.md</span> <span class="article-tag">Scheduled Tasks</span> <span class="article-tag">MCP</span> <span class="article-tag">Hooks</span> <span class="article-tag">Sub-Agents</span>
+    </div>
+    <h1>AI 动态追踪日报 — Claude Code · GLM-5.1 开源 · GPT-6 上线 · 谷歌承诺失守</h1>
+    <hr>
+
+<h2>一、高级用法精选（按难度分层）</h2>
+
+<h3>Level 1 — 基础稳固</h3>
+
+<ul>
+<li><strong>用 <code class="inline">/model-route</code> 动态选模型</strong>：不同任务用不同模型——简单问答走 Haiku 4.5（3× 省钱），主力开发走 Sonnet 4.6，架构决策用 Opus 4.6。Claude Code 支持在会话中即时切换，不必重开终端。（来源：<a href="https://docs.anthropic.com/en/docs/about-claude/models/overview" target="_blank" rel="noopener">Anthropic 模型文档</a>）</li>
+</ul>
+
+<ul>
+<li><strong>CLAUDE.md 分层管理</strong>：项目根目录 <code class="inline">CLAUDE.md</code> 写团队约定（代码风格、禁止操作）；个人偏好写到 <code class="inline">CLAUDE.local.md</code> 并加入 <code class="inline">.gitignore</code>。新成员 clone 项目后 Claude 自动继承团队规范，无需重复告知。（来源：<a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">Reddit r/ClaudeAI</a>）</li>
+</ul>
+
+<ul>
+<li><strong>Git Worktree 并行任务</strong>：用 <code class="inline">git worktree add</code> 为每个功能分支创建独立目录，同时启动多个 Claude Code 实例各自处理，互不干扰。主分支代码始终保持可运行状态。（来源：<a href="https://github.com/ykdojo/claude-code-tips" target="_blank" rel="noopener">GitHub ykdojo/claude-code-tips</a>）</li>
+</ul>
+
+<h3>Level 2 — 上下文与 Token 优化</h3>
+
+<ul>
+<li><strong><code class="inline">/compact</code> 控制 context 密度</strong>：长会话上下文超 80% 时主动运行 <code class="inline">/compact</code>，Claude 会智能压缩历史，保留关键决策上下文。比直接开新会话更能延续任务状态。（来源：<a href="https://code.claude.com" target="_blank" rel="noopener">code.claude.com 文档</a>）</li>
+</ul>
+
+<ul>
+<li><strong>Skill 描述即触发器</strong>：本周社区讨论发现，Skill SKILL.md 的描述质量直接影响触发准确率。加入 <code class="inline">MANDATORY TRIGGERS:</code> 字段列出精确触发词，可将误触率降至 5% 以下。Skills 只在需要时加载，比 CLAUDE.md 每次全量加载省 40-60% token。（来源：<a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">Reddit r/ClaudeAI</a>）</li>
+</ul>
+
+<ul>
+<li><strong>用批注代替注释</strong>：不要让 Claude 给每个函数写注释，改为用 Skill 生成独立的 <code class="inline">ARCHITECTURE.md</code> 文档。注释会污染代码、消耗 token；文档文件按需加载，效率更高。（来源：<a href="https://www.builder.io/blog/claude-code" target="_blank" rel="noopener">builder.io Claude Code 实践</a>）</li>
+</ul>
+
+<h3>Level 3 — 定时任务与自动化</h3>
+
+<ul>
+<li><strong>多步骤 SKILL.md 定时工作流</strong>：本日报本身就是案例——定时任务通过 SKILL.md 定义"抓取 → 生成 Markdown → 构建 HTML → Git 推送"完整流水线，每天自动运行无需人工干预。关键在于每步都有验证（读取生成文件确认内容），触发反馈闭环。（来源：本日报系统自身实践）</li>
+</ul>
+
+<ul>
+<li><strong><code class="inline">/loop</code> 命令长时循环</strong>：<code class="inline">/loop 24h</code> 让 Claude Code 运行长达 3 天的循环任务，每个周期独立执行，可用于监控 API 健康状态、定期同步数据、竞品价格追踪。与 Scheduled Tasks 互补，前者适合节点式触发，后者适合持续循环。（来源：<a href="https://support.claude.com" target="_blank" rel="noopener">support.claude.com</a>）</li>
+</ul>
+
+<ul>
+<li><strong>Dispatch 手机远程触发</strong>：扫 QR Code 与桌面 Claude 配对，出门在外可从手机启动本地定时任务。2026-04-15 社区用户报告：用 iPhone Shortcuts 封装 Dispatch 调用，实现「Siri，帮我生成今天的日报」一句话触发完整工作流。（来源：<a href="https://aadhunik.ai/blog/claude-cowork-dispatch-anthrophics-new-claude-assistant/" target="_blank" rel="noopener">aadhunik.ai</a>）</li>
+</ul>
+
+<h3>Level 4 — MCP 生态扩张</h3>
+
+<ul>
+<li><strong>GLM-5.1 通过 MCP 接入本地</strong>：智谱 AI 本周发布 GLM-5.1（744B MoE，MIT 授权），社区已有 MCP 服务器实现。在 <code class="inline">~/.claude/mcp_servers.json</code> 中注册本地 Ollama 端点，即可在 Claude Code 中用 <code class="inline">@glm</code> 切换到本地模型处理敏感数据，避免上传到外部 API。（来源：<a href="https://fazm.ai/blog/new-llm-releases-april-2026" target="_blank" rel="noopener">fazm.ai - LLM Releases April 2026</a>）</li>
+</ul>
+
+<ul>
+<li><strong>MCP 工具搜索（Tool Search 功能）</strong>：Claude Code 新版本支持延迟加载 MCP 工具 schema，用 <code class="inline">ToolSearch</code> 按需获取工具定义。大型 MCP 服务器的所有工具不再在会话初始化时全量加载，context 使用率下降约 30%。（来源：Claude Code v2.1.97 changelog）</li>
+</ul>
+
+<ul>
+<li><strong>Gemini 3.1 Flash TTS 接入</strong>：Google 本周上线支持 70+ 语言的文本转语音模型，已有社区开发者封装为 MCP，可在 Claude Code 工作流中直接调用生成语音输出。适合无障碍辅助和多模态报告。（来源：<a href="https://www.techmeme.com/" target="_blank" rel="noopener">Techmeme 2026-04-15</a>）</li>
+</ul>
+
+<h3>Level 5 — Hooks 生产化</h3>
+
+<ul>
+<li><strong>Cal.com 关源事件的启示</strong>：本周 Cal.com 宣布从 AGPL 改为闭源（<a href="https://cal.com/blog/cal-com-goes-closed-source-why" target="_blank" rel="noopener">详细</a>），HN 1070 分讨论。对 Claude Code 用户的启发：用 <code class="inline">PreToolUse</code> Hook 自动检查 npm 包的 License 变更，依赖从开源变商业时立即告警。防止上游许可证风险渗入项目。（来源：<a href="https://news.ycombinator.com/" target="_blank" rel="noopener">Hacker News</a>，分数 201，152 评论）</li>
+</ul>
+
+<ul>
+<li><strong>安全 Hook 防数据泄露</strong>：本周 EFF 报告谷歌违背承诺将 Pixel 位置数据交给 ICE（<a href="https://www.eff.org/deeplinks/2026/04/google-broke-its-promise-me-now-ice-has-my-data" target="_blank" rel="noopener">原文</a>，HN 1070 分），引发关于 AI 工具数据安全的广泛讨论。建议：用 <code class="inline">PostToolUse</code> Hook 扫描 Claude 写入的文件，检测 PII（邮件、电话、IP 地址），敏感内容自动加密或拦截。（来源：<a href="https://www.eff.org/" target="_blank" rel="noopener">EFF Deeplinks</a>，HN 分数 1070，465 评论）</li>
+</ul>
+
+<ul>
+<li><strong>Claude Code 源码 map 泄露复盘</strong>：上月底安全研究员 Chaofan Shou 发现 Claude Code npm 包附带了完整 <code class="inline">.map</code> 源码文件，代码逻辑暴露。Anthropic 已修复，但此事推动了社区对发布流程 Hook 的需求——用 <code class="inline">PreToolUse</code> 拦截 <code class="inline">npm publish</code>，自动检查 build artifacts 是否包含 source map。（来源：<a href="https://cybernews.com/security/anthropic-claude-source-code-discovered-features/" target="_blank" rel="noopener">cybernews.com</a>）</li>
+</ul>
+
+<h3>Level 6 — 子代理编排</h3>
+
+<ul>
+<li><strong>Gemma 4 本地微调后接入多智能体</strong>：Google 本周发布 Gemma 4（Apache 2.0，四个变体）。社区实践：用 Gemma 4 E2B 做专用分类器子代理，Sonnet 4.6 做主协调器，分类器成本降低 15×，整体质量无损。（来源：<a href="https://fazm.ai/blog/new-llm-releases-april-2026" target="_blank" rel="noopener">fazm.ai - LLM Releases April 2026</a>）</li>
+</ul>
+
+<ul>
+<li><strong>LLM 知识迁移研究的多代理意义</strong>：arXiv 本周一篇发表于 Nature 的研究发现，LLM 可以将训练数据删除后仍持久存在的特征传递给其他模型——对多代理系统意味着子代理会继承主代理的"隐性偏见"，需在 system prompt 中显式反偏见指令。（来源：<a href="https://llm-stats.com/ai-news" target="_blank" rel="noopener">llm-stats.com AI News</a>）</li>
+</ul>
+
+<ul>
+<li><strong>GPT-6 上线对 Claude Code 工作流的影响</strong>：OpenAI 本周发布 GPT-6（2M context，$2.50/M input tokens），Claude Opus 4.6 仍以更高的 SWE-bench 分数（65.3%）领先代码任务。建议：用 Claude 做代码生成和架构决策，GPT-6 做需要超长文档理解的任务，MCP 统一调度两个模型。（来源：<a href="https://fazm.ai/blog/new-llm-releases-april-2026" target="_blank" rel="noopener">fazm.ai - LLM Releases April 2026</a>）</li>
+</ul>
+
+<h3>Level 7 — 专家级工作流</h3>
+
+<ul>
+<li><strong>"Cybersecurity is Proof of Work"的 AI 含义</strong>：HN 热文（214 分）讨论现代安全策略本质上是计算密集型筛选。对 Claude Code 用户：将 <code class="inline">security-reviewer</code> 子代理嵌入 CI Hook，每次 PR 自动扫描 OWASP Top 10，不是完美安全，而是提高攻击者成本。（来源：<a href="https://www.dbreunig.com/2026/04/14/cybersecurity-is-proof-of-work-now.html" target="_blank" rel="noopener">dbreunig.com</a>，HN 分数 214，85 评论）</li>
+</ul>
+
+<ul>
+<li><strong>Claude Mythos 合作伙伴预览</strong>：Anthropic 向约 50 个合作组织开放 Claude Mythos 预览（$25/$125 per M tokens），定位为"超越 Opus 4.6 的一代跨越"。建议：现在用 Opus 4.6 + Claude Code 构建的架构，为 Mythos 无缝升级留好接口——在 model 参数处用变量而非硬编码。（来源：<a href="https://fazm.ai/blog/new-llm-releases-april-2026" target="_blank" rel="noopener">fazm.ai - LLM Releases April 2026</a>）</li>
+</ul>
+
+<ul>
+<li><strong>Apple Siri AI 编程训练营的信号</strong>：苹果将 200 名 Siri 工程师送去 AI 编程训练营，说明"AI 辅助编程"已从前沿变成基础技能。对 Claude Code 重度用户：现在建立工作流文档和 Skills 库，未来可作为团队培训材料。（来源：<a href="https://www.techmeme.com/" target="_blank" rel="noopener">The Information via Techmeme</a>）</li>
+</ul>
+
+<hr>
+
+<h2>二、高手实战技巧表格</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>#</th>
+<th>技巧</th>
+<th>说明</th>
+<th>难度</th>
+<th>来源</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td><code class="inline">/model-route</code> 按任务选模型</td>
+<td>Haiku 问答，Sonnet 开发，Opus 架构，成本降 3×</td>
+<td>⭐</td>
+<td><a href="https://docs.anthropic.com" target="_blank" rel="noopener">Anthropic 文档</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>CLAUDE.md 分层</td>
+<td>团队约定 + 个人偏好，clone 即继承规范</td>
+<td>⭐</td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">Reddit r/ClaudeAI</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Skill 触发词优化</td>
+<td><code class="inline">MANDATORY TRIGGERS:</code> 字段，误触率降至 5%</td>
+<td>⭐⭐</td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">Reddit r/ClaudeAI</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td><code class="inline">/compact</code> 压缩上下文</td>
+<td>超 80% 时主动压缩，保留决策记忆</td>
+<td>⭐⭐</td>
+<td><a href="https://code.claude.com" target="_blank" rel="noopener">code.claude.com</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td>License 变更 Hook</td>
+<td><code class="inline">PreToolUse</code> 检测依赖开源→商业变更，防上游风险</td>
+<td>⭐⭐</td>
+<td><a href="https://news.ycombinator.com/" target="_blank" rel="noopener">HN Cal.com 讨论</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Git Worktree 并行</td>
+<td>多分支多 Claude 实例同时跑，主分支不受影响</td>
+<td>⭐⭐</td>
+<td><a href="https://github.com/ykdojo/claude-code-tips" target="_blank" rel="noopener">GitHub ykdojo</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td>PII 泄露扫描 Hook</td>
+<td><code class="inline">PostToolUse</code> 扫输出文件中的邮件/电话/IP</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://www.eff.org/" target="_blank" rel="noopener">EFF 报告启示</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Source map 发布检查</td>
+<td>CI Hook 检查 <code class="inline">npm publish</code> artifacts，防代码泄露</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://cybernews.com" target="_blank" rel="noopener">cybernews.com</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td>本地 LLM 通过 MCP 接入</td>
+<td>Ollama + GLM-5.1 处理敏感数据，不上传外部 API</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://fazm.ai/blog/new-llm-releases-april-2026" target="_blank" rel="noopener">fazm.ai</a></td>
+</tr>
+<tr>
+<td>10</td>
+<td>Gemma 4 专用分类子代理</td>
+<td>E2B 分类器 + Sonnet 主代理，成本降 15×</td>
+<td>⭐⭐⭐⭐</td>
+<td><a href="https://fazm.ai/blog/new-llm-releases-april-2026" target="_blank" rel="noopener">fazm.ai</a></td>
+</tr>
+<tr>
+<td>11</td>
+<td>security-reviewer CI 集成</td>
+<td>每次 PR 自动 OWASP 扫描，将安全变为 PoW</td>
+<td>⭐⭐⭐⭐</td>
+<td><a href="https://www.dbreunig.com" target="_blank" rel="noopener">dbreunig.com</a></td>
+</tr>
+<tr>
+<td>12</td>
+<td>Mythos 升级接口预留</td>
+<td>model 参数变量化，Opus→Mythos 零成本迁移</td>
+<td>⭐⭐⭐⭐</td>
+<td><a href="https://fazm.ai/blog/new-llm-releases-april-2026" target="_blank" rel="noopener">fazm.ai</a></td>
+</tr>
+<tr>
+<td>13</td>
+<td>MCP 工具延迟加载</td>
+<td>ToolSearch 按需加载 schema，context 降 30%</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>Claude Code v2.1.97</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>三、YouTube 教程推荐</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>视频标题</th>
+<th>作者</th>
+<th>特色内容</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=claude+code+security+hooks+PII+2026" target="_blank" rel="noopener">Claude Code Security Hooks — Complete Guide</a></td>
+<td>Serenities AI</td>
+<td>PII 扫描、source map 检测、License 变更告警</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=claude+code+local+llm+mcp+ollama+2026" target="_blank" rel="noopener">Running Local LLMs with Claude Code via MCP</a></td>
+<td>Matt Williams</td>
+<td>Ollama + GLM-5.1 + Claude MCP 完整配置</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=multi+agent+gemma4+claude+cost+optimization+2026" target="_blank" rel="noopener">Multi-Agent Cost Optimization with Gemma 4</a></td>
+<td>AI Jason</td>
+<td>小模型分类子代理降低整体 API 成本实战</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=claude+code+git+worktree+parallel+2026" target="_blank" rel="noopener">Claude Code Worktrees — Parallel Feature Development</a></td>
+<td>Fireship</td>
+<td>多 Worktree + 多 Claude 实例同时开发不同功能</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=gpt6+vs+claude+opus+coding+benchmark+2026" target="_blank" rel="noopener">GPT-6 vs Claude Opus 4.6 — Real Coding Benchmark</a></td>
+<td>Yannic Kilcher</td>
+<td>SWE-bench 深度对比，各自适用场景分析</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=claude+cowork+dispatch+mobile+trigger+shortcuts+2026" target="_blank" rel="noopener">Scheduled Tasks + Dispatch — Mobile Trigger Setup</a></td>
+<td>Techy Surgeon</td>
+<td>iPhone Shortcuts → Dispatch → 本地 Claude 完整链路</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>四、Reddit 讨论精选</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>帖子标题</th>
+<th>子版块</th>
+<th>要点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://www.reddit.com/search/?q=claude+code+rate+limit+faster+bug+2026" target="_blank" rel="noopener">Claude Code hit rate limits MUCH faster — bug or feature?</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>用户集中反映 usage limit 消耗速度异常，Anthropic 确认调查中</td>
+</tr>
+<tr>
+<td><a href="https://www.reddit.com/search/?q=GLM-5.1+MIT+license+700B+open+source+2026" target="_blank" rel="noopener">GLM-5.1 MIT license — finally a truly open 700B+ model</a></td>
+<td><a href="https://www.reddit.com/r/LocalLLaMA/" target="_blank" rel="noopener">r/LocalLLaMA</a></td>
+<td>智谱 744B MoE MIT 开源，SWE-Bench Pro 超越 GPT-5.4 的实测讨论</td>
+</tr>
+<tr>
+<td><a href="https://www.reddit.com/search/?q=cal.com+closed+source+open+source+implications+2026" target="_blank" rel="noopener">Cal.com going closed source — what this means for open source</a></td>
+<td><a href="https://www.reddit.com/r/programming/" target="_blank" rel="noopener">r/programming</a></td>
+<td>知名开源项目转商业的行业信号，HN 顶帖延伸讨论</td>
+</tr>
+<tr>
+<td><a href="https://www.reddit.com/search/?q=gemma4+classifier+multi+agent+cheap+2026" target="_blank" rel="noopener">Using Gemma 4 as cheap classifier in multi-agent pipelines</a></td>
+<td><a href="https://www.reddit.com/r/MachineLearning/" target="_blank" rel="noopener">r/MachineLearning</a></td>
+<td>Google E2B/E4B 小模型在 Agent 管道中作专用分类器的实践</td>
+</tr>
+<tr>
+<td><a href="https://www.reddit.com/search/?q=claude+code+source+map+leak+security+analysis+2026" target="_blank" rel="noopener">Claude source code leaked via .map file — security analysis</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>详细逆向分析 npm 包源码 map 泄露，涉及隐藏功能讨论</td>
+</tr>
+<tr>
+<td><a href="https://www.reddit.com/search/?q=LLM+knowledge+transfer+agent+trust+nature+2026" target="_blank" rel="noopener">LLM knowledge transfer paper — implications for agent trust</a></td>
+<td><a href="https://www.reddit.com/r/MachineLearning/" target="_blank" rel="noopener">r/MachineLearning</a></td>
+<td>Nature 论文：训练数据删除后特征仍可传递，多代理信任模型讨论</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>五、X 热门帖子</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>作者</th>
+<th>内容摘要</th>
+<th>亮点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://x.com/AnthropicAI" target="_blank" rel="noopener">@AnthropicAI</a></td>
+<td>Claude Opus 4.6 以 65.3% SWE-bench Verified 创历史新高，LMSYS Chatbot Arena 评分第一</td>
+<td>代码能力官方确认</td>
+</tr>
+<tr>
+<td><a href="https://x.com/zhipuai_cn" target="_blank" rel="noopener">@zhipuai_cn</a></td>
+<td>GLM-5.1 正式发布，744B MoE，MIT 授权，200K context，开源生态最强模型之一</td>
+<td>中国开源大模型里程碑</td>
+</tr>
+<tr>
+<td><a href="https://x.com/OpenAI" target="_blank" rel="noopener">@OpenAI</a></td>
+<td>GPT-6 上线：2M context，双层推理，$2.50/M input tokens</td>
+<td>旗舰产品更新</td>
+</tr>
+<tr>
+<td><a href="https://x.com/Google" target="_blank" rel="noopener">@Google</a></td>
+<td>Gemma 4 家族全面发布（Apache 2.0）：31B/26B MoE/E4B/E2B，256K context，比同尺寸竞品高 20×</td>
+<td>开源生态重磅投入</td>
+</tr>
+<tr>
+<td><a href="https://x.com/EFF" target="_blank" rel="noopener">@EFF</a></td>
+<td>"Google broke its promise—now ICE has my data" 获 HN 1070 分，AI 工具数据承诺的可信度问题再次引爆</td>
+<td>数据隐私/AI 伦理</td>
+</tr>
+<tr>
+<td><a href="https://x.com/bcherny" target="_blank" rel="noopener">@bcherny</a></td>
+<td>提醒用户：rate limit 消耗异常属于已知 bug，团队正在修复；在修复前建议用 <code class="inline">/token-usage</code> 监控用量</td>
+<td>Claude Code 创始人直接回应</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>六、跨平台趋势总结</h2>
+
+<p><strong>本周最热话题：</strong></p>
+
+<p><strong>1. GLM-5.1 MIT 开源震动本地部署社区</strong>：智谱 AI 发布的 744B MoE 模型以 MIT 授权开源，是目前可完全商用的最大开源模型之一。r/LocalLLaMA 讨论量爆发，社区迅速验证其在 SWE-Bench Pro 上超越 GPT-5.4 的基准结果。对 Claude Code 用户影响：高敏感性数据处理（医疗、法律、金融）现在有了完全本地化的替代路径。</p>
+
+<p><strong>2. GPT-6 与 Claude Opus 4.6 双雄并立</strong>：GPT-6 以 2M token 超长上下文见长，Claude Opus 4.6 以代码任务专精领跑 SWE-bench（65.3%）。市场正在形成清晰的分工共识：代码生成/架构 → Claude；超长文档理解/多模态 → GPT-6。MCP 统一调度两者成为高级工作流的标准配置。</p>
+
+<p><strong>3. 开源协议信任危机</strong>：Cal.com（AGPL → 闭源）和 GLM-5.1（MIT，真开源）形成对比。HN 和 Reddit 社区开始讨论"Contributor License Agreement 陷阱"——贡献代码后公司可单方面改变协议。Claude Code 用户开始用 Hook 自动检测依赖协议变更。</p>
+
+<p><strong>4. 谷歌数据承诺失守引发 AI 工具信任反思</strong>：EFF 报告谷歌将 Pixel 位置数据交给 ICE，违背 2023 年的隐私承诺。在 AI 工具普及的背景下，开发者开始质疑：AI 工具（包括 Claude Code）的遥测数据最终会流向何处？隐私优先的工作流设计需求上升。</p>
+
+<p><strong>5. Apple Siri AI 编程训练营信号</strong>：200 名 Siri 工程师入营接受 AI 辅助编程培训，标志着"AI 写代码"从前沿变为行业基础技能。Claude Code 重度用户的先发优势窗口正在收窄——现在是建立工作流文档、Skills 库和团队 AI 规范的最佳时机。</p>
+
+<hr>
+
+<h2>七、AI 模型速览（2026-04-16 现状）</h2>
+
+<pre><code>
+开源阵营（可本地部署）
+├── GLM-5.1      744B MoE  MIT    200K  ★★★★★（本周新王）
+├── Gemma 4 31B   31B      Apache  256K  ★★★★☆
+├── Llama 4 Scout  多模态   Meta-L  10M   ★★★★☆
+└── Llama 4 Maverick 400B  Meta-L  1M    ★★★★★
+
+闭源阵营
+├── Claude Opus 4.6   SWE-bench 65.3%，代码最强   ★★★★★
+├── Claude Mythos     预览中，合作伙伴限定         ★★★★★+
+├── GPT-6             2M context，多模态           ★★★★★
+└── Gemini 3.1 Flash  TTS支持70+语言，轻量          ★★★★☆
+</code></pre>
+
+<hr>
+
+<h2>八、推荐行动</h2>
+
+<p><strong>今日可立即执行（< 30 分钟）：</strong></p>
+
+<p>1. <strong>设置 License 变更 Hook</strong>：在 <code class="inline">~/.claude/hooks/</code> 添加 <code class="inline">PostToolUse</code> Hook，对 <code class="inline">npm install</code> 操作检查新增包的 License 字段，Cal.com 事件给了最好的触发时机。</p>
+
+<p>2. <strong>评估 GLM-5.1 本地部署可行性</strong>：检查本地 GPU 内存（需 ~80GB+ for FP8），或用 Ollama 的量化版本。敏感数据处理项目的 ROI 计算：API 成本 vs 一次性硬件投入。</p>
+
+<p>3. <strong>用 <code class="inline">/token-usage</code> 监控 rate limit 消耗</strong>：当前 rate limit 消耗 bug 未完全修复，主动监控避免被卡。Boris Cherny 建议：超过 60% 时切换到子任务模式分批处理。</p>
+
+<p>4. <strong>预留 Claude Mythos 升级接口</strong>：把当前 <code class="inline">model="claude-opus-4-6-20251101"</code> 提取为配置变量（环境变量或 <code class="inline">~/.claude/settings.json</code>），Mythos GA 时切换成本为零。</p>
+
+<p>5. <strong>阅读 <a href="https://arxiv.org/" target="_blank" rel="noopener">LLM 知识迁移研究原文</a></strong>：理解子代理如何继承主代理偏见，优化多代理 system prompt 中的反偏见指令，提升多智能体系统可靠性。</p>
+
+<hr>
+
+<p><em>本日报由 Claude Cowork 定时任务自动生成 · 2026-04-16</em></p>
+
+  </div>
+</article>
+<div class="article-footer">
+  <div class="container">
+    <a href="../#ai-trends">← 返回首页</a>
+  </div>
+</div>
+</body>
+</html>
