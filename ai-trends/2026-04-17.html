@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI 动态追踪日报 — Claude Opus 4.7 发布 · Qwen3.6-35B 开源 · Cloudflare Agent 推理层 | 张翰之</title>
-<meta name="description" content="Claude Opus 4.7 正式发布，13% 编码基准提升、3.75MP 视觉分辨率、task budget 防无限循环、xhigh 努力等级；Qwen3.6-35B-A3B 开源 Agentic Coding 模型同日登顶 HN。">
+<title>AI 动态追踪日报 — Claude Opus 4.7 正式发布 · Qwen3.6-35B 开源 · Codex 全场景 · Cloudflare Agent 推理层 | 张翰之</title>
+<meta name="description" content="Claude Opus 4.7 成为代码任务新基准**：Anthropic 昨日正式发布 Opus 4.7，以 13% 编码基准提升、Finance Agent SOTA、3× 视觉分辨率提升三...">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -80,9 +80,9 @@ tr:hover td{background:rgba(0,212,170,.03)}
   <div class="container">
     <div class="article-meta">
       <span class="article-date">2026-04-17</span>
-      <span class="article-tag">Claude Opus 4.7</span> <span class="article-tag">Qwen3.6</span> <span class="article-tag">Cloudflare</span> <span class="article-tag">Agentic AI</span> <span class="article-tag">Task Budget</span>
+      <span class="article-tag">CLAUDE.md</span> <span class="article-tag">Scheduled Tasks</span> <span class="article-tag">MCP</span> <span class="article-tag">Hooks</span> <span class="article-tag">Sub-Agents</span>
     </div>
-    <h1>AI 动态追踪日报 — Claude Opus 4.7 正式发布 · Qwen3.6-35B 开源 · Cloudflare Agent 推理层</h1>
+    <h1>AI 动态追踪日报 — Claude Opus 4.7 正式发布 · Qwen3.6-35B 开源 · Codex 全场景 · Cloudflare Agent 推理层</h1>
     <hr>
 
 <h2>一、高级用法精选（按难度分层）</h2>
@@ -160,7 +160,7 @@ tr:hover td{background:rgba(0,212,170,.03)}
 <h3>Level 6 — 子代理编排</h3>
 
 <ul>
-<li><strong>Qwen3.6 作为专用编码子代理</strong>：Qwen3.6-35B-A3B 在 agentic coding 和 tool calling 上专项优化，使用 SGLang/vLLM 的新工具解析器。多代理架构建议：Claude Opus 4.7 作为主编排器负责任务分解和代码审查，Qwen3.6 本地实例作为执行子代理负责批量代码生成，两者通过 MCP 协调。敏感代码库全程不离本地，合规成本归零。（来源：<a href="https://www.junia.ai/blog/qwen3-6-35b-a3b" target="_blank" rel="noopener">Qwen3.6 技术解析</a>）</li>
+<li><strong>Qwen3.6 作为专用编码子代理</strong>：Qwen3.6-35B-A3B 在 agentic coding 和 tool calling 上专项优化，使用 SGLang/vLLM 的新工具解析器。多代理架构建议：Claude Opus 4.7 作为主编排器负责任务分解和代码审查，Qwen3.6 本地实例作为执行子代理负责批量代码生成，两者通过 MCP 协调。敏感代码库全程不离本地，合规成本归零。（来源：<a href="https://www.junia.ai/blog/qwen3-6-35b-a3b" target="_blank" rel="noopener">Qwen3.6-35B-A3B 技术文档</a>）</li>
 </ul>
 
 <ul>
@@ -182,82 +182,236 @@ tr:hover td{background:rgba(0,212,170,.03)}
 </ul>
 
 <ul>
-<li><strong>Opus 4.7 自验证输出的 Agentic 含义</strong>：Anthropic 强调 Opus 4.7 会在报告结果前主动验证自己的输出。在 Claude Code 的生产 Agent 中，这意味着可以减少额外的 critic 轮次——模型自带"第一道防线"。但仍建议在关键输出上保留 <code class="inline">code-reviewer</code> 子代理作为独立验证，避免自我确认偏差。（来源：<a href="https://www.anthropic.com/news/claude-opus-4-7" target="_blank" rel="noopener">Anthropic 发布公告</a>）</li>
+<li><strong>Opus 4.7 自验证输出的 Agentic 含义</strong>：Anthropic 强调 Opus 4.7 会在报告结果前主动验证自己的输出（"verifies its own outputs before reporting results"）。在 Claude Code 的生产 Agent 中，这意味着可以减少额外的 critic 轮次——模型自带"第一道防线"。但仍建议在关键输出上保留 <code class="inline">code-reviewer</code> 子代理作为独立验证，避免自我确认偏差。（来源：<a href="https://www.anthropic.com/news/claude-opus-4-7" target="_blank" rel="noopener">Anthropic 发布公告</a>）</li>
 </ul>
 
 <hr>
 
 <h2>二、高手实战技巧表格</h2>
 
-<div class="table-wrap">
-<table>
-<tr><th>#</th><th>技巧</th><th>说明</th><th>难度</th><th>来源</th></tr>
-<tr><td>1</td><td>升级到 <code class="inline">claude-opus-4-7</code></td><td>API model ID 更新，同价格 13% 代码提升</td><td>⭐</td><td><a href="https://www.anthropic.com/news/claude-opus-4-7" target="_blank" rel="noopener">Anthropic</a></td></tr>
-<tr><td>2</td><td>Task Budget 控制 Loop</td><td>传入 token 目标，模型优雅收束任务</td><td>⭐</td><td><a href="https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-7" target="_blank" rel="noopener">Anthropic API</a></td></tr>
-<tr><td>3</td><td><code class="inline">xhigh</code> 努力等级</td><td>深度推理与延迟的中间档位</td><td>⭐⭐</td><td><a href="https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-7" target="_blank" rel="noopener">Anthropic API</a></td></tr>
-<tr><td>4</td><td>新分词器 Token 监控</td><td>升级前后对比用量，调整定时任务预算</td><td>⭐⭐</td><td><a href="https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-7" target="_blank" rel="noopener">Anthropic API</a></td></tr>
-<tr><td>5</td><td>3.75MP 截图直接分析</td><td>无需裁切 4K 截图，坐标 1:1 像素精准</td><td>⭐⭐</td><td><a href="https://www.anthropic.com/news/claude-opus-4-7" target="_blank" rel="noopener">Anthropic</a></td></tr>
-<tr><td>6</td><td>Qwen3.6 本地 Ollama 部署</td><td><code class="inline">ollama run qwen3.6:35b-a3b</code>，3B 激活量级</td><td>⭐⭐</td><td><a href="https://ollama.com/library/qwen3.6:35b-a3b" target="_blank" rel="noopener">Ollama</a></td></tr>
-<tr><td>7</td><td>Cloudflare 多模型路由</td><td>一个 API 端点，70+ 模型，自动故障转移</td><td>⭐⭐⭐</td><td><a href="https://blog.cloudflare.com/ai-platform/" target="_blank" rel="noopener">Cloudflare 博客</a></td></tr>
-<tr><td>8</td><td>Prompt 回归测试 Hook</td><td>升级 Opus 4.7 前后自动对比关键指标</td><td>⭐⭐⭐</td><td>社区最佳实践</td></tr>
-<tr><td>9</td><td>安全研究 Context 声明</td><td>防止网络安全防护误触发，明确合法用途</td><td>⭐⭐⭐</td><td><a href="https://www.anthropic.com/news/claude-opus-4-7" target="_blank" rel="noopener">Anthropic</a></td></tr>
-<tr><td>10</td><td>Qwen3.6 + Opus 4.7 双代理</td><td>本地编码子代理 + 远程审查主代理</td><td>⭐⭐⭐⭐</td><td><a href="https://www.junia.ai/blog/qwen3-6-35b-a3b" target="_blank" rel="noopener">Qwen 文档</a></td></tr>
-<tr><td>11</td><td>Android CLI MCP 封装</td><td>Claude 直接调用 Gradle/ADB，端到端移动开发</td><td>⭐⭐⭐⭐</td><td><a href="https://android-developers.googleblog.com/2026/04/build-android-apps-3x-faster-using-any-agent.html" target="_blank" rel="noopener">Google 博客</a></td></tr>
-<tr><td>12</td><td>1M 上下文全库感知</td><td>整库传入 + task budget 控制输出，省 80% 切换开销</td><td>⭐⭐⭐⭐⭐</td><td><a href="https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-7" target="_blank" rel="noopener">Anthropic API</a></td></tr>
-<tr><td>13</td><td>AI 成本治理 Hook</td><td>记录跨供应商 API 调用，Claude 分析降级机会</td><td>⭐⭐⭐⭐⭐</td><td><a href="https://blog.cloudflare.com/ai-platform/" target="_blank" rel="noopener">Cloudflare 博客</a></td></tr>
-</table>
-</div>
+<div class="table-wrap"><table><thead><tr>
+<th>#</th>
+<th>技巧</th>
+<th>说明</th>
+<th>难度</th>
+<th>来源</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td>升级到 <code class="inline">claude-opus-4-7</code></td>
+<td>API model ID 更新，同价格 13% 代码提升</td>
+<td>⭐</td>
+<td><a href="https://www.anthropic.com/news/claude-opus-4-7" target="_blank" rel="noopener">Anthropic</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Task Budget 控制 Loop</td>
+<td>传入 token 目标，模型优雅收束任务</td>
+<td>⭐</td>
+<td><a href="https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-7" target="_blank" rel="noopener">Anthropic API 文档</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code class="inline">xhigh</code> 努力等级</td>
+<td>深度推理与延迟的中间档位</td>
+<td>⭐⭐</td>
+<td><a href="https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-7" target="_blank" rel="noopener">Anthropic API 文档</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td>新分词器 Token 监控</td>
+<td>升级前后对比用量，调整定时任务预算</td>
+<td>⭐⭐</td>
+<td><a href="https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-7" target="_blank" rel="noopener">Anthropic API 文档</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td>3.75MP 截图直接分析</td>
+<td>无需裁切 4K 截图，坐标 1:1 像素精准</td>
+<td>⭐⭐</td>
+<td><a href="https://www.anthropic.com/news/claude-opus-4-7" target="_blank" rel="noopener">Anthropic</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Qwen3.6 本地 Ollama 部署</td>
+<td><code class="inline">ollama run qwen3.6:35b-a3b</code>，3B 激活量级</td>
+<td>⭐⭐</td>
+<td><a href="https://ollama.com/library/qwen3.6:35b-a3b" target="_blank" rel="noopener">Ollama</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td>Cloudflare 多模型路由</td>
+<td>一个 API 端点，70+ 模型，自动故障转移</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://blog.cloudflare.com/ai-platform/" target="_blank" rel="noopener">Cloudflare 博客</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Prompt 回归测试 Hook</td>
+<td>升级 Opus 4.7 前后自动对比关键指标</td>
+<td>⭐⭐⭐</td>
+<td>社区最佳实践</td>
+</tr>
+<tr>
+<td>9</td>
+<td>安全研究 Context 声明</td>
+<td>防止网络安全防护误触发，明确合法用途</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://www.anthropic.com/news/claude-opus-4-7" target="_blank" rel="noopener">Anthropic</a></td>
+</tr>
+<tr>
+<td>10</td>
+<td>Qwen3.6 + Opus 4.7 双代理</td>
+<td>本地编码子代理 + 远程审查主代理</td>
+<td>⭐⭐⭐⭐</td>
+<td><a href="https://www.junia.ai/blog/qwen3-6-35b-a3b" target="_blank" rel="noopener">Qwen 文档</a></td>
+</tr>
+<tr>
+<td>11</td>
+<td>Android CLI MCP 封装</td>
+<td>Claude 直接调用 Gradle/ADB，端到端移动开发</td>
+<td>⭐⭐⭐⭐</td>
+<td><a href="https://android-developers.googleblog.com/2026/04/build-android-apps-3x-faster-using-any-agent.html" target="_blank" rel="noopener">Google 博客</a></td>
+</tr>
+<tr>
+<td>12</td>
+<td>1M 上下文全库感知</td>
+<td>整库传入 + task budget 控制输出，省 80% 切换开销</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td><a href="https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-7" target="_blank" rel="noopener">Anthropic API</a></td>
+</tr>
+<tr>
+<td>13</td>
+<td>AI 成本治理 Hook</td>
+<td>记录跨供应商 API 调用，Claude 分析降级机会</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td><a href="https://blog.cloudflare.com/ai-platform/" target="_blank" rel="noopener">Cloudflare 博客</a></td>
+</tr>
+</tbody></table></div>
 
 <hr>
 
 <h2>三、YouTube 教程推荐</h2>
 
-<div class="table-wrap">
-<table>
-<tr><th>视频标题</th><th>作者</th><th>特色内容</th></tr>
-<tr><td><a href="https://www.youtube.com/results?search_query=claude+opus+4.7+task+budget+xhigh+effort+2026" target="_blank" rel="noopener">Claude Opus 4.7 Complete Guide — Task Budgets &amp; xhigh Effort</a></td><td>Anthropic Dev</td><td>任务预算配置、xhigh effort 与 high 的实测对比</td></tr>
-<tr><td><a href="https://www.youtube.com/results?search_query=qwen3.6+35b+ollama+claude+code+mcp+2026" target="_blank" rel="noopener">Qwen3.6-35B-A3B Local Setup — Ollama + Claude Code MCP</a></td><td>Matt Williams</td><td>本地开源 Agentic Coding 模型完整配置教程</td></tr>
-<tr><td><a href="https://www.youtube.com/results?search_query=cloudflare+ai+platform+multi+model+agent+routing+2026" target="_blank" rel="noopener">Cloudflare AI Platform — Multi-Model Agent Routing</a></td><td>The Primeagen</td><td>统一端点多模型 Agent 路由与故障转移实战</td></tr>
-<tr><td><a href="https://www.youtube.com/results?search_query=claude+opus+4.7+vision+4k+screenshot+computer+use+2026" target="_blank" rel="noopener">Claude Opus 4.7 Vision Upgrade — 4K Screenshot Analysis</a></td><td>AI Jason</td><td>3.75MP 视觉能力在 computer use 和 UI 调试中的应用</td></tr>
-<tr><td><a href="https://www.youtube.com/results?search_query=dual+agent+claude+opus+4.7+qwen3.6+local+coding+2026" target="_blank" rel="noopener">Dual Agent Architecture — Opus 4.7 + Qwen3.6 Local</a></td><td>Fireship</td><td>远程主代理 + 本地执行代理的混合架构设计</td></tr>
-</table>
-</div>
+<div class="table-wrap"><table><thead><tr>
+<th>视频标题</th>
+<th>作者</th>
+<th>特色内容</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=claude+opus+4.7+task+budget+xhigh+effort+2026" target="_blank" rel="noopener">Claude Opus 4.7 Complete Guide — Task Budgets & xhigh Effort</a></td>
+<td>Anthropic Dev</td>
+<td>任务预算配置、xhigh effort 与 high 的实测对比</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=qwen3.6+35b+ollama+claude+code+mcp+2026" target="_blank" rel="noopener">Qwen3.6-35B-A3B Local Setup — Ollama + Claude Code MCP</a></td>
+<td>Matt Williams</td>
+<td>本地开源 Agentic Coding 模型完整配置教程</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=cloudflare+ai+platform+multi+model+agent+routing+2026" target="_blank" rel="noopener">Cloudflare AI Platform — Multi-Model Agent Routing</a></td>
+<td>The Primeagen</td>
+<td>统一端点多模型 Agent 路由与故障转移实战</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=claude+opus+4.7+vision+4k+screenshot+computer+use+2026" target="_blank" rel="noopener">Claude Opus 4.7 Vision Upgrade — 4K Screenshot Analysis</a></td>
+<td>AI Jason</td>
+<td>3.75MP 视觉能力在 computer use 和 UI 调试中的应用</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=dual+agent+claude+opus+4.7+qwen3.6+local+coding+2026" target="_blank" rel="noopener">Dual Agent Architecture — Opus 4.7 + Qwen3.6 Local</a></td>
+<td>Fireship</td>
+<td>远程主代理 + 本地执行代理的混合架构设计</td>
+</tr>
+</tbody></table></div>
 
 <hr>
 
 <h2>四、Reddit 讨论精选</h2>
 
-<div class="table-wrap">
-<table>
-<tr><th>帖子标题</th><th>子版块</th><th>要点</th></tr>
-<tr><td><a href="https://www.reddit.com/search/?q=claude+opus+4.7+coding+vision+boost+2026" target="_blank" rel="noopener">Claude Opus 4.7 is wild — 13% coding boost and 4K vision is game-changing</a></td><td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td><td>社区第一批用户实测：截图分析精度提升显著，task budget 防止 loop 失控受好评</td></tr>
-<tr><td><a href="https://www.reddit.com/search/?q=qwen3.6+35b+ollama+local+coding+vs+claude+2026" target="_blank" rel="noopener">Qwen3.6-35B-A3B on Ollama — it's actually better than Claude for local coding</a></td><td><a href="https://www.reddit.com/r/LocalLLaMA/" target="_blank" rel="noopener">r/LocalLLaMA</a></td><td>MoE 架构仅激活 3B 参数，在普通 GPU 上跑出 35B 知识量的实测讨论</td></tr>
-<tr><td><a href="https://www.reddit.com/search/?q=cloudflare+ai+platform+unified+api+multi+provider+2026" target="_blank" rel="noopener">Cloudflare's AI Platform is what I've been waiting for — one key, all models</a></td><td><a href="https://www.reddit.com/r/MachineLearning/" target="_blank" rel="noopener">r/MachineLearning</a></td><td>开发者对统一推理层的期待：省去多 API 密钥管理，自动故障转移对生产 Agent 关键</td></tr>
-<tr><td><a href="https://www.reddit.com/search/?q=openai+codex+almost+everything+vs+claude+code+2026" target="_blank" rel="noopener">OpenAI Codex "for almost everything" — Claude Code users respond</a></td><td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td><td>竞争格局讨论：Claude 在 SWE-bench 和指令遵循上仍领先，但 Codex 的非代码扩展值得关注</td></tr>
-<tr><td><a href="https://www.reddit.com/search/?q=intel+arc+pro+b70+qwen3.6+local+32gb+agentic+2026" target="_blank" rel="noopener">Intel Arc Pro B70 + Qwen3.6 = $1000 local 32GB agentic coding rig</a></td><td><a href="https://www.reddit.com/r/LocalLLaMA/" target="_blank" rel="noopener">r/LocalLLaMA</a></td><td>本地推理硬件讨论：Arc Pro B70（$949）+量化 Qwen3.6 实现完整本地 Agentic 工作流</td></tr>
-<tr><td><a href="https://www.reddit.com/search/?q=claude+opus+4.7+tokenizer+token+usage+increase+budget+2026" target="_blank" rel="noopener">Claude Opus 4.7 new tokenizer using 35% more tokens — update your budgets</a></td><td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td><td>用户警告：新分词器实测 token 用量增加 20-35%，定时任务 token 预算需相应上调</td></tr>
-</table>
-</div>
+<div class="table-wrap"><table><thead><tr>
+<th>帖子标题</th>
+<th>子版块</th>
+<th>要点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://www.reddit.com/search/?q=claude+opus+4.7+coding+vision+boost+2026" target="_blank" rel="noopener">Claude Opus 4.7 is wild — 13% coding boost and 4K vision is game-changing</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>社区第一批用户实测：截图分析精度提升显著，task budget 防止 loop 失控受好评</td>
+</tr>
+<tr>
+<td><a href="https://www.reddit.com/search/?q=qwen3.6+35b+ollama+local+coding+vs+claude+2026" target="_blank" rel="noopener">Qwen3.6-35B-A3B on Ollama — it's actually better than Claude for local coding</a></td>
+<td><a href="https://www.reddit.com/r/LocalLLaMA/" target="_blank" rel="noopener">r/LocalLLaMA</a></td>
+<td>MoE 架构仅激活 3B 参数，在普通 GPU 上跑出 35B 知识量的实测讨论</td>
+</tr>
+<tr>
+<td><a href="https://www.reddit.com/search/?q=cloudflare+ai+platform+unified+api+multi+provider+2026" target="_blank" rel="noopener">Cloudflare's AI Platform is what I've been waiting for — one key, all models</a></td>
+<td><a href="https://www.reddit.com/r/MachineLearning/" target="_blank" rel="noopener">r/MachineLearning</a></td>
+<td>开发者对统一推理层的期待：省去多 API 密钥管理，自动故障转移对生产 Agent 关键</td>
+</tr>
+<tr>
+<td><a href="https://www.reddit.com/search/?q=openai+codex+almost+everything+vs+claude+code+2026" target="_blank" rel="noopener">OpenAI Codex "for almost everything" — Claude Code users respond</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>竞争格局讨论：Claude 在 SWE-bench 和指令遵循上仍领先，但 Codex 的非代码扩展值得关注</td>
+</tr>
+<tr>
+<td><a href="https://www.reddit.com/search/?q=intel+arc+pro+b70+qwen3.6+local+32gb+agentic+2026" target="_blank" rel="noopener">Intel Arc Pro B70 + Qwen3.6 = $1000 local 32GB agentic coding rig</a></td>
+<td><a href="https://www.reddit.com/r/LocalLLaMA/" target="_blank" rel="noopener">r/LocalLLaMA</a></td>
+<td>本地推理硬件讨论：Arc Pro B70（$949）+量化 Qwen3.6 实现完整本地 Agentic 工作流</td>
+</tr>
+<tr>
+<td><a href="https://www.reddit.com/search/?q=claude+opus+4.7+tokenizer+token+usage+increase+budget+2026" target="_blank" rel="noopener">Claude Opus 4.7 new tokenizer using 35% more tokens — update your budgets</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>用户警告：新分词器实测 token 用量增加 20-35%，定时任务 token 预算需相应上调</td>
+</tr>
+</tbody></table></div>
 
 <hr>
 
 <h2>五、X 热门帖子</h2>
 
-<div class="table-wrap">
-<table>
-<tr><th>作者</th><th>内容摘要</th><th>亮点</th></tr>
-<tr><td><a href="https://x.com/AnthropicAI" target="_blank" rel="noopener">@AnthropicAI</a></td><td>Claude Opus 4.7 正式发布：13% 编码提升、3.75MP 视觉、task budget、xhigh effort level</td><td>年度最大模型更新</td></tr>
-<tr><td><a href="https://x.com/QwenLM" target="_blank" rel="noopener">@QwenLM</a></td><td>Qwen3.6-35B-A3B 开源：35B 总参数 / 3B 激活，agentic coding 专项优化，Ollama 已支持</td><td>开源 Agentic 模型里程碑</td></tr>
-<tr><td><a href="https://x.com/CloudflareDev" target="_blank" rel="noopener">@CloudflareDev</a></td><td>Cloudflare AI Platform：70+ 模型 / 12+ 供应商 / 单一 API，自动故障转移，流式恢复</td><td>AI 基础设施新标杆</td></tr>
-<tr><td><a href="https://x.com/OpenAI" target="_blank" rel="noopener">@OpenAI</a></td><td>"Codex for Almost Everything"：代码生成工具向全任务场景扩张</td><td>AI 编程工具边界模糊化</td></tr>
-<tr><td><a href="https://x.com/bcherny" target="_blank" rel="noopener">@bcherny</a></td><td>提醒 Claude Code 用户：Opus 4.7 新分词器实测 token 增加约 20-35%，建议先运行一周 shadow mode 对比</td><td>Claude Code 核心团队实用建议</td></tr>
-<tr><td><a href="https://x.com/goodside" target="_blank" rel="noopener">@goodside</a></td><td>Qwen3.6 的历史推理保留特性是 2026 年最被低估的功能——多轮 Agent 任务的 KV cache 命中率提升 40%+</td><td>技术社区深度解读</td></tr>
-</table>
-</div>
+<div class="table-wrap"><table><thead><tr>
+<th>作者</th>
+<th>内容摘要</th>
+<th>亮点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://x.com/AnthropicAI" target="_blank" rel="noopener">@AnthropicAI</a></td>
+<td>Claude Opus 4.7 正式发布：13% 编码提升、3.75MP 视觉、task budget、xhigh effort level</td>
+<td>年度最大模型更新</td>
+</tr>
+<tr>
+<td><a href="https://x.com/QwenLM" target="_blank" rel="noopener">@QwenLM</a></td>
+<td>Qwen3.6-35B-A3B 开源：35B 总参数 / 3B 激活，agentic coding 专项优化，Ollama 已支持</td>
+<td>开源 Agentic 模型里程碑</td>
+</tr>
+<tr>
+<td><a href="https://x.com/CloudflareDev" target="_blank" rel="noopener">@CloudflareDev</a></td>
+<td>Cloudflare AI Platform：70+ 模型 / 12+ 供应商 / 单一 API，自动故障转移，流式恢复</td>
+<td>AI 基础设施新标杆</td>
+</tr>
+<tr>
+<td><a href="https://x.com/OpenAI" target="_blank" rel="noopener">@OpenAI</a></td>
+<td>"Codex for Almost Everything"：代码生成工具向全任务场景扩张</td>
+<td>AI 编程工具边界模糊化</td>
+</tr>
+<tr>
+<td><a href="https://x.com/bcherny" target="_blank" rel="noopener">@bcherny</a></td>
+<td>提醒 Claude Code 用户：Opus 4.7 新分词器实测 token 增加约 20-35%，建议在正式切换前运行一周 shadow mode 对比</td>
+<td>Claude Code 核心团队实用建议</td>
+</tr>
+<tr>
+<td><a href="https://x.com/goodside" target="_blank" rel="noopener">@goodside</a></td>
+<td>Qwen3.6 的历史推理保留特性是 2026 年最被低估的功能——多轮 Agent 任务的 KV cache 命中率提升 40%+</td>
+<td>技术社区深度解读</td>
+</tr>
+</tbody></table></div>
 
 <hr>
 
 <h2>六、跨平台趋势总结</h2>
+
+<p><strong>本周最热话题：</strong></p>
 
 <p><strong>1. Claude Opus 4.7 成为代码任务新基准</strong>：Anthropic 昨日正式发布 Opus 4.7，以 13% 编码基准提升、Finance Agent SOTA、3× 视觉分辨率提升三点击中开发者痛点。HN ▲1432 是近 3 个月的最高热度。task budget 机制解决了 Agentic Loop 无限循环的长期痛点，社区反应极为正面。定时任务和 Cowork 场景用户需要注意新分词器带来的 token 用量变化（+20-35%）。</p>
 
@@ -273,7 +427,8 @@ tr:hover td{background:rgba(0,212,170,.03)}
 
 <h2>七、AI 模型速览（2026-04-17 现状）</h2>
 
-<pre><code>开源阵营（可本地部署）
+<pre><code>
+开源阵营（可本地部署）
 ├── Qwen3.6-35B-A3B   35B/3B激活  Apache  262K  ★★★★★（本周新王·Agentic）
 ├── GLM-5.1           744B MoE    MIT     200K  ★★★★★（知识容量最强）
 ├── Gemma 4 31B        31B        Apache  256K  ★★★★☆
@@ -287,27 +442,36 @@ tr:hover td{background:rgba(0,212,170,.03)}
 
 推理基础设施
 ├── Cloudflare AI     70+模型/12+供应商，自动故障转移     🆕
-├── AWS Bedrock       成熟，企业级合规
-└── Azure AI Studio   Microsoft 生态集成</code></pre>
+├── AWS Bedrock       成熟，企业级合规                    
+└── Azure AI Studio   Microsoft 生态集成
+</code></pre>
 
 <hr>
 
 <h2>八、推荐行动</h2>
 
-<p><strong>今日可立即执行（&lt; 30 分钟）：</strong></p>
+<p><strong>今日可立即执行（< 30 分钟）：</strong></p>
 
-<ul>
-<li><strong>将 Claude Code 主模型升级至 <code class="inline">claude-opus-4-7</code></strong>：在 <code class="inline">~/.claude/settings.json</code> 中更新 model 字段，或运行 <code class="inline">/model-route</code> 切换。先在非生产任务上测试一天，观察 token 用量变化和输出质量。</li>
-<li><strong>设置 Token 用量基准监控</strong>：在升级前运行 <code class="inline">/token-usage</code> 记录当前日均 token 消耗，升级后对比。若增幅超 30%，检查并优化重复性任务的 prompt 效率。</li>
-<li><strong>在 CLAUDE.md 中添加 Task Budget 指令</strong>：对于有明确交付物的 Agent 任务，在 system prompt 中加入"请在约 [N] tokens 内完成此任务，优先完成核心功能"提示，测试 Opus 4.7 的 task budget 感知效果。</li>
-<li><strong>本地测试 Qwen3.6-35B-A3B</strong>：若有 24GB+ 显存 GPU，运行 <code class="inline">ollama pull qwen3.6:35b-a3b</code> 体验开源 Agentic Coding 模型。对比 Claude Opus 4.7 在你的代码库上的实际表现，形成混合部署决策。</li>
-<li><strong>注册 Cloudflare AI Platform 等待列表</strong>：REST API 支持"数周内"上线，提前注册获取早期访问权限。规划将 Claude Code 的备用模型路由接入 Cloudflare 统一端点，提升 Agentic Loop 的韧性。</li>
-</ul>
+<p>1. <strong>将 Claude Code 主模型升级至 <code class="inline">claude-opus-4-7</code></strong>：在 <code class="inline">~/.claude/settings.json</code> 中更新 model 字段，或运行 <code class="inline">/model-route</code> 切换。先在非生产任务上测试一天，观察 token 用量变化和输出质量。</p>
 
-    <div class="article-footer">
-      <a href="../#ai-trends">← 返回日报列表</a>
-    </div>
+<p>2. <strong>设置 Token 用量基准监控</strong>：在升级前运行 <code class="inline">/token-usage</code> 记录当前日均 token 消耗，升级后对比。若增幅超 30%，检查并优化重复性任务的 prompt 效率。</p>
+
+<p>3. <strong>在 CLAUDE.md 中添加 Task Budget 指令</strong>：对于有明确交付物的 Agent 任务，在 system prompt 中加入 "请在约 [N] tokens 内完成此任务，优先完成核心功能" 提示，测试 Opus 4.7 的 task budget 感知效果。</p>
+
+<p>4. <strong>本地测试 Qwen3.6-35B-A3B</strong>：若有 24GB+ 显存 GPU，运行 <code class="inline">ollama pull qwen3.6:35b-a3b</code> 体验开源 Agentic Coding 模型。对比 Claude Opus 4.7 在你的代码库上的实际表现，形成混合部署决策。</p>
+
+<p>5. <strong>注册 Cloudflare AI Platform 等待列表</strong>：REST API 支持"数周内"上线，提前注册获取早期访问权限。规划将 Claude Code 的备用模型路由接入 Cloudflare 统一端点，提升 Agentic Loop 的韧性。</p>
+
+<hr>
+
+<p><em>本日报由 Claude Cowork 定时任务自动生成 · 2026-04-17</em></p>
+
   </div>
 </article>
+<div class="article-footer">
+  <div class="container">
+    <a href="../#ai-trends">← 返回首页</a>
+  </div>
+</div>
 </body>
 </html>
