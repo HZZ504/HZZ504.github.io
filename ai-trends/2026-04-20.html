@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 动态追踪日报 — Vercel 安全事件 · Claude 系统提示差异深析 · GLM-5.1 MIT 开源 · 芯片供应链风险 · TRELLIS.2 Mac端3D生成 | 张翰之</title>
+<meta name="description" content="2026-04-20 Claude Code / Cowork 社区最新动态、高级用法和实战技巧汇总">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;
+  --text:#e0e0e8;--text-dim:#8888a0;--text-bright:#ffffff;
+  --accent:#00d4aa;--accent2:#00a8ff;--accent3:#7c5cfc;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --max-w:900px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.8;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent2)}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:0;
+}
+
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+nav .inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--accent)}
+nav .logo svg{width:28px;height:28px}
+nav .back{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--accent)}
+
+/* Article */
+article{padding:100px 0 60px}
+.article-meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.article-date{font-family:var(--mono);font-size:.8rem;color:var(--accent);padding:4px 12px;border:1px solid rgba(0,212,170,.3);border-radius:4px}
+.article-tag{font-family:var(--mono);font-size:.65rem;color:var(--accent2);padding:2px 8px;background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.15);border-radius:4px}
+
+article h1{font-size:1.8rem;font-weight:700;color:var(--text-bright);margin-bottom:32px;line-height:1.3}
+article h2{font-size:1.35rem;font-weight:600;color:var(--accent);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,170,.15)}
+article h3{font-size:1.1rem;font-weight:600;color:var(--accent2);margin:28px 0 12px}
+article h4{font-size:.95rem;font-weight:600;color:var(--accent3);margin:20px 0 8px}
+article p{margin-bottom:12px;color:var(--text)}
+article ul{margin:0 0 16px 20px}
+article li{margin-bottom:8px;color:var(--text)}
+article li strong{color:var(--accent)}
+article hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:32px 0}
+article code.inline{font-family:var(--mono);font-size:.85em;background:rgba(0,212,170,.1);color:var(--accent);padding:2px 6px;border-radius:4px}
+article pre{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+article pre code{font-family:var(--mono);font-size:.85rem;color:var(--text)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);text-align:left;padding:10px 12px;border-bottom:2px solid rgba(0,212,170,.2);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text)}
+tr:hover td{background:rgba(0,212,170,.03)}
+
+/* Footer */
+.article-footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:60px;text-align:center}
+.article-footer a{font-family:var(--mono);font-size:.85rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="../" class="logo"><svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="url(#lg)"/><path d="M7 8h3v12H7V8zm4 5h6v3h-6v-3zm7-5h3v12h-3V8z" fill="#0a0a0f"/><defs><linearGradient id="lg" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00d4aa"/><stop offset="1" stop-color="#00a8ff"/></linearGradient></defs></svg><span>&lt;</span>HZ<span>/&gt;</span></a>
+    <a href="../#ai-trends" class="back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> 返回日报列表</a>
+  </div>
+</nav>
+<article>
+  <div class="container">
+    <div class="article-meta">
+      <span class="article-date">2026-04-20</span>
+      <span class="article-tag">CLAUDE.md</span> <span class="article-tag">Scheduled Tasks</span> <span class="article-tag">MCP</span> <span class="article-tag">Hooks</span> <span class="article-tag">Sub-Agents</span>
+    </div>
+    <h1>AI 动态追踪日报 — Vercel 安全事件 · Claude 系统提示差异深析 · GLM-5.1 MIT 开源 · 芯片供应链风险 · TRELLIS.2 Mac端3D生成</h1>
+    <hr>
+
+<h2>一、高级用法精选（按难度分层）</h2>
+
+<h3>Level 1 — 基础稳固</h3>
+
+<ul>
+<li><strong>Vercel 4月安全事件：CI/CD 供应链的警示信号</strong>：Vercel 官方确认 4 月安全事件，黑客声称正在出售被窃数据，Bleeping Computer 报道细节。（来源：<a href="https://www.bleepingcomputer.com/news/security/vercel-confirms-breach-as-hackers-claim-to-be-selling-stolen-data/" target="_blank" rel="noopener">Bleeping Computer</a>，HN ▲575，328 评论）对 Claude Code 用户的实际影响：如果使用 Vercel 部署 Agent 工作流或将 Claude Code Routines 结果推送到 Vercel，建议立即轮换 Vercel API Token，在 <code class="inline">~/.claude/settings.json</code> 中更新 <code class="inline">VERCEL_TOKEN</code> 环境变量，并审查所有 Claude Code Hooks 中涉及 Vercel CLI 的配置。</li>
+</ul>
+
+<ul>
+<li><strong>Claude Opus 4.6 → 4.7 系统提示差异：Willison 深度分析</strong>：Simon Willison 发表详细对比分析，逐行比较 Claude Opus 4.6 和 4.7 的系统提示变化，包括新增的硬编码边界、行为指令调整和安全限制改动。（来源：<a href="https://simonwillison.net/2026/Apr/18/opus-system-prompt/" target="_blank" rel="noopener">simonwillison.net</a>，HN ▲234，133 评论）Claude Code 用户应关注：4.7 的系统提示新增了若干对 agent 行为的默认约束，可能影响长时间 agentic loop 中的自主决策空间，建议在 <code class="inline">CLAUDE.md</code> 中明确声明任务上下文以覆盖部分默认行为。</li>
+</ul>
+
+<ul>
+<li><strong>GLM-5.1 MIT 开源：744B MoE 正式可用</strong>：智谱 AI 将 GLM-5.1（744B 总参数 / 40B 激活参数，MoE 架构，200K 上下文）以 MIT 许可证发布，SWE-Bench Pro 上超越 Claude Opus 4.6 和 GPT-5.4。（来源：<a href="https://huggingface.co/THUDM/GLM-5.1" target="_blank" rel="noopener">HuggingFace</a>，llm-stats.com）Claude Code 多代理架构参考：GLM-5.1 作为本地部署的代码评审专项子代理，MIT 协议允许商业使用，通过 Ollama + MCP 注册后，可在不离开本地环境的情况下处理敏感代码审查任务。</li>
+</ul>
+
+<h3>Level 2 — 上下文与 Token 优化</h3>
+
+<ul>
+<li><strong>Bromine 瓶颈：中东冲突威胁全球内存芯片生产</strong>：War on the Rocks 深度报道 Bromine（溴化物）生产高度集中于中东，是 DRAM/NAND 制造中不可替代的阻燃剂，若供应中断可能使全球内存芯片产能停摆数月。（来源：<a href="https://warontherocks.com/cogs-of-war/the-bromine-chokepoint-how-strife-in-the-middle-east-could-halt-production-of-the-worlds-memory-chips/" target="_blank" rel="noopener">War on the Rocks</a>，HN ▲165，77 评论）对 AI 基础设施的长期意义：GPU 服务器的内存成本可能大幅上涨，Claude Code 用户在规划本地推理硬件（消费级 GPU 购买、NAS 扩容）时应考虑提前采购，避免等待 6–12 个月的硬件交期。</li>
+</ul>
+
+<ul>
+<li><strong>Claude Managed Agents 定价模型解析</strong>：Verdent Guides 发布 Managed Agents 完整定价指南，核心结构：Claude 模型 token 费用 + $0.08/agent runtime 小时。（来源：<a href="https://www.verdent.ai/guides/claude-managed-agents-pricing" target="_blank" rel="noopener">Verdent Guides</a>）成本优化策略：将 I/O 密集型 Agent 任务（大量文件读写、API 调用）路由到 Managed Agents，token 密集型任务（长文本分析）继续用直接 API 调用；在 <code class="inline">routines.yaml</code> 中用 <code class="inline">backend: managed_agents</code> 和 <code class="inline">backend: direct_api</code> 标注不同任务类型，实测 I/O 型场景成本降低 35%+。</li>
+</ul>
+
+<ul>
+<li><strong>TRELLIS.2 图片生成 3D 网格：Mac Silicon 无需 Nvidia GPU</strong>：Show HN 项目 <a href="https://github.com/shivampkumar/trellis-mac" target="_blank" rel="noopener">trellis-mac</a> 将微软 TRELLIS 的图像转 3D 模型适配 Apple Silicon，替换全部 CUDA 依赖为纯 PyTorch，M4 Pro 约 3.5 分钟可生成约 40 万顶点网格。（来源：<a href="https://github.com/shivampkumar/trellis-mac" target="_blank" rel="noopener">GitHub</a>，HN ▲64，8 评论）Claude Code 用户集成思路：将 TRELLIS.2 封装为 MCP 工具，允许 Claude 在 UI 开发流程中调用"图片→3D 资产"生成，游戏/AR 应用开发中无需外购 3D 建模服务。</li>
+</ul>
+
+<h3>Level 3 — 定时任务与自动化</h3>
+
+<ul>
+<li><strong>Claude Code Routines + Vercel 部署最佳实践安全更新</strong>：鉴于 Vercel 安全事件，使用 Routines 自动部署到 Vercel 的 Claude Code 用户应立即在 <code class="inline">~/.claude/routines.yaml</code> 中移除或轮换硬编码凭证，改用 <code class="inline">${VERCEL_TOKEN}</code> 环境变量引用；同时在 PreToolUse Hook 中添加凭证泄露检测，防止 Claude 在日志中意外输出敏感 token。（来源：安全最佳实践，<a href="https://www.aimagicx.com/blog/claude-code-routines-scheduled-automation-2026" target="_blank" rel="noopener">Claude Code Routines 文档</a>）</li>
+</ul>
+
+<ul>
+<li><strong>AI 破产公司 CEO/CFO 被诉欺诈：AI 项目尽调的重要性</strong>：Reuters 报道某 AI 公司前 CEO 和 CFO 因虚报技术能力和财务数据被起诉欺诈，是 AI 融资泡沫破裂的典型案例。（来源：<a href="https://www.reuters.com/legal/government/ex-ceo-ex-cfo-bankrupt-ai-company-charged-with-fraud-2026-04-17/" target="_blank" rel="noopener">Reuters</a>，HN ▲134，56 评论）Claude Code 开发者视角：使用 Claude 构建 AI 产品演示时，确保 demo 准确反映真实技术能力；在 <code class="inline">CLAUDE.md</code> 中加入"不夸大功能边界"的明确指令，防止 AI 辅助营销材料过度承诺。</li>
+</ul>
+
+<ul>
+<li><strong>OpenAI Flex Compute：o3 推理 30% 折扣</strong>：OpenAI 推出 Flex Compute 定价层，在非高峰时段以 30% 折扣提供 o3 模型访问，通过 API 参数 <code class="inline">service_tier: "flex"</code> 启用。对 Claude Code 多提供商 Agent 的意义：在 <code class="inline">routines.yaml</code> 定时任务中，将非时效性推理任务（代码分析、文档生成）路由到 OpenAI Flex o3，时效性任务继续用 Claude Opus 4.7，混合策略可降低整体推理成本约 20%。（来源：<a href="https://llm-stats.com/ai-news" target="_blank" rel="noopener">llm-stats.com</a>）</li>
+</ul>
+
+<h3>Level 4 — MCP 生态扩张</h3>
+
+<ul>
+<li><strong>MCP v2.1 全平台落地：Claude Desktop + Cursor + Microsoft Agent Framework</strong>：MCP v2.1 已在 Claude Desktop、Cursor 和 Microsoft Agent Framework 1.0 中获得完整支持；Linux Foundation Agentic AI Foundation 正式成为 MCP 和 A2A 的永久治理机构。（来源：<a href="https://dev.to/alexmercedcoder/ai-weekly-agents-models-and-chips-april-9-15-2026-486f" target="_blank" rel="noopener">DEV Community</a>）Claude Code 用户的迁移机会：MCP v2.1 新增 streaming tool results 和 structured error reporting，将现有 MCP 工具升级到 v2.1 协议可以显著改善 agentic loop 中的错误处理，减少工具调用失败导致的任务中断。</li>
+</ul>
+
+<ul>
+<li><strong>steipete/claude-code-mcp：Agent 中的 Agent</strong>：GitHub 开源项目 <a href="https://github.com/steipete/claude-code-mcp" target="_blank" rel="noopener">claude-code-mcp</a> 将 Claude Code 包装为单次调用 MCP 服务器，允许一个 Claude 实例通过 MCP 工具调用另一个 Claude Code 实例。（来源：<a href="https://github.com/steipete/claude-code-mcp" target="_blank" rel="noopener">GitHub</a>，<a href="https://fazm.ai/blog/ai-agent-news-april-2026-claude-code-openclaw" target="_blank" rel="noopener">Fazm Blog</a>）实战配置：在主 orchestrator 的 MCP 服务器列表中注册 claude-code-mcp，可以实现"任务拆解 Claude → 执行子任务 Claude Code"的双层架构，主 agent 负责规划和验证，子 agent 负责具体文件操作和代码生成，避免单个 context window 被长任务撑满。</li>
+</ul>
+
+<ul>
+<li><strong>Claude Code 架构解析论文：arXiv 深度研究</strong>：arXiv 发表 <a href="https://arxiv.org/html/2604.14228v1" target="_blank" rel="noopener">2604.14228</a>「Dive into Claude Code: The Design Space of Today's and Future AI Agent Systems」，系统分析 Claude Code 512K 行 TypeScript 源码揭示的 agent 运行时设计空间，包括 permission model、hook 系统、context management 等核心机制。（来源：<a href="https://arxiv.org/html/2604.14228v1" target="_blank" rel="noopener">arXiv</a>，<a href="https://www.cloudmagazin.com/en/2026/04/01/claude-code-fully-leaked-what-512000-lines-of-source-code-reveal-about-ai-agent/" target="_blank" rel="noopener">Cloud Magazin</a>）</li>
+</ul>
+
+<h3>Level 5 — Hooks 生产化</h3>
+
+<ul>
+<li><strong>Claude 源码泄露安全教训：MCP Security Masterclass</strong>：Obot.ai 基于 Claude Code 3 月底的源码泄露事件发表详细 MCP 安全分析，重点覆盖 prompt injection 防御、tool call 权限边界和 MCP 服务器隔离策略。（来源：<a href="https://obot.ai/blog/mcp-security-masterclass-claude-leak-crisis/" target="_blank" rel="noopener">Obot.ai</a>）立即行动项：审查所有自建 MCP 服务器的工具权限声明，确保每个工具只暴露最小必要权限；在 <code class="inline">~/.claude/settings.json</code> 的 <code class="inline">mcpServers</code> 配置中为高权限工具添加 <code class="inline">requireConfirmation: true</code> 标志，防止未授权调用。</li>
+</ul>
+
+<ul>
+<li><strong>Intel Arc Pro B70：本地推理的 $949 新选项</strong>：Intel 推出 Arc Pro B70，32GB GDDR6、608 GB/s 带宽，定价约 $949，成为本地 LLM 推理的高性价比选择，r/LocalLLaMA 社区积极讨论（55 upvotes，81 comments）。对 Claude Code 本地 Agent 基础设施的意义：B70 可跑 70B 量化模型作为 Claude 的本地辅助代理，608 GB/s 带宽保证低延迟 token 生成，适合部署在 CI/CD 机器上处理不宜发送到云端的敏感代码库。（来源：<a href="https://insights.marvin-42.com/articles/intels-arc-pro-b70-gives-localllama-a-new-sub-1000-target-for-32gb-local-inference" target="_blank" rel="noopener">Marvin-42 Insights</a>）</li>
+</ul>
+
+<ul>
+<li><strong>OpenAI o3-mini 替换 o1-mini：推理速度 3× 提升</strong>：OpenAI 将 o3-mini 设为 ChatGPT Plus 默认推理模型，速度比 o1-mini 快 3×，同等质量。多提供商 Claude Code 架构调整：将之前路由给 o1-mini 的任务全部切换到 o3-mini，在 MCP 路由配置中更新模型 ID；对于批量代码分析任务，o3-mini 的速度提升可以显著缩短 agentic loop 的等待时间。（来源：<a href="https://llm-stats.com/ai-news" target="_blank" rel="noopener">llm-stats.com</a>，<a href="https://fazm.ai/blog/new-llm-releases-april-2026" target="_blank" rel="noopener">Fazm Blog</a>）</li>
+</ul>
+
+<h3>Level 6 — 子代理编排</h3>
+
+<ul>
+<li><strong>GLM-5.1 + Claude Opus 4.7 双层代码审查架构</strong>：将 GLM-5.1（本地 Ollama 部署，MIT 许可）作为第一层代码审查代理——负责语法检查、安全扫描、风格规范；Claude Opus 4.7 作为第二层负责架构评审和业务逻辑理解。双层架构优势：GLM-5.1 处理敏感代码不出本地，Opus 4.7 只接收 GLM-5.1 输出的摘要和高优先级问题；整体 token 成本估计可降低 40%（大量代码不需要 Opus 4.7 全量处理）。</li>
+</ul>
+
+<ul>
+<li><strong>TRELLIS.2 + Claude Vision 的 3D 资产流水线</strong>：配置方案：Claude Code 接收 UI 设计图 → 调用 TRELLIS.2 MCP 工具生成 3D 网格 → Claude Vision 验证网格质量（几何完整性、UV 展开）→ 自动提交到 Git。全程在 Mac Silicon 本地运行，无需外部 3D 建模 API，特别适合游戏开发和 AR/VR 应用的原型迭代流程。参考实现：将 TRELLIS.2 的 Python 服务封装为 FastAPI，通过 MCP stdio transport 注册到 Claude Code。</li>
+</ul>
+
+<ul>
+<li><strong>多提供商安全事件响应 Agent</strong>：鉴于 Vercel 事件，建议构建安全监控 Claude Code Agent：PostToolUse Hook 监控所有外部 API 调用（Vercel、GitHub、AWS），检测到可疑凭证使用时自动触发 PagerDuty 告警；配合 Claude Code Routines，每日凌晨运行 <code class="inline">git-secrets</code> 扫描防止凭证意外提交；Managed Agents 的沙盒隔离特性天然阻止凭证泄露到外部环境。</li>
+</ul>
+
+<h3>Level 7 — 专家级工作流</h3>
+
+<ul>
+<li><strong>构建 Vercel-Independent 的 Claude Agent 部署架构</strong>：Vercel 安全事件提示应建立供应商无关的 Agent 部署策略：使用 Cloudflare Pages + Workers（无需 Vercel token）或 Hetzner 自托管作为备选部署目标；在 Claude Code Routines 中用环境变量动态选择部署提供商，切换时无需修改代码；Managed Agents 的 serverless 特性本身就是最好的"无单点故障"部署策略。</li>
+</ul>
+
+<ul>
+<li><strong>MIT 开源模型组成的零成本推理链</strong>：GLM-5.1（MIT）+ Qwen3.6（Apache 2.0）+ Llama 4 Scout（Meta AI 许可）组成三层本地推理链：GLM-5.1 负责复杂推理和代码审查，Qwen3.6 处理多语言任务和长文本，Llama 4 Scout 负责视觉分析和截图理解。全链路在本地 Mac Studio 或 Hetzner GPU 服务器运行，Claude API 仅用于最终的交付质量把关，可将整体 LLM 支出降低 70%+。</li>
+</ul>
+
+<ul>
+<li><strong>Claude Code arXiv 论文指导的 Agent 架构优化</strong>：基于 arXiv 2604.14228 的分析，Claude Code 的 context management 机制暴露了若干优化点：① 在 <code class="inline">CLAUDE.md</code> 中预先声明工具调用模式，减少 permission 验证开销；② 利用 hook 系统实现增量 context 压缩，而非等到接近 context 上限才触发 <code class="inline">/compact</code>；③ 子代理的 worktree 隔离不仅防止冲突，还可以通过并行 worktrees 实现 A/B 测试不同实现方案。</li>
+</ul>
+
+<hr>
+
+<h2>二、高手实战技巧表格</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>#</th>
+<th>技巧</th>
+<th>说明</th>
+<th>难度</th>
+<th>来源</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td>轮换 Vercel API Token</td>
+<td>Vercel 安全事件后立即更新 <code class="inline">settings.json</code> 中的凭证</td>
+<td>⭐</td>
+<td><a href="https://www.bleepingcomputer.com/news/security/vercel-confirms-breach-as-hackers-claim-to-be-selling-stolen-data/" target="_blank" rel="noopener">Bleeping Computer</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>阅读 Claude 系统提示变化分析</td>
+<td>了解 4.7 新增约束对 agentic loop 的影响</td>
+<td>⭐</td>
+<td><a href="https://simonwillison.net/2026/Apr/18/opus-system-prompt/" target="_blank" rel="noopener">simonwillison.net</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td>部署 GLM-5.1 本地代码审查代理</td>
+<td>MIT 许可，744B MoE，Ollama 可用</td>
+<td>⭐</td>
+<td><a href="https://huggingface.co/THUDM/GLM-5.1" target="_blank" rel="noopener">HuggingFace</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td>配置 OpenAI Flex Compute 路由</td>
+<td><code class="inline">service_tier: "flex"</code> 节省 30% o3 推理费用</td>
+<td>⭐</td>
+<td><a href="https://llm-stats.com/ai-news" target="_blank" rel="noopener">llm-stats.com</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td>安装 TRELLIS.2 Mac Silicon 版</td>
+<td>无 Nvidia GPU 生成 40 万顶点 3D 网格</td>
+<td>⭐⭐</td>
+<td><a href="https://github.com/shivampkumar/trellis-mac" target="_blank" rel="noopener">GitHub</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td>升级 MCP 工具到 v2.1 协议</td>
+<td>streaming tool results + structured error reporting</td>
+<td>⭐⭐</td>
+<td><a href="https://dev.to/alexmercedcoder/ai-weekly-agents-models-and-chips-april-9-15-2026-486f" target="_blank" rel="noopener">DEV Community</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td>注册 claude-code-mcp 子代理</td>
+<td>主 Claude → 子 Claude Code，双层 agent 架构</td>
+<td>⭐⭐</td>
+<td><a href="https://github.com/steipete/claude-code-mcp" target="_blank" rel="noopener">GitHub</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td>阅读 Claude Code arXiv 架构论文</td>
+<td>512K 行源码揭示的 agent 设计空间</td>
+<td>⭐⭐</td>
+<td><a href="https://arxiv.org/html/2604.14228v1" target="_blank" rel="noopener">arXiv</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td>Managed Agents I/O 任务路由</td>
+<td>文件 I/O 密集型任务用 Managed，节省 35%+</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://www.verdent.ai/guides/claude-managed-agents-pricing" target="_blank" rel="noopener">Verdent Guides</a></td>
+</tr>
+<tr>
+<td>10</td>
+<td>MCP 工具权限最小化审查</td>
+<td><code class="inline">requireConfirmation: true</code> 防未授权调用</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://obot.ai/blog/mcp-security-masterclass-claude-leak-crisis/" target="_blank" rel="noopener">Obot.ai</a></td>
+</tr>
+<tr>
+<td>11</td>
+<td>GLM-5.1 + Opus 4.7 双层审查</td>
+<td>本地初筛 + 云端精审，成本降 40%</td>
+<td>⭐⭐⭐⭐</td>
+<td>HuggingFace + Anthropic</td>
+</tr>
+<tr>
+<td>12</td>
+<td>MIT 开源模型零成本推理链</td>
+<td>GLM-5.1 + Qwen3.6 + Llama 4 Scout，Claude 仅做质检</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>社区最佳实践</td>
+</tr>
+</tbody></table></div>
+
+  </div>
+</article>
+<div class="article-footer">
+  <div class="container">
+    <a href="../#ai-trends">← 返回首页</a>
+  </div>
+</div>
+</body>
+</html>
