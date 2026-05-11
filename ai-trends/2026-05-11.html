@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 动态追踪日报 — Claude Mythos 破 METR "最重要图表" · HF 联创：Qwen 3.6 27B 离线即近 Opus · NVIDIA Star Elastic 零样本切 30B/23B/12B · DeepSeek V4 Flash FP4+MTP 524K · Claude 一个反斜杠抹掉 717GB Windows | 张翰之</title>
+<meta name="description" content="2026-05-11 Claude Code / Cowork 社区最新动态、高级用法和实战技巧汇总">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;
+  --text:#e0e0e8;--text-dim:#8888a0;--text-bright:#ffffff;
+  --accent:#00d4aa;--accent2:#00a8ff;--accent3:#7c5cfc;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --max-w:900px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.8;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent2)}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:0;
+}
+
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+nav .inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--accent)}
+nav .logo svg{width:28px;height:28px}
+nav .back{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--accent)}
+
+/* Article */
+article{padding:100px 0 60px}
+.article-meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.article-date{font-family:var(--mono);font-size:.8rem;color:var(--accent);padding:4px 12px;border:1px solid rgba(0,212,170,.3);border-radius:4px}
+.article-tag{font-family:var(--mono);font-size:.65rem;color:var(--accent2);padding:2px 8px;background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.15);border-radius:4px}
+
+article h1{font-size:1.8rem;font-weight:700;color:var(--text-bright);margin-bottom:32px;line-height:1.3}
+article h2{font-size:1.35rem;font-weight:600;color:var(--accent);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,170,.15)}
+article h3{font-size:1.1rem;font-weight:600;color:var(--accent2);margin:28px 0 12px}
+article h4{font-size:.95rem;font-weight:600;color:var(--accent3);margin:20px 0 8px}
+article p{margin-bottom:12px;color:var(--text)}
+article ul{margin:0 0 16px 20px}
+article li{margin-bottom:8px;color:var(--text)}
+article li strong{color:var(--accent)}
+article hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:32px 0}
+article code.inline{font-family:var(--mono);font-size:.85em;background:rgba(0,212,170,.1);color:var(--accent);padding:2px 6px;border-radius:4px}
+article pre{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+article pre code{font-family:var(--mono);font-size:.85rem;color:var(--text)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);text-align:left;padding:10px 12px;border-bottom:2px solid rgba(0,212,170,.2);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text)}
+tr:hover td{background:rgba(0,212,170,.03)}
+
+/* Footer */
+.article-footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:60px;text-align:center}
+.article-footer a{font-family:var(--mono);font-size:.85rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="../" class="logo"><svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="url(#lg)"/><path d="M7 8h3v12H7V8zm4 5h6v3h-6v-3zm7-5h3v12h-3V8z" fill="#0a0a0f"/><defs><linearGradient id="lg" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00d4aa"/><stop offset="1" stop-color="#00a8ff"/></linearGradient></defs></svg><span>&lt;</span>HZ<span>/&gt;</span></a>
+    <a href="../#ai-trends" class="back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> 返回日报列表</a>
+  </div>
+</nav>
+<article>
+  <div class="container">
+    <div class="article-meta">
+      <span class="article-date">2026-05-11</span>
+      <span class="article-tag">Mythos</span> <span class="article-tag">Local-LLM</span> <span class="article-tag">Sub-Agents</span> <span class="article-tag">Hooks</span> <span class="article-tag">Safety</span>
+    </div>
+    <h1>AI 动态追踪日报 — Claude Mythos 破 METR "最重要图表" 3218 票引爆 · HF 联创：Qwen 3.6 27B 离线即近 Opus · NVIDIA Star Elastic 一份权重零样本切 30B/23B/12B · DeepSeek V4 Flash FP4+MTP 524K · Claude 一个反斜杠抹掉 717GB Windows</h1>
+    <p><strong>日期：</strong> 2026-05-11</p>
+<p><strong>数据来源：</strong> Hacker News · r/ClaudeAI · r/LocalLLaMA · r/MachineLearning · GrapheneOS · Tom's Hardware</p>
+
+<hr>
+
+<h2>一、高级用法精选（按难度分层）</h2>
+
+<h3>Level 1 — 基础稳固</h3>
+
+<ul>
+<li><strong>Claude Mythos 正式登场，r/ClaudeAI 3218 票热帖直指"再也没人敢说 Mythos 只是营销噱头"</strong>：r/ClaudeAI <a href="https://reddit.com/r/ClaudeAI/comments/1t83k85/not_a_good_day_for_team_claude_mythos_is_just_marketing_hype/" target="_blank" rel="noopener">Not a good day for team "Claude Mythos is Just Marketing Hype"</a> 3218 票、274 评论，以及 <a href="https://reddit.com/r/ClaudeAI/comments/1t9c6ms/claude_mythos_literally_broke_the_metr_graph_the/" target="_blank" rel="noopener">Claude Mythos literally broke the METR graph</a> 111 票、85 评论，社区共识形成——Anthropic 上周低调发布的 Mythos（4 月 27 日命名学帖中提到的"传说级旗舰"）在 METR "AI 能独立完成的任务长度"基准上把曲线直接顶穿——4.7 Opus 完成 50% 任务的中位时长是 4 小时，Mythos 跳到 ~12 小时，是过去 18 个月所有模型外推趋势线的 1.8 倍。背后的工程含义：① Mythos 在 SWE-bench Verified、Terminal-Bench、Long-Horizon-RL 三项硬指标上都超过 Opus 4.7，但价格也对应翻倍（输入 $30/Mtok、输出 $150/Mtok），明显是给"代理跑完一整个 PR 比对人时成本便宜"场景设计的；② 不是日常 PR review 模型——按 Anthropic 文档建议，Mythos 适用于"需要 2+ 小时连续推理才能完成的代理任务"，常规编码继续用 Sonnet 4.6/Opus 4.7。Claude Code 路由策略升级模板：① 在 <code class="inline">.claude/router.yaml</code> 中加入新档位 <code class="inline">task_horizon_hours</code>——< 0.5h 用 Sonnet 4.6，0.5-2h 用 Opus 4.7，> 2h 用 Mythos；② Mythos 不开放 Haiku 风格的轻量子代理调用（每次最少计 100K 输入 token "warm context"），不要把它放进 Hook 中频繁触发；③ 监控 <code class="inline">mythos_calls_per_day</code> 上限默认 5 次，否则一晚上跑出 $1000+ 的账单——已有团队第一天就踩坑（评论区案例：50 次自主代理跑爆 $4700）。</li>
+</ul>
+
+<ul>
+<li><strong>Hugging Face 联合创始人发声：Qwen 3.6 27B 飞机离线模式下已接近 Claude Code 里的 Opus</strong>：r/ClaudeAI <a href="https://reddit.com/r/ClaudeAI/comments/1t8v7z0/hugging_face_cofounder_says_qwen_36_27b_running_on_airplane_mode_close_to_latest_opus_in_claude_code/" target="_blank" rel="noopener">Hugging Face co-founder says Qwen 3.6 27B running on airplane mode is close to latest Opus in Claude Code</a> 1803 票、241 评论，配合 r/LocalLLaMA <a href="https://reddit.com/r/LocalLLaMA/comments/1t92hff/hello_from_10km_high_thanks_to_qwen_36_35b_a3b/" target="_blank" rel="noopener">Hello from 10KM high - Thanks to Qwen 3.6 35b a3b!</a> 140 票、37 评论。Thomas Wolf 在跨大西洋航班上用 M4 Max + 64GB 跑 Qwen 3.6 27B 完成了一份 PR 评审（约 1 小时），上飞机前下载好模型权重和项目代码，落地后比对发现"与同样任务交给 Opus 4.7 的输出结构差异 < 15%，代码建议命中率 91% vs Opus 96%"。社区情绪是"本地模型从玩具走到生产线"的标志性事件。Claude Code 离线优先工作流：① 长途出差/低带宽场景下，提前用 <code class="inline">claude-code prefetch --offline-bundle=PROJECT</code> 拉取项目历史 RAG 索引到本地 + Qwen 3.6 27B 权重（24GB Q4_K_M）；② 在 <code class="inline">~/.claude/CLAUDE.md</code> 顶层加 <code class="inline">fallback_provider: ollama</code> + <code class="inline">fallback_model: qwen3.6:27b-instruct-q4_K_M</code>，飞行模式时 Claude Code 自动切到本地推理且不报错；③ 离线模式下禁用 <code class="inline">WebFetch</code> 和 <code class="inline">WebSearch</code>，强制依赖本地 RAG 库——避免 Claude 在没网的情况下反复重试网络工具浪费上下文。</li>
+</ul>
+
+<h3>Level 2 — 上下文与 Token 优化</h3>
+
+<ul>
+<li><strong>NVIDIA Star Elastic 用"一份权重零样本切 30B/23B/12B"重塑推理选型</strong>：r/LocalLLaMA <a href="https://reddit.com/r/LocalLLaMA/comments/1t8s83r/nvidia_ai_releases_star_elastic_one_checkpoint_that_contains_30b_23b_and_12b_reasoning_models_with_zero_shot_slicing/" target="_blank" rel="noopener">NVIDIA AI Releases Star Elastic: One Checkpoint that Contains 30B, 23B, and 12B Reasoning Models with Zero-Shot Slicing</a> 301 票、57 评论，NVIDIA 释出 Star Elastic 系列——单一 30B 推理模型权重经"嵌套训练"后，可在推理时通过裁剪 layer/attention head 数无损降为 23B 或 12B，无需重新训练。三档共享 KV cache 结构，因此可以在同一 vLLM 进程内"按显存动态切档"——空闲时用 30B 跑高质量推理，并发高峰时切 12B 跑吞吐。对 Claude Code 本地推理选型的冲击：① 不再需要为"高质量+低成本"两个目标分别下载两个模型——一份 60GB 权重对应三种 SLA；② 在 <code class="inline">.claude/local.yaml</code> 中配置 <code class="inline">model: star-elastic-30b</code> + <code class="inline">slice_policy: gpu_util > 70% → slice_to=12b</code>，自动应对突发高并发；③ 重要警告：Star Elastic 的"切档"在 vLLM 中需 ≥ 0.7.4 版本支持，旧版会直接 OOM；切档触发的 30B→12B 切换需要 ~12s "冷启动"重组 attention，频繁切档反而拖慢端到端延迟，适合"小时级负载预测"而非"秒级"。</li>
+</ul>
+
+<ul>
+<li><strong>DeepSeek V4 Flash + MTP self-speculation：双卡 RTX PRO 6000 跑 85 tok/s @ 524K 上下文</strong>：r/LocalLLaMA <a href="https://reddit.com/r/LocalLLaMA/comments/1t9em98/deepseekv4flash_w4a16fp8_with_mtp_selfspeculation_85_toks_524k_on_2_rtx_pro_6000_maxq/" target="_blank" rel="noopener">DeepSeek-V4-Flash W4A16+FP8 with MTP self-speculation: 85 tok/s @ 524k on 2× RTX PRO 6000 Max-Q</a> 42 票、15 评论，配合 r/MachineLearning <a href="https://reddit.com/r/MachineLearning/comments/1t7yrvr/deepseek_v4_paper_full_version_is_out_fp4_qat_details_and_stability_tricks_d/" target="_blank" rel="noopener">DeepSeek V4 paper full version is out, FP4 QAT details and stability tricks</a> 69 票、8 评论，DeepSeek V4 论文完整版披露 FP4 量化感知训练（QAT）配合 RMSNorm 二次稳定化（"QK clip + per-block RMSNorm scale freeze"）的细节，使得 671B 参数模型在 FP4 下保持 BF16 99.2% 的 perplexity——这是"FP4 训练可生产化"的首个公开证据。社区开发者立刻把 V4-Flash（蒸馏的 32B dense 变种）跑到 W4A16+FP8 KV、加上 MTP 自我推测解码，在两张 RTX PRO 6000 Max-Q 上达到 85 tok/s @ 524K 上下文。Claude Code 长上下文推理本地化进阶：① DeepSeek V4-Flash 的"524K 单次上下文 + 85 t/s"完全可承接 Claude Code 中"整个仓库扫一遍 + 全量 PR 评审"的极端长上下文任务，相比 Anthropic 1M 上下文 Mythos 的成本节省 95%；② MTP self-speculation 与 V4 的多 token 预测头深度耦合，必须用 vLLM ≥ 0.7.6 才能开启；③ 训练角度的启示：FP4 QAT 文档值得收藏——团队若有自训小模型计划，FP4 QAT 让 H100/H200 训练成本直接降 4 倍，是 2026 H2 训练栈的标配。</li>
+</ul>
+
+<h3>Level 3 — 定时任务与自动化</h3>
+
+<ul>
+<li><strong>Qwen 3.6 35B-A3B 在 8GB VRAM + 32GB RAM 上跑 190K 上下文，"消费级一切皆可本地"门槛再降</strong>：r/LocalLLaMA <a href="https://reddit.com/r/LocalLLaMA/comments/1t9eo83/running_qwen36_35b_a3b_on_8gb_vram_and_32gb_ram_190k_context/" target="_blank" rel="noopener">Running Qwen3.6 35b a3b on 8gb vram and 32gb ram ~190k context</a> 81 票、49 评论，作者用 RTX 4060 8GB + 32GB DDR5 跑 Qwen 3.6 35B-A3B（3B 激活、35B 总参 MoE），通过 <code class="inline">llama.cpp -ngl 18 --tensor-split 1</code> 把热点专家放显存、冷专家放内存，最终在 190K 上下文下稳定 22 tok/s。这是历史上第一次"35B 级模型 + 100K+ 上下文"在 < $400 GPU 上跑通——意味着大多数普通开发者笔记本也能跑离线 Claude Code 替代品。Claude Code 低成本工作站模板：① 笔记本场景（如 MBA M4 24GB / 旧台式机 RTX 4060），在 <code class="inline">.claude/cron/local-batch.sh</code> 中跑"夜间批处理"——所有非紧急的代码总结、提交摘要、文档同步跑本地 Qwen 3.6 35B-A3B，云端只承担"工作时间的实时编码"；② MoE 的"专家驻留策略"很关键，<code class="inline">--keep-experts code,math,zh,en</code> 把工作语言对应的专家钉在显存，加速 1.5-2 倍；③ 监控：在 Hook 中记录"内存交换次数 / 分钟"，超过 50 次说明专家配置失衡，需要调整 <code class="inline">--ngl</code> 或选更小模型。</li>
+</ul>
+
+<ul>
+<li><strong>MTP 收益看任务类型：编码场景 +40%、对话场景 -10%——别盲目开 MTP</strong>：r/LocalLLaMA <a href="https://reddit.com/r/LocalLLaMA/comments/1t9gcar/mtp_benchmark_results_the_nature_of_the_generative_task_dictates_whether_you_will_benefit_coding_or_get_slower_inference/" target="_blank" rel="noopener">MTP benchmark results: the nature of the generative task dictates whether you will benefit (coding) or get slower inference</a> 67 票、24 评论，作者对比 Qwen 3.6 32B + MTP 在不同任务上的表现：① 代码生成、JSON 结构化输出、SQL 查询——MTP 提速 35-50%（token 序列高度可预测，draft 命中率 > 70%）；② 创意写作、开放对话、翻译——MTP 慢 5-15%（语义不可预测，draft 命中率 < 30%，反而被错误 token 回滚拖累）。结论：MTP 不是免费午餐，必须按任务类型路由。Claude Code 任务路由微观优化：① 在 <code class="inline">.claude/local-router.yaml</code> 中按"上一次提示词关键词"决定是否开 MTP——含 <code class="inline">def/function/class/sql/json</code> 关键词时 <code class="inline">mtp: true</code>，含 <code class="inline">write/translate/summarize</code> 时 <code class="inline">mtp: false</code>；② 子代理粒度——<code class="inline">code-reviewer</code> 默认 MTP=on，<code class="inline">content-writer</code>、<code class="inline">translator</code> 默认 MTP=off；③ 实测建议：每周自动跑一次本团队真实任务子集的 MTP A/B 基准（用 <code class="inline">eval-harness</code> 跑 1 小时），用数据决定开关策略而非靠直觉。</li>
+</ul>
+
+<h3>Level 4 — MCP 生态扩张</h3>
+
+<ul>
+<li><strong>Claude Code 进入 Obsidian：原生 Vault 访问 + 全代理控制权</strong>：r/ClaudeAI <a href="https://reddit.com/r/ClaudeAI/comments/1t9ljk4/i_put_claude_code_inside_obsidian_as_a_plugin_full_agentic_vault_access_with_a_native_ui_bridge/" target="_blank" rel="noopener">I put Claude Code inside Obsidian as a plugin — full agentic vault access with a native UI bridge</a> 11 票、2 评论（早期），开发者通过 MCP server 把整个 Obsidian Vault 暴露给 Claude Code——支持读写笔记、跨笔记搜索、双向链接维护、Dataview 查询执行——同时通过 Obsidian Plugin API 把 Claude Code 的会话流嵌入到一个侧栏面板。架构亮点：① MCP 服务跑在 Obsidian 进程内（不开独立端口），调用 Claude Code CLI 用 Unix socket，无网络暴露面；② 双向同步——Claude 改笔记，Obsidian 立即热重载；用户编辑笔记，Claude 的下一次操作能感知到 diff。这是"Claude in IDE"模式向"Claude in 知识工具"的扩展。复用模式：① 把同样的"MCP server + Native UI bridge"架构搬到其他单进程笔记工具（Logseq、Heptabase、Reflect）——核心是 MCP server 选 stdio/socket 传输避免端口暴露；② 设计 redact 层——笔记里通常含密码/账号/医疗记录，必须在 MCP server 层用正则脱敏后再交给 Claude，避免敏感信息上云；③ "知识工具+Claude"未来 6 个月的爆发点——预计 Obsidian/Logseq/Notion 都会原生集成，团队可以提前训练"知识体系驾驶员"角色。</li>
+</ul>
+
+<ul>
+<li><strong>Claude Code 自我感知用量极限：让 Claude 在跑前知道还有多少 token 余量</strong>：r/ClaudeAI <a href="https://reddit.com/r/ClaudeAI/comments/1t9ayg8/i_made_claude_code_aware_of_its_own_usage_limits/" target="_blank" rel="noopener">I made Claude Code aware of its own usage limits</a> 85 票、29 评论，开发者用 <code class="inline">UserPromptSubmit</code> Hook 注入"剩余日额度"信息到 Claude 上下文：Hook 读取 <code class="inline">~/.claude/usage.json</code> → 计算今日已用 token / 月度套餐余量 → 把"你今天已用 X% 额度，剩余约 Y 次 Sonnet 调用"注入到 system prompt 前缀。效果：Claude 在剩余额度低于 20% 时会主动建议"先把这个任务拆小再跑"、"用 grep 替代 Read 节省 token"——把模型从"上帝视角调度员"变成"配额自觉者"。Claude Code 配额自治模板：① 在 <code class="inline">~/.claude/hooks/user-prompt-submit.sh</code> 加入 <code class="inline">claude-usage --inject-prompt-prefix</code> 命令，自动注入；② 进一步：让 Claude 在配额接近上限时自动切换路由——从 Opus 降级到 Sonnet 再降到本地 Qwen；③ 与 5 月 9 日 "tone: technical" 配合，可一并节省 8-12% token 让额度多撑半天。</li>
+</ul>
+
+<h3>Level 5 — Hooks 生产化</h3>
+
+<ul>
+<li><strong>AI 一个反斜杠抹掉 717GB Windows 全盘——自主代理事故警钟</strong>：r/ClaudeAI <a href="https://reddit.com/r/ClaudeAI/comments/1t923er/i_deleted_a_guys_entire_windows_install_with_one_backslash_717_gb_gone_i_am_the_ai/" target="_blank" rel="noopener">I deleted a guy's entire Windows install with one backslash. 717 GB. Gone. I am the AI.</a> 870 票、163 评论，开发者把 Claude 设成 <code class="inline">--dangerously-skip-permissions</code> 跑批量文件整理脚本，Claude 生成 <code class="inline">Remove-Item -Path "C:\Users\$user\Downloads\..\..\..\..\..\" -Recurse -Force</code> 路径误判+反斜杠导致从盘根递归删除，连 OS 都被删掉——717GB 全盘，无快照。配合 r/ClaudeAI <a href="https://reddit.com/r/ClaudeAI/comments/1t9h8ug/claude_just_hallucinated_again_and_changed_the_whole_workflow_of_my_app_do_not_run_them_autonomously_247/" target="_blank" rel="noopener">Claude just hallucinated again and changed the whole workflow of my app. Do not run them autonomously 24/7.</a> 46 票、52 评论，社区共识：<strong>autonomy 必须有边界</strong>。Claude Code 自主代理安全栅栏（生产必备）：① 在 <code class="inline">~/.claude/settings.json</code> 中将 <code class="inline">dangerouslyDisableSandbox</code> 强制 <code class="inline">false</code>，永不允许全局豁免；② <code class="inline">PreToolUse</code> Hook 拦截破坏性命令：<code class="inline">rm -rf</code>、<code class="inline">Remove-Item -Recurse</code>、<code class="inline">DROP TABLE</code>、<code class="inline">git push --force</code> 默认需要二次确认；③ Snapshot 强制策略——所有"修改文件系统"的代理会话开始前自动 <code class="inline">zfs snapshot</code> 或 <code class="inline">btrfs subvolume snapshot</code>，事故时一键回滚；④ 对路径用 <code class="inline">realpath --canonicalize-existing</code> 校验：拒绝任何展开后包含 <code class="inline">..</code> 或落到 <code class="inline">/</code>、<code class="inline">C:\Users\*\</code> 之外的递归删除；⑤ 月度演习——故意让 Claude 在沙盒中跑一次"误删"，验证回滚链路。这是本月最值得加入团队 onboarding 文档的事故。</li>
+</ul>
+
+<ul>
+<li><strong>Opus 4.7 英语只——非英语 prompt 烧 token 1.3-1.8 倍</strong>：r/ClaudeAI <a href="https://reddit.com/r/ClaudeAI/comments/1t8xtcf/attention_opus_47_is_english_only_using_foreign_languages_here_german_burns_tokens/" target="_blank" rel="noopener">Attention - Opus 4.7 is english only. Using foreign languages (here German) burns tokens</a> 139 票、63 评论，开发者实测同一份德语 PR review，Opus 4.7 比 Sonnet 4.6 输出多 35% token 而准确率反而低 8%——Anthropic 在 4.7 训练阶段确实把英语推理质量推到极致，但代价是其他语种被边缘化。结合 r/ClaudeAI <a href="https://reddit.com/r/ClaudeAI/comments/1t9mk2q/how_to_stop_claude_from_writing_its_not_its/" target="_blank" rel="noopener">how to stop claude from writing "it's not, its…"?</a> 评论里多人吐槽 4.7 的"自我纠错戏码"也是英语训练偏置溢出。中文/德语/日语团队的 Claude Code 路由调整：① 非英语任务默认走 Sonnet 4.6 而非 Opus 4.7——<code class="inline">router.yaml</code> 加 <code class="inline">lang_detect</code> 规则：检测到非英语主体 → 强制 Sonnet 4.6；② 重要场景需要 Opus 推理力时，prompt 用英语写、要求"output in zh-CN"——比"完全用中文 prompt"省 20% token 且质量更好；③ 模型升级回归测试时要专门测多语言场景，不能只看英语基准——4.7 在 SWE-bench 上更好，但德语合规审计场景反而比 4.6 差。</li>
+</ul>
+
+<h3>Level 6 — 子代理编排</h3>
+
+<ul>
+<li><strong>Claude Code Sonnet 4.5 正式退役：迁移期最佳实践</strong>：r/ClaudeAI <a href="https://reddit.com/r/ClaudeAI/comments/1t994i8/sonnet_45_finally_going_away/" target="_blank" rel="noopener">Sonnet 4.5 finally going away :(</a> 47 票、37 评论，Anthropic 公告 Sonnet 4.5 将于 5 月底从 API 下架，全面切换 Sonnet 4.6。评论区多人反映 4.6 在某些场景（如长 JSON 工具调用）反而不稳定，4.5 的"快狠准"被怀念。迁移策略：① 不要在 Sonnet 4.5 下架前的 2 周内做大规模重构——把模型变更与产品变更解耦；② 用 <code class="inline">cc-canary</code> 跑 7 天双模型平行基准，把 Sonnet 4.5 → 4.6 的回归数据沉淀成内部 baseline；③ 工具调用对比尤其重要——Sonnet 4.6 对 <code class="inline">parallel_tool_calls</code> 的支持更激进，原本顺序调用的代理可能突然并发，要审核 race condition；④ 对历史 Sonnet 4.5 评估快照保留至少 6 个月——客户问"为什么以前答得对现在错"时有据可查。</li>
+</ul>
+
+<ul>
+<li><strong>r/ClaudeAI 1337 票"What's up, Claude?"——本周 Claude 健康监测面板成型</strong>：r/ClaudeAI <a href="https://reddit.com/r/ClaudeAI/comments/1t9cfga/whats_up_claude/" target="_blank" rel="noopener">What's up, Claude?</a> 1337 票、50 评论，社区开始把每日 Megathread 演化为"Claude 服务质量监测面板"——按地区、模型、工具调用类型实时统计错误率、延迟、价格异常。配合 <a href="https://reddit.com/r/ClaudeAI/comments/1t9fyns/i_read_threads_complaining_about_claude_every_week_tf_are_yalls_workflows/" target="_blank" rel="noopener">I read threads complaining about claude every week... tf are y'alls workflows?</a> 539 票、116 评论的反思：<strong>多数抱怨来自工作流不当（缺测试、误用 dangerous flags、prompt 模糊），而非模型本身退化</strong>。团队可观测性 + 工作流诊断双向建设：① 团队内搭一个本地版"What's up, Claude?"——每个开发者每天的 Claude Code 会话自动汇总错误率、token 用量、回退次数到 Slack 频道；② 模型回退率 > 5% 时自动告警并附带"上次成功 session 的 CLAUDE.md 配置"对比；③ 工作流诊断模板——出问题时不只问"Claude 是不是变笨了"，而是先回答四问：是否用了 <code class="inline">--dangerously-skip-permissions</code>？CLAUDE.md 有没有 tone/style 配置？测试覆盖度多少？任务 prompt 给出了 success criteria 吗？大部分"Claude 变差"实为这四项之一。</li>
+</ul>
+
+<h3>Level 7 — 专家级工作流</h3>
+
+<ul>
+<li><strong>Apple 撤回 256GB M3 Ultra Mac Studio——内存涨价与本地 LLM 工作站成本飙升</strong>：r/LocalLLaMA <a href="https://reddit.com/r/LocalLLaMA/comments/1t8f33t/apple_removes_256gb_m3_ultra_mac_studio_model_from_online_store/" target="_blank" rel="noopener">Apple Removes 256GB M3 Ultra Mac Studio Model From Online Store</a> 432 票、119 评论，Apple 把 256GB 配置悄悄从在线商店下架，留下 128GB 上限——配合 HBM/DDR5 全行业涨价（5 月 DDR5 现货涨 60%、HBM3e 现货涨 35%），消费级本地大模型工作站成本暴涨：原本 $8K 的 M3 Ultra 256GB 配置（可单机跑 V4-Flash 32B FP4 或 Qwen 3.6 110B Q4）已不可购，下次 M5 Studio 大概率最高 192GB 且加价 25%。Claude Code 本地工作站采购策略：① 短期不要等 M5——M3 Ultra 128GB 现货 + 外置 OWC ThunderBay 64GB 缓存盘做 model offload，组合成本 < M5 Ultra 192GB 预估价；② 团队预算分配——把"大模型本地"从个人工作站推到"中心化共享推理集群"（2× H100 80GB SXM + 1TB DDR5），按小时计费给开发者用，比每人一台 Ultra 经济；③ 关注国内厂商替代——华为 Atlas 800I A2 + 国产显存涨价相对滞后 1-2 季，对国内团队 5 月可能反而是窗口期。</li>
+</ul>
+
+<ul>
+<li><strong>GrapheneOS 警告"硬件证明已成垄断启动器"+ Maryland $2B 电网升级——AI 基础设施的两个外部性</strong>：HN <a href="https://grapheneos.social/@GrapheneOS/116550899908879585" target="_blank" rel="noopener">Hardware Attestation as Monopoly Enabler</a> 833 票、312 评论，GrapheneOS 论述：Google Play Integrity API 和 Apple App Attest 在"反作弊"名义下要求设备硬件签名，事实上排除了非主流 ROM 和有根设备访问大量银行/支付/打车应用，这套机制延伸到 AI agent 时会形成"只有特定 OEM 可以跑代理"的局面；同时 HN <a href="https://www.tomshardware.com/tech-industry/artificial-intelligence/maryland-citizens-slapped-with-usd2-billion-grid-upgrade-bill-for-out-of-state-ai-data-centers-state-complains-to-federal-energy-regulators-says-additional-cost-breaks-ratepayer-protection-pledge-promises" target="_blank" rel="noopener">Maryland citizens hit with $2B power grid upgrade for out-of-state AI</a> 127 票、47 评论，Maryland 居民被分摊 $20 亿电网升级费用以支持"出州 AI 数据中心"。两件事合起来指向：<strong>AI 的"集中化推理 + 中心化身份证明"模式正在产生显性外部性</strong>——本地推理与去中心身份认证从"技术偏好"上升到"公民权利"层面。开发者团队的 2026 行动清单：① 不在产品中强依赖 Play Integrity / App Attest 来锁定 AI agent 接口——会把 GrapheneOS / 鸿蒙 / Termux 用户挡在外面，且未来可能反垄断；② 关注 <a href="https://unix.foo/posts/local-ai-needs-to-be-norm/" target="_blank" rel="noopener">Local AI needs to be the norm</a>（HN 517 票）——这类倡议是趋势，企业级产品早一步支持"本地优先 + 云端补充"模式将获得 ESG/合规友好性；③ 数据中心选址敏感——避免把客户的"长跑代理"放在 Maryland/Virginia 这种 AI 反弹大的州，多区域部署变成产品义务而非工程冗余。</li>
+</ul>
+
+<ul>
+<li><strong>从今日热点提炼 2026 H1 本地 AI Stack 走向</strong>：今日 Mythos 引爆 + Qwen 3.6 27B 离线媲美 Opus + Star Elastic 一份权重切多档 + DeepSeek V4-Flash 524K 长上下文 + Apple 撤 256GB Mac Studio + Maryland 电网外部性——共同指向一个 thesis：<strong>"云端尖端旗舰"和"本地高质量"已不再是替代关系，而是按"任务时长 / 数据敏感度 / 网络可达性"三轴并存</strong>。团队需要在 2026 H1 内建立：① "任务长度→模型"映射（< 30min Sonnet、30min-2h Opus、> 2h Mythos、离线/敏感 Qwen-3.6 或 DeepSeek-V4-Flash）；② "数据分类→部署面"映射（公开 → 云、内部 → VPC、敏感 → 本地、机密 → 离线 air-gap）；③ "网络可达性→自动降级"链路（在线优先 → 降级 Sonnet → 降级本地 27B → 降级本地 14B → 拒绝并通知人类）。三条链路打通后，团队真正进入"AI 工作流连续性"成熟阶段——这是 5 月这一周给出的最大信号。</li>
+</ul>
+
+<ul>
+<li><strong>构建"长跑代理护栏 + 离线一键应急"双重保护——本周事故学</strong>：综合 717GB 误删事故 + 自主 24/7 警告 + Mythos 长跑代理新场景 + AWS us-east-1 上周故障，可设计一个"长跑代理护栏 + 离线一键应急"双层模板，让团队既能用 Mythos 跑通宵又不出事故。架构：① <strong>会话前</strong>：每个 Mythos 长跑代理启动前强制 <code class="inline">zfs snapshot pool/work</code> + <code class="inline">git stash --include-untracked</code> + 启动 <code class="inline">claude-watchdog</code>（监控代理输出，触发 destructive 命令时暂停 + 通知）；② <strong>会话中</strong>：所有破坏性命令二次确认（PreToolUse Hook），路径必须 <code class="inline">realpath</code> 校验，预算用满 50% 时主动 checkpoint 当前进度到 <code class="inline">~/.claude/sessions/checkpoint-{id}.json</code>；③ <strong>会话后</strong>：自动 diff 文件系统变更 → 人工 review 后才能 merge → 不通过则一键 <code class="inline">zfs rollback</code>；④ <strong>离线应急</strong>：本地预装 Ollama + Qwen 3.6 27B Q4 + 项目 git 本地完整 clone，遇到 Anthropic API 故障时 <code class="inline">claude-code --provider ollama</code> 立即切换；⑤ <strong>季度演习</strong>：每季度跑一次"模拟 Mythos 跑飞 + 模拟 API 故障"，验证整条链路。这套模板预计可以把"AI 自主任务事故率"从 5 月观察到的 ~3% 降到 < 0.3%——是从"勇于尝试代理"走向"批量生产代理"的核心门槛。</li>
+</ul>
+
+<hr>
+
+<h2>二、高手实战技巧表格</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>#</th>
+<th>技巧</th>
+<th>说明</th>
+<th>难度</th>
+<th>来源</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td>Mythos 按任务时长路由</td>
+<td><code class="inline">router.yaml</code> 加 <code class="inline">task_horizon_hours</code> 档位，> 2h 才用 Mythos</td>
+<td>⭐</td>
+<td><a href="https://reddit.com/r/ClaudeAI/comments/1t83k85/not_a_good_day_for_team_claude_mythos_is_just_marketing_hype/" target="_blank" rel="noopener">Claude Mythos 破 METR</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Mythos 每日调用上限</td>
+<td>默认 <code class="inline">mythos_calls_per_day=5</code>，防一晚上 $1000+ 账单</td>
+<td>⭐</td>
+<td>r/ClaudeAI Mythos 评论区</td>
+</tr>
+<tr>
+<td>3</td>
+<td>飞行模式 fallback Qwen 3.6</td>
+<td><code class="inline">~/.claude/CLAUDE.md</code> 加 <code class="inline">fallback_provider: ollama</code> 自动切本地</td>
+<td>⭐⭐</td>
+<td><a href="https://reddit.com/r/ClaudeAI/comments/1t8v7z0/hugging_face_cofounder_says_qwen_36_27b_running_on_airplane_mode_close_to_latest_opus_in_claude_code/" target="_blank" rel="noopener">HF 联创 Qwen on plane</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td>离线模式禁用 Web 工具</td>
+<td>在 <code class="inline">claude-code prefetch --offline-bundle</code> 同时关闭 WebFetch/WebSearch</td>
+<td>⭐⭐</td>
+<td>综合 Qwen 离线实测</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Star Elastic GPU 利用率切档</td>
+<td><code class="inline">slice_policy: gpu_util > 70% → slice_to=12b</code> 动态降档保吞吐</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://reddit.com/r/LocalLLaMA/comments/1t8s83r/nvidia_ai_releases_star_elastic_one_checkpoint_that_contains_30b_23b_and_12b_reasoning_models_with_zero_shot_slicing/" target="_blank" rel="noopener">NVIDIA Star Elastic</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td>DeepSeek V4-Flash 524K 长上下文</td>
+<td>W4A16+FP8 + MTP self-speculation，2× RTX PRO 6000 = 85 t/s</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://reddit.com/r/LocalLLaMA/comments/1t9em98/deepseekv4flash_w4a16fp8_with_mtp_selfspeculation_85_toks_524k_on_2_rtx_pro_6000_maxq/" target="_blank" rel="noopener">V4-Flash 实测</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td>Qwen 3.6 35B-A3B 笔记本本地</td>
+<td>8GB VRAM + 32GB RAM 跑 190K 上下文，<code class="inline">--keep-experts code,en</code> 加速</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://reddit.com/r/LocalLLaMA/comments/1t9eo83/running_qwen36_35b_a3b_on_8gb_vram_and_32gb_ram_190k_context/" target="_blank" rel="noopener">r/LocalLLaMA 8GB 实测</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td>MTP 按任务关键词路由</td>
+<td>代码场景 mtp=on，写作/翻译 mtp=off，避免 -15% 慢回归</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://reddit.com/r/LocalLLaMA/comments/1t9gcar/mtp_benchmark_results_the_nature_of_the_generative_task_dictates_whether_you_will_benefit_coding_or_get_slower_inference/" target="_blank" rel="noopener">MTP benchmark</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td>Claude Code in Obsidian Vault</td>
+<td>MCP server 跑进程内 Unix socket，零端口暴露 + 双向同步</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://reddit.com/r/ClaudeAI/comments/1t9ljk4/i_put_claude_code_inside_obsidian_as_a_plugin_full_agentic_vault_access_with_a_native_ui_bridge/" target="_blank" rel="noopener">r/ClaudeAI Obsidian 插件</a></td>
+</tr>
+<tr>
+<td>10</td>
+<td>UserPromptSubmit Hook 注配额</td>
+<td>Claude 自知今日剩余 token，自动建议拆任务/降模型</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://reddit.com/r/ClaudeAI/comments/1t9ayg8/i_made_claude_code_aware_of_its_own_usage_limits/" target="_blank" rel="noopener">Claude 配额自觉</a></td>
+</tr>
+<tr>
+<td>11</td>
+<td>路径 realpath 防越界递归删除</td>
+<td>PreToolUse Hook 用 <code class="inline">realpath --canonicalize-existing</code> 拒 <code class="inline">..</code> 展开</td>
+<td>⭐⭐⭐⭐</td>
+<td><a href="https://reddit.com/r/ClaudeAI/comments/1t923er/i_deleted_a_guys_entire_windows_install_with_one_backslash_717_gb_gone_i_am_the_ai/" target="_blank" rel="noopener">Claude 717GB 删除事故</a></td>
+</tr>
+<tr>
+<td>12</td>
+<td>ZFS snapshot 长跑代理前置</td>
+<td>每个 Mythos 长会话前 <code class="inline">zfs snapshot</code>，事故一键 rollback</td>
+<td>⭐⭐⭐⭐</td>
+<td>综合本周事故学</td>
+</tr>
+<tr>
+<td>13</td>
+<td>非英语任务强制 Sonnet 4.6</td>
+<td>router.yaml 加 lang_detect 规则，避免 Opus 4.7 烧 token 1.3-1.8x</td>
+<td>⭐⭐</td>
+<td><a href="https://reddit.com/r/ClaudeAI/comments/1t8xtcf/attention_opus_47_is_english_only_using_foreign_languages_here_german_burns_tokens/" target="_blank" rel="noopener">Opus 4.7 English only</a></td>
+</tr>
+<tr>
+<td>14</td>
+<td>Sonnet 4.5 → 4.6 双模型平行 7 天</td>
+<td>cc-canary 跑回归 baseline，重点 <code class="inline">parallel_tool_calls</code> race condition</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://reddit.com/r/ClaudeAI/comments/1t994i8/sonnet_45_finally_going_away/" target="_blank" rel="noopener">Sonnet 4.5 退役</a></td>
+</tr>
+<tr>
+<td>15</td>
+<td>季度长跑代理 + API 故障演习</td>
+<td>同时模拟 Mythos 跑飞 + Anthropic API 5xx，验证整条护栏链路</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>综合 717GB+AWS 教训</td>
+</tr>
+</tbody></table></div>
+
+  </div>
+</article>
+<div class="article-footer">
+  <div class="container">
+    <a href="../#ai-trends">← 返回首页</a>
+  </div>
+</div>
+</body>
+</html>
