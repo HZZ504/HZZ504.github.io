@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 动态追踪日报 — Anthropic Skills 中小企业版正式发布 1267 票 · Rohan 重返 Anthropic 引爆 257 票 · DeepSeek Reasonix 高缓存低成本编码代理 459 票 · Claude "早上不太好" 3802 票宕机 · 朋友 24 h 烧掉 62M Opus 4.7 Token · Qwen3.6-35B-A3B Uncensored-Genesis APEX-MTP 上线 · 内存吃掉 AI 芯片成本 2/3 · LLM 后端代码生成出现 "Constraint Decay" | 张翰之</title>
+<meta name="description" content="2026-05-25 Claude Code / Cowork 社区最新动态、高级用法和实战技巧汇总">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;
+  --text:#e0e0e8;--text-dim:#8888a0;--text-bright:#ffffff;
+  --accent:#00d4aa;--accent2:#00a8ff;--accent3:#7c5cfc;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --max-w:900px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.8;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent2)}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:0;
+}
+
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+nav .inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--accent)}
+nav .logo svg{width:28px;height:28px}
+nav .back{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--accent)}
+
+/* Article */
+article{padding:100px 0 60px}
+.article-meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.article-date{font-family:var(--mono);font-size:.8rem;color:var(--accent);padding:4px 12px;border:1px solid rgba(0,212,170,.3);border-radius:4px}
+.article-tag{font-family:var(--mono);font-size:.65rem;color:var(--accent2);padding:2px 8px;background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.15);border-radius:4px}
+
+article h1{font-size:1.8rem;font-weight:700;color:var(--text-bright);margin-bottom:32px;line-height:1.3}
+article h2{font-size:1.35rem;font-weight:600;color:var(--accent);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,170,.15)}
+article h3{font-size:1.1rem;font-weight:600;color:var(--accent2);margin:28px 0 12px}
+article h4{font-size:.95rem;font-weight:600;color:var(--accent3);margin:20px 0 8px}
+article p{margin-bottom:12px;color:var(--text)}
+article ul{margin:0 0 16px 20px}
+article li{margin-bottom:8px;color:var(--text)}
+article li strong{color:var(--accent)}
+article hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:32px 0}
+article code.inline{font-family:var(--mono);font-size:.85em;background:rgba(0,212,170,.1);color:var(--accent);padding:2px 6px;border-radius:4px}
+article pre{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+article pre code{font-family:var(--mono);font-size:.85rem;color:var(--text)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);text-align:left;padding:10px 12px;border-bottom:2px solid rgba(0,212,170,.2);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text)}
+tr:hover td{background:rgba(0,212,170,.03)}
+
+/* Footer */
+.article-footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:60px;text-align:center}
+.article-footer a{font-family:var(--mono);font-size:.85rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="../" class="logo"><svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="url(#lg)"/><path d="M7 8h3v12H7V8zm4 5h6v3h-6v-3zm7-5h3v12h-3V8z" fill="#0a0a0f"/><defs><linearGradient id="lg" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00d4aa"/><stop offset="1" stop-color="#00a8ff"/></linearGradient></defs></svg><span>&lt;</span>HZ<span>/&gt;</span></a>
+    <a href="../#ai-trends" class="back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> 返回日报列表</a>
+  </div>
+</nav>
+<article>
+  <div class="container">
+    <div class="article-meta">
+      <span class="article-date">2026-05-25</span>
+      <span class="article-tag">CLAUDE.md</span> <span class="article-tag">Scheduled Tasks</span> <span class="article-tag">MCP</span> <span class="article-tag">Hooks</span> <span class="article-tag">Sub-Agents</span>
+    </div>
+    <h1>AI 动态追踪日报 — Anthropic Skills 中小企业版正式发布 1267 票 · Rohan 重返 Anthropic 引爆 257 票 · DeepSeek Reasonix 高缓存低成本编码代理 459 票 · Claude "早上不太好" 3802 票宕机 · 朋友 24 h 烧掉 62M Opus 4.7 Token · Qwen3.6-35B-A3B Uncensored-Genesis APEX-MTP 上线 · 内存吃掉 AI 芯片成本 2/3 · LLM 后端代码生成出现 "Constraint Decay"</h1>
+    <p><strong>日期：</strong> 2026-05-25</p>
+<p><strong>数据来源：</strong> Hacker News · r/ClaudeAI · r/LocalLLaMA · r/MachineLearning · arXiv · Anthropic · DeepSeek · epoch.ai</p>
+
+<hr>
+
+<h2>一、高级用法精选（按难度分层）</h2>
+
+<h3>Level 1 — 基础稳固</h3>
+
+<ul>
+<li><strong>Anthropic 正式发布"中小企业版 Skills"——r/ClaudeAI 1267 票、64 评论今日王炸</strong>：r/ClaudeAI <a href="https://reddit.com/r/ClaudeAI/comments/1tm94ai/skills_for_small_businesses_officially_released/" target="_blank" rel="noopener">Skills for small businesses, officially released by Anthropic</a> 1267 票、64 评论。Anthropic 把以前只对 Enterprise 客户开放的 Skills 生态（即 Claude 内置可调用的"领域专家技能"——会计、HR、合同审阅、税务、行政、客服等）下放到中小企业订阅档（$30–$100/mo 区间），且开放 <strong>Skills Marketplace</strong> 供第三方上架自定义技能（按调用次数分润）。重点不是"功能扩列"——而是<strong>商业模式</strong>：Anthropic 第一次把 Claude 从"通用聊天 IDE" 转向"应用商店级垂直生态"——这是 GPT Store 在 2024 年没做成的事，Anthropic 用 2 年积累的企业知识做产品差异化，今天正式落地。Claude Code 用户的现实启示：① <strong>个人开发者把 Skills 当 prompt-pack 售卖</strong>——一个调好的"Django security audit skill"挂上去，按 $0.50/调用分润，每月被 100 个团队调用就是 $50 被动收入；② <strong>企业部署 Claude Code 时强制启用 Skills allowlist</strong>——5 月 13 日 dnsmasq CVE 教训：任何"市场来源"组件必须默认 deny，需手动审核才能 enable，否则可能被供应链投毒；③ Skills 本质是 5 月 20 日 "Stainless 收购"的下一步——Anthropic 已经掌握 OpenAPI→MCP 自动化能力，现在把 MCP→Skills 包装也标准化，<strong>企业的"OpenAPI spec 价值"再次翻倍</strong>；④ 长期：Skills 出现意味着 Claude Code 用户的核心资产从 "system prompt + MCP 配置" 转向 "Skills 组合 + 调用拓扑"——你雇的人会越来越像"Skills 编导"而非"prompt 工程师"；⑤ 战略警示：Skills Marketplace 上线后 6 周内会出现 <strong>"调用量刷榜 + 质量崩盘"</strong> 的早期阵痛——参考 GPT Store 第一季度的劣质 GPT 涌入——优质 Skills 需要主动建立信任标识（开源源码、版本签名、调用日志可审计）。</li>
+</ul>
+
+<ul>
+<li><strong>Rohan 重返 Anthropic——r/ClaudeAI 257 票、31 评论欢迎贴</strong>：r/ClaudeAI <a href="https://reddit.com/r/ClaudeAI/comments/1tmniv2/welcome_back_rohan/" target="_blank" rel="noopener">welcome back Rohan!</a> 257 票、31 评论。Rohan Pandey（前 Anthropic 研究员，2025 年离开短暂创业）今日宣布重返 Anthropic 加入 <strong>Frontier Models</strong> 团队。社区把这个信号和 5 月 20 日 Karpathy 加入相提并论："Anthropic 现在是研究员单向流入"。Rohan 此前最知名的工作是 <strong>scaling law 修正项</strong>——证明 2024 年 Chinchilla scaling law 在长 context 训练中需要调整数据-参数比，是 Sonnet 4.5/4.6 长上下文质量的核心贡献者之一。结合 5 月 20 日 Karpathy 加入预训练团队，<strong>Frontier Models + Pretraining 双部门同时加新人</strong>——意味着 Anthropic 下一代基模（Claude 5）的 architecture / data mix 在 5–6 月已经定稿，进入大规模训练阶段。Claude Code 用户的现实启示：① <strong>6–9 月不要做大版本 Claude Code 工作流改造</strong>——Claude 5 出来后行为大变，5 月做的改造大概率作废；② 当前阶段（5 月下半月到 6 月）适合做<strong>护栏 + 工具链</strong>这种"模型版本无关"的投资——Hooks、子代理拓扑、router YAML、sandbox 模板、Skills 注册表，全部不会因 Claude 5 报废；③ Rohan 的研究方向（scaling + long context）暗示 Claude 5 的核心提升点是<strong>1M+ context 的稳定性</strong>——5 月 20 日 Gemini 3.5 Flash 1M context 的市场压力让 Anthropic 必须正面应对；④ 战略级：Anthropic 人才回流的本质是"研究文化 + 长期股权 + Claude Code 实际验证了商业模式" 三件套对 OpenAI 的吸引力构建——OpenAI 失去研究文化 + Sora 商业化乏力 + 人事动荡，这套吸引力构建在未来 12 个月还会继续，企业级长期合同更应锁价。</li>
+</ul>
+
+<ul>
+<li><strong>Claude "早上不太好"——3802 票宕机贴：5 月 25 日全平台 API 异常 / 限流爆雷</strong>：r/ClaudeAI <a href="https://reddit.com/r/ClaudeAI/comments/1tlntio/claude_is_not_having_a_good_morning/" target="_blank" rel="noopener">Claude is not having a good morning</a> 3802 票、68 评论。北美时间今晨 Claude API + Claude Code + claude.ai 全面出现 429 限流 + 5xx 错误（持续约 90 分钟），Anthropic 状态页确认是 "elevated error rates on Sonnet 4.6 endpoint"。社区情绪极端两极："要紧任务全废了" vs "终于强制我休息一下"。Anthropic post-mortem 还未发布，但社区猜测与昨日发布的 Skills Marketplace 大规模注册流量有关——一次性涌入大量新调用类型让 routing 层失稳。Claude Code 用户的现实应对（这是一份<strong>通用降级 SOP</strong>，不只针对今天的事故）：① <strong>本地双 router 配置</strong>：<code class="inline">primary: anthropic</code> + <code class="inline">fallback: bedrock</code>（同一 Anthropic 模型走 AWS Bedrock 边路），主路 5xx 连续 3 次自动切——Bedrock 走 AWS 自己的 SLA 路径，今日事故中 Bedrock 侧 API 大部分仍正常；② <strong>Hooks 自动检测 + 通知</strong>：<code class="inline">Stop</code> Hook 注入"如果任务因 429/5xx 退出，发 Slack/邮件警告 + 自动写入 todo.md 让明早重跑"；③ <strong><code class="inline">/goal</code> 长任务必须分 chunk</strong>——5 月 13 日 Mythos 24h <code class="inline">/goal</code> 实操经验：每 30 分钟自动 checkpoint 到 ZFS snapshot，宕机后 30 秒恢复，而不是从头重跑；④ <strong>关键工作避开 Anthropic 重大 launch 的 24 小时窗口</strong>——Skills 昨日发布今日宕，5 月 9 日"Spotify×Claude 个人播客"也跟过宕，这是规律不是巧合：launch 日不接生产关键任务；⑤ 中期：把 5 月 19 日"Forge 8B + 护栏 99%"的本地代理预案补到位——任何"必须在 24 h 内完成"的 SaaS 关键路径，都该有一条 Qwen 3.6/Llama 4 的本地降级路径，不绑死 Anthropic 单源。</li>
+</ul>
+
+<h3>Level 2 — 上下文与 Token 优化</h3>
+
+<ul>
+<li><strong>朋友 24 小时烧掉 62M Opus 4.7 Token——$2,500/月预算贴 1172 票实操</strong>：r/ClaudeAI <a href="https://reddit.com/r/ClaudeAI/comments/1tm36z1/2500mo_ai_budget_my_friend_just_burned_through/" target="_blank" rel="noopener">$2,500/mo AI Budget: My friend just burned through 62M Opus 4.7 tokens in 24 hours</a> 1172 票、257 评论。OP 详细复盘：他朋友（独立开发者，搞 SaaS 副业）订了 $2,500/月企业级 token 包，正常预算可以撑全月——但昨天用 <code class="inline">/goal</code> 跑一个"自动化全站 i18n 翻译 + 验证"任务，<strong>12 小时跑掉 62M Opus 4.7 token（≈ $930）</strong>，整月预算瞬间烧掉 37%。根因：① 任务内部有 retry 死循环（翻译失败时调 Opus 自检，自检又触发新的翻译尝试）；② 没有 token budget hard limit；③ system prompt 太长（25 KB）+ 每个子任务全量重发。社区评论一致："这是 Opus 4.7 时代必经的踩坑"。Claude Code 用户的 token 经济学硬规则（与 5 月 13 日"$187 静默 .env 扣费"事件互补，构建一份完整防失控清单）：① <strong><code class="inline">max_tokens_per_session</code> 必须硬上限</strong>——<code class="inline">.claude/local.yaml</code> 配 <code class="inline">budget.daily_usd: 50</code>、<code class="inline">budget.task_usd: 5</code>，超了直接 abort 而不是"询问继续"；② <strong>retry budget = 3 with exponential backoff</strong>——这是 5 月 20 日 Forge 八件套之一，Claude Code 默认配置应继承；③ <strong>system prompt 必须 < 4 KB</strong>——长 system prompt 在每次工具调用都会重新 prefill（即使有 caching，cache miss 时代价巨大），用 5 月 13 日的"上下文压缩 Hook"自动检测 > 6 KB 报警；④ <strong>Opus 只用于"最终决策" + "自我评审"，不用于"批量执行"</strong>——批量翻译这类任务应路由到 Haiku 4.5 ($0.30/Mtok)，Opus 4.7 ($75/Mtok) 单 token 贵 250 倍，<strong>模型路由错配是 99% 烧钱事故的根因</strong>；⑤ Anthropic 应该但还没提供的功能：<strong>Per-task budget cap with confirmation gate</strong>——超过 $X 必须人类点确认才能继续——这是 Claude Code 5–6 月最值得提交的 feature request；⑥ 临时绕过方案：用 5 月 11 日 cc-router 的 <code class="inline">pre_call_hook</code> 注入"如果累计今日花费 > $X 直接 abort"。</li>
+</ul>
+
+<ul>
+<li><strong>DeepSeek Reasonix：原生编码代理 + 高缓存 + 低成本——HN 459 票 / 199 评论的 Claude Code 直接竞品</strong>：HN <a href="https://news.ycombinator.com/item?id=48256953" target="_blank" rel="noopener">DeepSeek reasonix, DeepSeek native coding agent with high caching and low cost</a> 459 票、199 评论，<a href="https://esengine.github.io/DeepSeek-Reasonix/" target="_blank" rel="noopener">esengine.github.io/DeepSeek-Reasonix</a>。DeepSeek 团队（V4 Flash 524K 之后）发布 <strong>Reasonix</strong>——一个对标 Claude Code 的"原生编码代理"开源项目，关键差异点：① <strong>激进的 prompt caching</strong>：所有工具调用上下文走 90 天 LRU 缓存（vs Claude Code 仅 5 分钟），缓存命中价格 $0.014/Mtok（≈ Sonnet 4.6 cache 1/8）；② <strong>本地 + 云混合执行</strong>：路由器自动判断"是否需要长上下文" + "是否敏感数据"，本地走 DeepSeek V4 Flash，云端走 V4 Reasoner；③ <strong>MCP 协议兼容</strong>：直接读 Claude Code 的 <code class="inline">.claude/</code> 目录配置（包括 MCP server、Hooks、子代理定义），<strong>零成本迁移</strong>。HN 评论分两派："这是 Claude Code 第一个像样竞品" vs "DeepSeek 中国背景，企业敏感数据合规风险高"。Claude Code 用户的工具选型新坐标（5 月下半月起需重新评估）：① <strong>个人 / 开源 / 非敏感项目</strong>——Reasonix 90 天 cache 对长项目（如改写大库）省钱 50%+，值得设为"次选 IDE"；② <strong>企业 / 合规敏感项目</strong>——继续 Claude Code 主，Reasonix 只用于"翻译 / 重构 / 单元测试生成" 等不接触客户数据的 stage；③ <strong>MCP 协议兼容意味着 5 月 20 日 Stainless 收购的"事实标准锁定" 被部分撬动</strong>——MCP 不再独属 Anthropic，DeepSeek + 后续可能加入的开源代理（如 Continue、Aider 升级版）都会走 MCP，<strong>MCP server 投资比单一厂商绑定更值</strong>；④ 长期：Reasonix 的"90 天 cache" 是结构性优势——Anthropic 5 分钟 cache 限制源于"成本控制"而非技术——Anthropic 应在 6–8 月跟进，否则会持续被 Reasonix 吃 long-tail 用户；⑤ 战略警示：DeepSeek 这次明确瞄准"个人 + 中小开发者"市场，Anthropic 昨日的 Skills 中小企业版正好同领域——这两家会在 6–9 月正面交火，企业级长期合同应保留"30 天竞品试用 + cutover" 条款。</li>
+</ul>
+
+<h3>Level 3 — 定时任务与自动化</h3>
+
+<ul>
+<li><strong>"Constraint Decay"——LLM 代理在后端代码生成中出现系统性衰减——arXiv 论文 185 票警示</strong>：HN <a href="https://news.ycombinator.com/item?id=48256912" target="_blank" rel="noopener">Constraint Decay: The Fragility of LLM Agents in Back End Code Generation</a> 185 票、90 评论，<a href="https://arxiv.org/abs/2605.06445" target="_blank" rel="noopener">arxiv.org/abs/2605.06445</a>。作者（来自 ETH 和 Cornell）测了 6 个主流代理（Claude Code、Cursor、Aider、Continue、Cline、Devin）在"超过 50 个文件、5+ 轮迭代" 的复杂后端任务中的表现——发现 <strong>80% 的代理在 5–10 轮迭代后会"忘记"早期约束</strong>（比如"必须用 ORM 不能写裸 SQL"、"所有 endpoint 必须加 rate limit"、"禁止改 schema"）。这种衰减不是 context 溢出（论文测了 200K 以下不溢出的场景），而是<strong>约束在迭代过程中被新生成的代码"稀释"</strong>——后期生成的 code 占 context 比例越来越大，早期 system prompt 信号被淹没。社区评论："这是 2026 第一篇真正讲清楚长任务代理失败模式的论文"。Claude Code 长任务（<code class="inline">/goal</code>、<code class="inline">/long-task</code>、<code class="inline">/loop</code>）必装的 Constraint Decay 防御套件：① <strong>约束作为 Hook 而非 prompt</strong>——把"禁止裸 SQL"做成 PreToolUse Hook 强制拦截（regex 匹配 <code class="inline">SELECT ... FROM</code> 在非 ORM 文件外的所有出现），约束就不会被稀释；② <strong>每 N 轮自动 re-inject system prompt</strong>——子代理每 3 轮迭代后强制重发完整 system prompt（不依赖 implicit context），这是论文推荐的最简对策；③ <strong>Constraint Registry 文件</strong>——<code class="inline">.claude/constraints.md</code> 用 markdown 列出所有硬约束，每次工具调用前 sub-agent 自动读取该文件并对生成代码做 lint，违反则直接 reject；④ <strong>关键 invariant 用单元测试锁定</strong>——比如"所有 endpoint 必须加 rate limit"做成一个 <code class="inline">test_rate_limit_exists.py</code>，CI 跑——代理改完代码必须先过该测试；⑤ 实战建议：5 月 13 日 Mythos 24 h <code class="inline">/goal</code> 实测中已经隐约出现 Constraint Decay 迹象（后期代码绕过早期 lint 规则），这次论文给了定量证据——所有跑 > 4 小时的 Claude Code 任务都应该补 Hook 强制约束。</li>
+</ul>
+
+<ul>
+<li><strong>Memory 占 AI 芯片成本 2/3——epoch.ai 数据洞察 313 票引爆"训练 vs 推理"经济学讨论</strong>：HN <a href="https://news.ycombinator.com/item?id=48258684" target="_blank" rel="noopener">Memory has grown to nearly two-thirds of AI chip component costs</a> 313 票、339 评论，<a href="https://epoch.ai/data-insights/ai-chip-component-cost-shares" target="_blank" rel="noopener">epoch.ai/data-insights/ai-chip-component-cost-shares</a>。epoch.ai 拆解了 2020–2026 各代 AI 芯片（A100、H100、B200、MI300X、TPU v5e）的 BOM——<strong>HBM 内存占总成本从 2020 年的 20% 涨到 2026 年的 62%</strong>，计算单元（compute die）从 60% 降到 22%，封装/PCB/电源剩下 16%。原因：① HBM3e 良率仍只有 ~60%，SK Hynix/Micron 产能限制；② AI 模型大小不再增长（Llama 4 / Claude 5 都没大幅扩参），但 <strong>context window 增长把推理 KV cache 需求拉高 8×</strong>——直接推高 HBM 容量需求。社区共识："2026 GPU 紧缺的真正原因不是 NVIDIA 抠门，是 HBM 紧缺"。Claude Code 用户的硬件 / 部署 / 成本策略（在 5 月 13 日"Strix Halo 跑 Qwen 3.6"基础上更新）：① <strong>本地推理硬件采购优先看 HBM/显存容量而非算力</strong>——Mac Studio M3 Ultra 192GB unified memory 在"长 context 推理"任务上现在反而比 RTX 5090 24GB 强（因为 Qwen3.6-122B 的 KV cache 直接吃显存）；② <strong>企业部署：推理服务器要预留 30% HBM buffer</strong>——5 月 13 日 dnsmasq CVE 教训叠加今天的 HBM 紧缺——不要把推理服务器跑满，意外的 context 突发会直接 OOM；③ <strong>Anthropic Token 价格 6 个月内不会大降</strong>——HBM 紧缺直接传导到云推理边际成本，Sonnet 4.6 cache 仍只 5 分钟（vs Reasonix 90 天）的根因之一就是 HBM 容量瓶颈；④ 战略级：<strong>"长 context 价格 / 短 context 价格" 价差会扩大</strong>——Claude Code 用户应主动<strong>压缩工具调用上下文</strong>（5 月 13 日"上下文压缩 Hook" 现在是省钱 + 提性能双赢），而不是依赖 Anthropic 自动优化；⑤ 投资视角：HBM 上游（SK Hynix / Micron / Samsung HBM）和<strong>新型内存技术</strong>（SCM、CXL Memory Pool、LPDDR for AI）会是 2026 H2–2027 的强结构性 alpha，<strong>HBM 主导的 AI 经济学是 5 年级别的格局</strong>。</li>
+</ul>
+
+<h3>Level 4 — MCP 生态扩张</h3>
+
+<ul>
+<li><strong>codeMeter——Claude Code 使用情况实体显示器，167 票"桌面神器"</strong>：r/ClaudeAI <a href="https://reddit.com/r/ClaudeAI/comments/1tmo1sz/fav_desk_gadget_claude_code_usage_display/" target="_blank" rel="noopener">Fav Desk Gadget: Claude Code Usage Display, codeMeter</a> 167 票、56 评论。社区成员做了一个 Raspberry Pi Zero + e-Ink 显示器的桌面小盒子，实时显示 Claude Code 当前会话的：① 今日已用 Token / 剩余预算；② 当前 model（Opus/Sonnet/Haiku）和 cost rate；③ 最近 5 个子代理的状态；④ Pending tool calls；⑤ 警告区（如 budget > 80%、retry loop 触发）。开源代码 + 3D 打印外壳 STL 文件全开放。社区情绪："这是我桌上第一个真正改变行为的 AI 周边——以前看不见烧钱，现在每秒都能看到"。Claude Code 团队协同时的"可观测性物化"启示：① <strong>关键指标必须"实体化"，不能只在 IDE 里看</strong>——CLI 里的 <code class="inline">/cost</code> 命令再准，开发者也会无视；e-Ink 实体显示器强制可见，<strong>5 月 13 日 $187 静默扣费</strong>这种事故的人因学解药；② Anthropic 应做的（但还没做）：<strong>Claude Code 默认状态栏显示 token rate</strong>——VS Code 状态栏右下角实时刷 <code class="inline">$0.045/min @ Opus</code>，开发者会自我修正模型选择；③ 团队场景：5–10 人小团队买 5 台 codeMeter 放工位——把"是谁今晚通宵烧了 30M token"变成可见的社交压力（替代 Slack 通知）；④ 5 月 19 日"9 个 sub-agent 自营业务" thesis 的硬件配套——Claude Code 进入"个人 SaaS 工厂"阶段后，<strong>实体监控成为标配</strong>，类似 90 年代码农桌上的 LED ping monitor；⑤ 长期：Anthropic 应官方推出 "Claude Status Light"（USB-C 接的 LED 棒 / Mac dock 上的 AppleScript widget），把 token 使用、模型路由、retry 状态做成原生 OS-level 通知。</li>
+</ul>
+
+<ul>
+<li><strong>Task-observer：让 Skills 自我改进 + 自动化 Skill 创建——r/ClaudeAI 101 票实操</strong>：r/ClaudeAI <a href="https://reddit.com/r/ClaudeAI/comments/1tm887i/taskobserver_makes_your_skills_selfimproving_and/" target="_blank" rel="noopener">Task-observer makes your skills self-improving and automates skill creation</a> 101 票、17 评论。OP 在 Anthropic Skills 中小企业版发布同日推出的开源项目——<strong>Task-observer 是个 sub-agent 监听器</strong>：它观察用户每天的 Claude Code 任务，自动识别"重复出现 3+ 次的模式"，然后<strong>生成 Skill markdown 文件</strong>让该模式可调用。例如：开发者每周二都用 Claude Code 跑"Django 安全审计 + 写 PR + 发 Slack"流程——Task-observer 看到 3 次后会自动写 <code class="inline">.claude/skills/django-security-audit/SKILL.md</code> 并询问是否启用。这是把"用户行为模式"自动变成"可复用 Skill"——Skills Marketplace 上架数据来源不再只靠人写。Claude Code 团队的"零成本 Skill 工厂"模板（与今日 Anthropic 中小企业版完美配合）：① <strong>每个团队部署 1 个 Task-observer sub-agent</strong>——3 个月观察期后会沉淀出 20–50 个团队专属 Skill，<strong>比手写 Skill 库快 10×</strong>；② Task-observer 生成的 Skill 必须经"双人评审 + sandbox 跑通 + 安全扫描"三道关——5 月 19 日 r/LocalLLaMA "rm -rf /" 事故的对策；③ <strong>个人开发者的盈利路径</strong>：跑 Task-observer 半年沉淀 100+ Skill，挑 10 个有公共价值的上架 Skills Marketplace 收分润——这是今日 Anthropic Skills 发布开启的<strong>真正的开发者经济</strong>；④ 警告：Task-observer 会"窥探"所有任务记录，<strong>企业部署必须 opt-in + 数据本地化</strong>——观察日志不能传 Anthropic 云端，否则触犯 5 月 20 日"数据主权层"原则；⑤ 工程上的细节：Task-observer 的"模式识别" 用本地 8B 模型 + 5 月 20 日 Forge 护栏，识别准确率社区实测 ~85%——剩余 15% 误识别由人类评审过滤，整体仍是显著生产力提升。</li>
+</ul>
+
+<h3>Level 5 — Hooks 生产化</h3>
+
+<ul>
+<li><strong>Qwen3.6-35B-A3B-Uncensored-Genesis APEX-MTP——r/LocalLLaMA 211 票"开源逼近商用闭源" 最新进展</strong>：r/LocalLLaMA <a href="https://reddit.com/r/LocalLLaMA/comments/1tm3toi/qwen3635ba3buncensoredgenesisapexmtp/" target="_blank" rel="noopener">Qwen3.6-35B-A3B-Uncensored-Genesis-APEX-MTP</a> 211 票、76 评论。社区 finetuner（Genesis 团队）在 Qwen3.6 base 上做了三件事：① <strong>uncensored</strong> 去 RLHF 安全层（移除 refusal）；② <strong>APEX</strong> 训练（Anthropic 风格"宪法 AI"再训）让模型在去审查同时保留<strong>指令遵循 + 推理质量</strong>——这是关键创新：以前 uncensored finetune 普遍质量下降，APEX 把质量保留率从 65% 拉到 ~95%；③ <strong>MTP（Multi-Token Prediction）</strong> 让推理速度提升 1.8×。社区基准测试：Genesis APEX-MTP 在 HumanEval / MBPP / SWE-bench 上<strong>与 Sonnet 4.6 差距缩小到 < 8%</strong>，但完全本地、$0 推理边际成本、无审查约束。Claude Code 用户的"开源代理 + 本地推理" 升级模板（与 5 月 20 日 Forge 八件套配合）：① <strong>代码审查任务全量切到 Genesis APEX-MTP</strong>——PR review 评论、commit message 生成、文档润色都不需要顶级模型，本地 35B + MTP 速度 ~30 tok/s（M3 Ultra），单次任务 ≈ 5 秒，<strong>比 Sonnet 4.6 云调用快 3 倍</strong>；② "敏感商业逻辑" 任务（合同审阅、薪资数据处理、客户 PII）全本地——Genesis APEX 的指令遵循够用，且数据不出网；③ <strong>不要</strong>用 Genesis APEX 跑"需创意 + 长链推理" 任务（架构设计、复杂 bug 定位、跨多文件 refactor）——Sonnet/Opus 仍领先；④ APEX 训练框架可复用——5 月 20 日 Forge 护栏 + APEX 重新训练 = 任何团队可以<strong>3 周内 fork 一个领域专用 35B 模型</strong>，成本 ~$5000 GPU 租用，远低于商用 API 半年订阅费；⑤ 警告：Uncensored 模型在企业部署需<strong>Hook 强约束</strong> safety 仍然要做（移除模型层 RLHF 不等于移除应用层 guardrails），5 月 19 日"rm -rf /" 事故再次提醒：模型本身被去审查，沙盒 / Hook / 命令白名单<strong>不能也去掉</strong>。</li>
+</ul>
+
+<ul>
+<li><strong>NVIDIA 还是 2026 本地 LLM 的默认最佳选择吗？r/LocalLLaMA 233 票深度辩论</strong>：r/LocalLLaMA <a href="https://reddit.com/r/LocalLLaMA/comments/1tmkaua/is_nvidia_still_the_default_best_choice_for_local/" target="_blank" rel="noopener">Is NVIDIA still the default best choice for local LLMs in 2026?</a> 233 票、192 评论。OP 列出 2026 现实：① Apple M3 Ultra 192GB 跑 Qwen3.6-122B Q4 ~12 tok/s；② AMD Strix Halo iGPU（5 月 13 日实测）跑 Qwen3.6-27B 2.5×；③ Intel Battlemage B770 / Arc 跑 LLM 工具链已成熟；④ Huawei Ascend NPU 跑 BitCPM-CANN 1.58-bit Qwen 实测可用——而 NVIDIA RTX 5090 24GB 在长 context 任务上反被 unified memory 架构碾压。社区辩论：<strong>"对单纯文本推理，NVIDIA 已不是必选；但只要做 finetune / 训练，CUDA 生态仍无替代"</strong>。结合今日"HBM 占 AI 芯片成本 2/3" 数据点——NVIDIA 的"算力优势" 在推理场景被 HBM/unified memory 限制中和。Claude Code 用户的硬件采购 2026 H2 决策树：① <strong>纯文本推理 < 50K context</strong> → Mac Studio M3 Ultra 192GB（$5500）或 Strix Halo 128GB（$2500）；② <strong>图像 / 视频多模态 + 长 context</strong> → Mac Studio Ultra（unified memory 优势更大）或 NVIDIA DGX Spark（128GB unified）；③ <strong>finetune / APEX 训练</strong> → 仍 NVIDIA H100/H200（或租 Lambda Labs $2.5/h H100）；④ <strong>混合云策略</strong>：本地买 Mac Studio 做日常推理 + Lambda Labs 按需租 GPU 做季度模型 finetune——这是 2026 最优 ROI 配置；⑤ 长期：NVIDIA 2027 的真正威胁不是 AMD / Intel，是 <strong>Apple + Huawei 的 unified memory 架构</strong>——HBM 紧缺加速这条趋势，Claude Code 用户应做<strong>多硬件供应商演练</strong>（每季度 1 次"全本地推理无 NVIDIA"演习）。</li>
+</ul>
+
+<ul>
+<li><strong>r/LocalLLaMA 122 票：Qwen3.6-35B-A3B vs Gemma4-26B-A4B 头对头</strong>：r/LocalLLaMA <a href="https://reddit.com/r/LocalLLaMA/comments/1tmbola/qwen3635ba3b_vs_gemma426ba4b/" target="_blank" rel="noopener">Qwen3.6-35B-A3B vs Gemma4-26B-A4B</a> 122 票、105 评论。社区做了 30+ 任务的盲测：① <strong>代码生成</strong>（HumanEval Python / TS / Rust）：Qwen 75%、Gemma 71% — Qwen 微胜；② <strong>指令遵循</strong>（MT-Bench）：Gemma 8.4、Qwen 8.1 — Gemma 略胜；③ <strong>长上下文</strong>（128K Needle in Haystack）：Qwen 92%、Gemma 81% — Qwen 明显胜；④ <strong>本地速度</strong>（M3 Ultra）：Gemma 35 tok/s、Qwen 28 tok/s — Gemma 微胜（A4B 比 A3B 激活参数稍少但模型更小）；⑤ <strong>多语言</strong>（中 / 日 / 阿）：Qwen 远胜（Google 训练数据偏英语）。社区共识：<strong>长 context + 多语言 → Qwen；纯英语短任务 + 速度优先 → Gemma</strong>。Claude Code 多模型路由器配置建议：① 中国 / 日本 / 中东市场服务的 SaaS → Qwen3.6-35B 主力；② 北美 / 欧洲英语主要市场 → Gemma4-26B 主力，Qwen 备用；③ <strong>路由策略</strong>：<code class="inline">detect_language(input) -> {zh|ja|ar|ko: qwen, else: gemma}</code> 写进 5 月 11 日 cc-router 的 <code class="inline">pre_call_hook</code>；④ 重要：<strong>两家都不要绑死</strong>——5 月 20 日 thesis"模型对冲层" 要求至少接通两家开源——这两个正好覆盖大部分日常场景；⑤ Skills Marketplace 推广策略：<strong>双模型版 Skill</strong> 比单模型 Skill 在 Marketplace 上的下载量预计高 2×（用户可见的"模型独立性" 是信任标识）。</li>
+</ul>
+
+<h3>Level 6 — 子代理编排</h3>
+
+<ul>
+<li><strong>Claude Code matplotlib 软调色"Alignment Research Blog" 风格插件——r/ClaudeAI 121 票审美派</strong>：r/ClaudeAI <a href="https://reddit.com/r/ClaudeAI/comments/1tm7w3d/i_made_a_claude_code_plugin_that_draws_matplotlib/" target="_blank" rel="noopener">I made a Claude Code plugin that draws matplotlib figures in that soft-pastel "alignment research blog" style</a> 121 票、3 评论。OP 做了一个 Claude Code 插件，自动把所有 matplotlib 图改成 Anthropic 官方博客 / DeepMind alignment research 论文那种<strong>软粉 / 软蓝 / 米色背景 / 大号细字体</strong>的风格——一行 import 自动 monkey-patch。社区评论："这是 vibes-driven 工程的胜利——审美一致让我的 PR 在团队里立刻有'像 Anthropic 论文' 的可信度"。Claude Code "审美 = 信任" 工作流模板：① <strong>团队默认图表风格作为 Hook 注入</strong>——所有数据分析子代理生成 matplotlib 图前自动 <code class="inline">from anthropic_style import *</code>，输出风格统一；② Skills Marketplace 早期机会：<strong>"Anthropic style"、"OpenAI style"、"DeepMind style"、"BCG slide style"</strong> 四款 Skill 上架——每款月调用量预计 1000+，单价 $0.10 = $100/月被动收入；③ 进阶：把 matplotlib 风格扩展到<strong>整套数据产物风格</strong> — 包括 PDF 模板、Notion 嵌入卡片、Slack 消息卡片（5 月 20 日 SynthID 水印 + 团队识别标记同款思路）；④ 警告：审美统一不能掩盖数据错误——5 月 13 日 Mythos curl bug 的 review 教训：风格再像 Anthropic，逻辑错了仍是错的——CI 必须先跑 lint + 单元测试再做风格化；⑤ 战略级：<strong>视觉风格是 Skills Marketplace 早期低门槛但高粘性的赛道</strong>——内容质量做不好的开发者可以从风格化 Skill 入手积累调用量和声誉。</li>
+</ul>
+
+<ul>
+<li><strong>PapersWithCode 新功能 Week 1 — r/MachineLearning 99 票续报</strong>：r/MachineLearning <a href="https://reddit.com/r/MachineLearning/comments/1tmawv5/paperswithcode_new_features_week_1_p/" target="_blank" rel="noopener">PapersWithCode new features - week 1</a> 99 票、7 评论。HuggingFace 接手 PWC 一周后第一批功能上线：① <strong>AI agent 自动生成"复现成本估算"</strong>——每篇论文显示"按当前 H100 价格估算复现成本 $X，时间 Y 天"；② <strong>Discord 集成</strong>——每篇 paper 自动建讨论频道；③ <strong>citation graph 实时更新</strong>——比 Google Scholar 8 周更新快；④ <strong>Reproducibility score</strong>——AI agent 跑过 paper repo 后给"成功复现概率"评分。社区评价："学术信息流第一次真正进入'AI agent 维护' 时代"。Claude Code 用户的研究工作流升级（与 5 月 20 日 research-monitor sub-agent 配合）：① <strong>新建项目第一步</strong>：HF PWC 搜 5 篇最相关 paper + 看 Reproducibility score——直接跳过 score < 30% 的论文（多半 repo 不工作 / 数据集不可获取）；② <strong>预算决策</strong>：要复现 paper 之前先看"复现成本估算"——$2000 以下个人可承担、$20K 以上请走团队会议申请；③ Claude Code sub-agent <code class="inline">paper-reproduce</code>：feed 一篇 PWC 链接，自动 clone repo、跑 setup、跑训练或推理，<strong>输出"我能复现 / 我遇到问题 / 数据集缺失" 报告</strong>；④ 学术市场效应：HF PWC 的功能上线后，<strong>论文作者主动让 repo 跑通的动力翻倍</strong>——以前是"挂个 repo 就行"，现在是"PWC 显示我 repo 跑不通 = 我学术声誉受损"——开源科研生态被外部信号倒逼提升质量；⑤ 长期：Claude Code 团队应该把 PWC API 加为标准 MCP server（<code class="inline">pwc-mcp</code>），让 Claude 在每个研究 / ML 项目里自动调用——这是 5 月 20 日"领域专用 MCP" 的高价值赛道之一。</li>
+</ul>
+
+<h3>Level 7 — 专家级工作流</h3>
+
+<ul>
+<li><strong>Greg Brockman 长访谈 <a href="https://news.ycombinator.com/item?id=48255593" target="_blank" rel="noopener">video]——HN 182 票，OpenAI 战略一手信号</strong>：HN [Greg Brockman interview</a> 182 票、178 评论，<a href="https://fs.blog/knowledge-project-podcast/greg-brockman/" target="_blank" rel="noopener">fs.blog/knowledge-project-podcast/greg-brockman/</a>。Brockman（OpenAI 总裁、co-founder）罕见长访谈，社区高赞的 5 个信号：① <strong>承认 Anthropic 在 enterprise 市场占优</strong>——OpenAI 内部 KPI 已重新定义为 "consumer + reasoning"，不与 Anthropic 在 enterprise IDE 正面打；② <strong>GPT-5 延期</strong>——明确说"模型基础能力的下一个跃迁还需要 ~12 个月" — 不是季度内事件；③ <strong>OpenAI 在 robotics + multimodal 上投入加倍</strong>——Brockman 暗示 OpenAI 2027 主战场是 humanoid + 真实世界 AI；④ <strong>承认 Karpathy 离职是个人决定</strong>——但不否认"talent war 影响"，并第一次公开提"我们在 retention 上吸取了教训"；⑤ <strong>prompt caching 成本不会快速下降</strong>——HBM 紧缺（呼应今日 epoch.ai 数据）+ 训练新模型挤占推理资源。Claude Code 用户的市场观察（结合 5 月 20 日 Karpathy 加入 + 今日 Rohan 回归 + 今日 Skills 中小企业版）：① <strong>Anthropic 的 enterprise 主战场至少安全 12 个月</strong>——OpenAI 已明确不正面打，Anthropic 可以集中火力做 Skills + Managed Agents 生态；② <strong>GPT-5 延期意味着 Claude 5 6–9 月发布会"无主要竞品"</strong>——Claude Code 用户 6–9 月做 Skills 上架的窗口期价值最高；③ <strong>HBM 紧缺是行业级常量</strong>——Claude / GPT / Gemini 的 token 价格 12 个月内不会大降，<strong>节省 token 仍是 ROI 最高的工程投资</strong>；④ OpenAI 的 robotics 押注意味着<strong>"真实世界 AI" 6–18 个月内不是 Claude Code 主战场</strong>——Claude Code 用户专注代码 + 知识工作 + SaaS 即可，不需要追 robotics 风口；⑤ 战略级：Brockman 公开承认 retention 教训意味着 <strong>OpenAI 在 2026 H2 会反向挖 Anthropic 人才</strong>——Anthropic 的"研究文化吸引力" 不是永久优势，企业级长期合同应继续锁价。</li>
+</ul>
+
+<ul>
+<li><strong>Jujutsu 治愈"Git 严谨疲劳"——HN 104 票 / 98 评论 dev workflow 信号</strong>：HN <a href="https://news.ycombinator.com/item?id=48259861" target="_blank" rel="noopener">Defeating Git Rigour Fatigue with Jujutsu</a> 104 票、98 评论，<a href="https://ikesau.co/blog/defeating-git-rigour-fatigue-with-jujutsu/" target="_blank" rel="noopener">ikesau.co/blog/defeating-git-rigour-fatigue-with-jujutsu</a>。文章作者论证：Git 的"严谨"（commit graph、rebase、cherry-pick、bisect）在 AI Coding 时代成为反向负担——<strong>代理生成的代码迭代速度远超人类整理 commit 的速度</strong>，结果开发者要么 squash 一切（丢失信息），要么手动整理（生产力倒退）。Jujutsu（jj）的 changeset-based model + 自动 rebase 让代理可以"无脑 commit"而开发者最后整理一次。社区评论一致："这是 Claude Code 时代的 Git 替代品"。Claude Code + Jujutsu 工作流模板：① <strong>新项目默认 <code class="inline">jj init --git-repo .</code></strong> — 兼容现有 Git remote，但本地操作走 jj；② <strong>Claude Code Hook 默认 <code class="inline">jj commit -m</code> 而非 <code class="inline">git commit</code></strong> — 让代理每个工具调用 + 文件改动自动 jj commit（jj 的 changeset 不会污染最终 git log）；③ 整理流程：开发者 EOD 前用 <code class="inline">jj squash</code> + <code class="inline">jj describe</code> 把当天 30+ jj commit 压成 3–5 个语义化 git commit 推 main——20 分钟搞定<strong>以前需 2 小时的 commit 整理</strong>；④ Bisect 加强：<code class="inline">jj bisect</code> 在 changeset 级别二分搜索 bug 引入点——比 git bisect 在 squash 后的 commit 上搜更精准；⑤ 团队推广：<strong>5 月 25 日起，所有 Claude Code 项目默认 jj</strong> — 这是个<strong>模型版本无关、收益立竿见影</strong>的工程升级，符合"5 月下半月做工具链投资"原则（Rohan 回归 thesis）。</li>
+</ul>
+
+<ul>
+<li><strong>整合 2026-05-25 5 大信号—— Claude Code 工作流 thesis 升级 v2</strong>：① Skills 中小企业版（1267 票）+ Task-observer（101 票）+ matplotlib pastel 插件（121 票）= <strong>Skills 生态正式启动，5 月底前是上架窗口</strong>；② Rohan 回归（257 票）+ Karpathy（5/20 加入）+ Brockman 访谈承认 retention 教训 = <strong>Anthropic 研究人才优势再 12 个月安全</strong>；③ Claude 早上宕机（3802 票）+ 朋友 24h 烧 $930（1172 票）= <strong>生产级 Claude Code 必须配本地降级 + budget 硬上限</strong>，不再是 nice-to-have；④ DeepSeek Reasonix（459 票）+ Qwen Genesis APEX-MTP（211 票）+ NVIDIA 选型辩论（233 票）+ HBM 占 chip 成本 2/3（313 票）= <strong>开源 + 本地推理 + Apple/Huawei unified memory 在 2026 H2 起跟 Anthropic 形成"局部胜出"</strong>；⑤ Constraint Decay 论文（185 票）+ Jujutsu（104 票）= <strong>长任务代理的"约束工程 + 版本控制工程" 是 5–7 月最值得做的工具链投资</strong>。合成 thesis 升级：<strong>Claude Code 用户 2026 H2 的核心 IP 从"prompt + MCP" 进化到"Skills 注册表 + 多模型路由 + Constraint Hook 库 + jj-based 版本控制" 四件套</strong> — 这四件套是模型版本无关的护城河，Claude 5 / GPT-5 / Reasonix 任何新模型来都不会作废，是 5–6 月最值得投入的工程时间。</li>
+</ul>
+
+<ul>
+<li><strong>"Skills 中小企业版" 时代的 Claude Code 长期使用契约升级 v2——治理学进阶版</strong>：基于 5 月 20 日 v1 模板（预算 / 数据主权 / MCP 解耦 / 模型对冲 / 季度演习）的升级——增补 Skills 时代的 5 条新条款：① <strong>Skills 来源审计层</strong>：所有 Skills Marketplace 安装的 Skill 必须经 sandbox 跑通 + 安全扫描 + 调用日志可审计，禁止"一键安装"——参考 5 月 13 日 TanStack npm 投毒教训；② <strong>Skills 自有沉淀层</strong>：年度合同要求 Anthropic 提供<strong>完整 Skills 导出</strong>（所有团队定制 Skill 的 markdown + 配置）能下载到本地 git——防止 vendor lock；③ <strong>Skills 调用计费透明</strong>：要求 Anthropic 提供 per-Skill 调用费用统计 + 月预算 API——Skills 上线后 cost attribution 复杂度翻倍，必须有数据透明能力；④ <strong>Constraint Registry 标准化</strong>：把 Constraint Decay 防御写进合同——Anthropic 必须支持"自定义约束 Hook 优先级高于 system prompt" 的 API 行为；⑤ <strong>本地推理 SLA 保障</strong>：要求 Anthropic 在 Bedrock / Vertex / 自托管 sandbox 上同步发布 Skills（不能只在 claude.ai SaaS 上有）——Claude 早上宕机已经验证多路冗余的必要——Skills 生态如果只在单云上跑，下一次宕机损失会数倍放大。</li>
+</ul>
+
+<hr>
+
+<h2>二、高手实战技巧表格</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>#</th>
+<th>技巧</th>
+<th>说明</th>
+<th>难度</th>
+<th>来源</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td>Skills 上架 = 个人 SaaS 工厂启动</td>
+<td>一个调好的 Skill 月被动 $50+</td>
+<td>⭐⭐</td>
+<td><a href="https://reddit.com/r/ClaudeAI/comments/1tm94ai/skills_for_small_businesses_officially_released/" target="_blank" rel="noopener">Anthropic Skills 中小企业版</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Skills Marketplace 安装强制 allowlist</td>
+<td>默认 deny + 手动审核——防供应链投毒</td>
+<td>⭐⭐⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Rohan + Karpathy 双部门加新人——锁 6–9 个月合同</td>
+<td>Claude 5 上线前不要大改工作流</td>
+<td>⭐</td>
+<td><a href="https://reddit.com/r/ClaudeAI/comments/1tmniv2/welcome_back_rohan/" target="_blank" rel="noopener">Welcome back Rohan</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td>本地双 router：anthropic + bedrock fallback</td>
+<td>主路 5xx 3 次自动切边路</td>
+<td>⭐⭐</td>
+<td><a href="https://reddit.com/r/ClaudeAI/comments/1tlntio/claude_is_not_having_a_good_morning/" target="_blank" rel="noopener">Claude 早晨宕机</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td>关键工作避开 Anthropic launch 24h 窗口</td>
+<td>Skills 昨发布今宕——这是规律</td>
+<td>⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code class="inline">.claude/local.yaml</code> 设 <code class="inline">budget.daily_usd: 50</code></td>
+<td>防止 retry 死循环烧 $930</td>
+<td>⭐⭐</td>
+<td><a href="https://reddit.com/r/ClaudeAI/comments/1tm36z1/2500mo_ai_budget_my_friend_just_burned_through/" target="_blank" rel="noopener">62M Opus token 24h</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td>system prompt < 4 KB 硬规则</td>
+<td>每次工具调用都 prefill——长 prompt 烧死人</td>
+<td>⭐⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Opus 只用于决策 / 评审，不用于批量</td>
+<td>Opus 单 token 比 Haiku 贵 250×</td>
+<td>⭐⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>9</td>
+<td>DeepSeek Reasonix 90 天 cache 当次选 IDE</td>
+<td>非敏感项目省钱 50%+</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://news.ycombinator.com/item?id=48256953" target="_blank" rel="noopener">DeepSeek Reasonix HN 459</a></td>
+</tr>
+<tr>
+<td>10</td>
+<td>MCP 协议跨厂商兼容——投资 MCP 而非 IDE</td>
+<td>Reasonix 直接读 <code class="inline">.claude/</code> 配置</td>
+<td>⭐⭐⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Constraint 作为 Hook 而非 prompt</td>
+<td>防 Constraint Decay 长任务约束稀释</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://news.ycombinator.com/item?id=48256912" target="_blank" rel="noopener">Constraint Decay arxiv 185</a></td>
+</tr>
+<tr>
+<td>12</td>
+<td>每 3 轮迭代强制重发完整 system prompt</td>
+<td>论文推荐的最简对策</td>
+<td>⭐⭐⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>13</td>
+<td><code class="inline">.claude/constraints.md</code> Constraint Registry</td>
+<td>每次工具调用前 lint 生成代码</td>
+<td>⭐⭐⭐⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>14</td>
+<td>关键 invariant 用单元测试锁定</td>
+<td>rate_limit_exists.py 这种风格</td>
+<td>⭐⭐⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>15</td>
+<td>本地推理硬件按 HBM 容量买而非算力</td>
+<td>M3 Ultra 192GB > RTX 5090 24GB</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://news.ycombinator.com/item?id=48258684" target="_blank" rel="noopener">HBM 占 chip 成本 2/3</a></td>
+</tr>
+<tr>
+<td>16</td>
+<td>推理服务器预留 30% HBM buffer</td>
+<td>context 突发不要直接 OOM</td>
+<td>⭐⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>17</td>
+<td>上下文压缩 Hook 自动 > 6 KB 报警</td>
+<td>HBM 紧缺让 token 压缩 ROI 翻倍</td>
+<td>⭐⭐⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>18</td>
+<td>codeMeter e-Ink 实体显示器警示烧钱</td>
+<td>$187 静默扣费的人因学解药</td>
+<td>⭐⭐</td>
+<td><a href="https://reddit.com/r/ClaudeAI/comments/1tmo1sz/fav_desk_gadget_claude_code_usage_display/" target="_blank" rel="noopener">codeMeter desk gadget</a></td>
+</tr>
+<tr>
+<td>19</td>
+<td>Task-observer 3 个月沉淀 20–50 个团队 Skill</td>
+<td>行为模式自动→Skill markdown</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://reddit.com/r/ClaudeAI/comments/1tm887i/taskobserver_makes_your_skills_selfimproving_and/" target="_blank" rel="noopener">Task-observer 101 票</a></td>
+</tr>
+<tr>
+<td>20</td>
+<td>Genesis APEX-MTP 35B 本地跑代码审查</td>
+<td>35 tok/s × $0 边际成本</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://reddit.com/r/LocalLLaMA/comments/1tm3toi/qwen3635ba3buncensoredgenesisapexmtp/" target="_blank" rel="noopener">Qwen Uncensored Genesis APEX-MTP</a></td>
+</tr>
+<tr>
+<td>21</td>
+<td>多语言走 Qwen、英语速度走 Gemma</td>
+<td>router pre_call_hook 自动分流</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://reddit.com/r/LocalLLaMA/comments/1tmbola/qwen3635ba3b_vs_gemma426ba4b/" target="_blank" rel="noopener">Qwen vs Gemma4</a></td>
+</tr>
+<tr>
+<td>22</td>
+<td>matplotlib pastel plugin = Skills 早期金矿</td>
+<td>风格化 Skill 上架月被动 $100+</td>
+<td>⭐⭐</td>
+<td><a href="https://reddit.com/r/ClaudeAI/comments/1tm7w3d/i_made_a_claude_code_plugin_that_draws_matplotlib/" target="_blank" rel="noopener">matplotlib pastel plugin</a></td>
+</tr>
+<tr>
+<td>23</td>
+<td>HF PWC Reproducibility score 筛选论文</td>
+<td>< 30% 直接跳过</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://reddit.com/r/MachineLearning/comments/1tmawv5/paperswithcode_new_features_week_1_p/" target="_blank" rel="noopener">PWC new features</a></td>
+</tr>
+<tr>
+<td>24</td>
+<td>OpenAI 12 个月不在 enterprise 正面打</td>
+<td>Anthropic 主战场再安全 12 个月</td>
+<td>⭐⭐</td>
+<td><a href="https://news.ycombinator.com/item?id=48255593" target="_blank" rel="noopener">Brockman 长访谈 HN 182</a></td>
+</tr>
+<tr>
+<td>25</td>
+<td>默认 jj 替代 git——Claude Code 自动 jj commit</td>
+<td>EOD 用 jj squash 整理 3–5 commit 推 main</td>
+<td>⭐⭐⭐⭐</td>
+<td><a href="https://news.ycombinator.com/item?id=48259861" target="_blank" rel="noopener">Jujutsu 治 Git 疲劳</a></td>
+</tr>
+</tbody></table></div>
+
+  </div>
+</article>
+<div class="article-footer">
+  <div class="container">
+    <a href="../#ai-trends">← 返回首页</a>
+  </div>
+</div>
+</body>
+</html>
