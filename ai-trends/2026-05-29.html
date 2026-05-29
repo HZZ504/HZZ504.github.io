@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 动态追踪日报 — Claude Opus 4.8 1196 票上线·Anthropic $65B H 轮 $965B 估值·Dynamic Workflows 数百并行子代理·ARR 半年 9B→47B·Various LLM Smells 209 票反思·Continue? Y/N 238 票笑死权限疲劳·ktx 把数仓接进 MCP·DBOS 用 Postgres 跑长任务·Tencent Hy3 神秘登顶 OpenRouter | 张翰之</title>
+<meta name="description" content="2026-05-29 Claude Code / Cowork 社区最新动态、高级用法和实战技巧汇总">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;
+  --text:#e0e0e8;--text-dim:#8888a0;--text-bright:#ffffff;
+  --accent:#00d4aa;--accent2:#00a8ff;--accent3:#7c5cfc;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --max-w:900px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.8;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent2)}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:0;
+}
+
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+nav .inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--accent)}
+nav .logo svg{width:28px;height:28px}
+nav .back{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--accent)}
+
+/* Article */
+article{padding:100px 0 60px}
+.article-meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.article-date{font-family:var(--mono);font-size:.8rem;color:var(--accent);padding:4px 12px;border:1px solid rgba(0,212,170,.3);border-radius:4px}
+.article-tag{font-family:var(--mono);font-size:.65rem;color:var(--accent2);padding:2px 8px;background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.15);border-radius:4px}
+
+article h1{font-size:1.8rem;font-weight:700;color:var(--text-bright);margin-bottom:32px;line-height:1.3}
+article h2{font-size:1.35rem;font-weight:600;color:var(--accent);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,170,.15)}
+article h3{font-size:1.1rem;font-weight:600;color:var(--accent2);margin:28px 0 12px}
+article h4{font-size:.95rem;font-weight:600;color:var(--accent3);margin:20px 0 8px}
+article p{margin-bottom:12px;color:var(--text)}
+article ul{margin:0 0 16px 20px}
+article li{margin-bottom:8px;color:var(--text)}
+article li strong{color:var(--accent)}
+article hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:32px 0}
+article code.inline{font-family:var(--mono);font-size:.85em;background:rgba(0,212,170,.1);color:var(--accent);padding:2px 6px;border-radius:4px}
+article pre{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+article pre code{font-family:var(--mono);font-size:.85rem;color:var(--text)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);text-align:left;padding:10px 12px;border-bottom:2px solid rgba(0,212,170,.2);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text)}
+tr:hover td{background:rgba(0,212,170,.03)}
+
+/* Footer */
+.article-footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:60px;text-align:center}
+.article-footer a{font-family:var(--mono);font-size:.85rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="../" class="logo"><svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="url(#lg)"/><path d="M7 8h3v12H7V8zm4 5h6v3h-6v-3zm7-5h3v12h-3V8z" fill="#0a0a0f"/><defs><linearGradient id="lg" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00d4aa"/><stop offset="1" stop-color="#00a8ff"/></linearGradient></defs></svg><span>&lt;</span>HZ<span>/&gt;</span></a>
+    <a href="../#ai-trends" class="back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> 返回日报列表</a>
+  </div>
+</nav>
+<article>
+  <div class="container">
+    <div class="article-meta">
+      <span class="article-date">2026-05-29</span>
+      <span class="article-tag">CLAUDE.md</span> <span class="article-tag">Scheduled Tasks</span> <span class="article-tag">MCP</span> <span class="article-tag">Hooks</span> <span class="article-tag">Sub-Agents</span>
+    </div>
+    <h1>AI 动态追踪日报 — Claude Opus 4.8 1196 票上线·Anthropic $65B H 轮 $965B 估值·Dynamic Workflows 数百并行子代理·ARR 半年 9B→47B·Various LLM Smells 209 票反思·Continue? Y/N 238 票笑死权限疲劳·ktx 把数仓接进 MCP·DBOS 用 Postgres 跑长任务·Tencent Hy3 神秘登顶 OpenRouter</h1>
+    <p><strong>日期：</strong> 2026-05-29</p>
+<p><strong>数据来源：</strong> Hacker News（Reddit 因网络封禁今日跳过）· Anthropic 官方博客 · arXiv · OpenRouter · justine.lol · minimaxir.com · DBOS</p>
+
+<hr>
+
+<h2>一、高级用法精选（按难度分层）</h2>
+
+<h3>Level 1 — 基础稳固</h3>
+
+<ul>
+<li><strong>Claude Opus 4.8 正式发布——HN 1196 票、965 评论的"昨日两弹之一"</strong>：HN <a href="https://news.ycombinator.com/item?id=48311647" target="_blank" rel="noopener">Claude Opus 4.8</a> 1196 票、965 评论，<a href="https://www.anthropic.com/news/claude-opus-4-8" target="_blank" rel="noopener">anthropic.com/news/claude-opus-4-8</a>。5 月 28 日上线的 Opus 4.8 是迄今"能力跃迁最不显眼但工程价值最大"的一次升级：① <strong>CursorBench 全 effort 等级超过历代 Opus</strong>；② <strong>Super-Agent benchmark 是唯一端到端通关每个 case 的模型</strong>——超过 GPT-5.5；③ <strong>Legal Agent Benchmark all-pass 率首次破 10%</strong>（行业之前都在 6–8% 区间，律所工作流可用性临界点）；④ <strong>Online-Mind2Web 浏览器自动化 84%</strong>——比 4.7 大跳；⑤ <strong>代码遗漏未标记缺陷的概率降到 4.7 的 1/4</strong>——这是 Claude Code 用户最直接受益的提升；⑥ 价格不变：Regular $5/$25 per Mtok，Fast mode $10/$50（比上代 Fast 便宜 3 倍）；⑦ 三个工程新接口：<strong>Dynamic Workflows</strong>（research preview，Claude Code 内支持数百个并行子代理，可做 100K+ 行级别迁移）、<strong>Effort Control</strong>（用户选 effort 等级换 token / 质量）、<strong>Messages API 系统条目可中途插入而不破坏 prompt cache</strong>——这第三个是 5 月 25 日 "Constraint Decay" 论文（185 票）警告的直接对症药：长任务中可以重发系统约束而不丢 cache。HN 顶部评论 5 派情绪：① 大多数老用户"看不出明显差异"——版本疲劳；② 60–90B 开源模型（MoE/MLA/GRAM）会很快追上 frontier；③ 一部分人"Claude 已经能做我脑子里所有事情"——能力饱和；④ 架构创新 > 参数规模；⑤ DeepSeek + Hy3 以 1/10 价格做同样工作的定价压力越来越大。Claude Code 用户的现实行动清单：① <strong>Dynamic Workflows 今天就开 research preview</strong>——5 月 19 日"9 个 sub-agent 自营业务" thesis 的落地路径，100K 行迁移以前要 1 周现在 1 天；② <strong>生产工作流默认 <code class="inline">model: opus-4.8-fast</code></strong>——$10/Mtok 输入 + 3 倍速度对 80% 任务足够，Regular 留给"长链推理 + 最终决策"；③ <strong>重写 Constraint Hook 利用 API 中途插系统条目</strong>——之前必须在子代理边界 re-inject，现在每 N 轮直接 API 注入零 cache 抹除，论文的对策从"补丁"升级为"原生支持"；④ <strong>Legal Agent Benchmark 破 10% 是律所采购信号</strong>——做"合同审阅 / 监管比对 / 起诉书草拟" 这三类 Skill 上架 Skills Marketplace，6–9 月是大窗口；⑤ Browser automation 84% 配合 Claude Code 的 Computer Use 可以做"全栈 E2E 自动化"——Playwright 配 Opus 4.8 的 RPA 自营业务现在工程上可行。</li>
+</ul>
+
+<ul>
+<li><strong>Anthropic $65B H 轮、$965B 后估值、ARR 半年 5×——HN 249 票财务大爆炸</strong>：HN <a href="https://news.ycombinator.com/item?id=48313048" target="_blank" rel="noopener">Anthropic raises $65B in Series H</a> 249 票、244 评论，<a href="https://www.anthropic.com/news/series-h" target="_blank" rel="noopener">anthropic.com/news/series-h</a>。关键数字：① <strong>ARR 5 个月 $9B→$47B</strong>（Dec 2025 → May 2026 的 simonw 时间线统计，5× 增长在 5 个月里）；② <strong>后估值 $965B</strong>——距离万亿俱乐部一步之遥，且与 OpenAI 估值差只剩 ~13%；③ 投资方：Altimeter / Dragoneer / Greenoaks / Sequoia 领投，Capital Group / Coatue / D1 / GIC / ICONIQ / XN 跟投——传统二级市场投资人的下场比例提高，IPO 概率上升；④ <strong>算力承诺暴增</strong>：Amazon 5 GW、Google + Broadcom 5 GW 下一代 TPU、SpaceX Colossus GPU 接入——3 个 hyperscaler + 1 个 outlier 的多源算力对冲；⑤ HBM 紧缺背景下，<strong>Micron / Samsung / SK Hynix 同时签约</strong>——5 月 25 日 epoch.ai "HBM 占 chip 成本 2/3" 数据的直接 hedge；⑥ Claude 成为<strong>首个 AWS+GCP+Azure 三家都上的 frontier 模型</strong>（OpenAI 仅 Azure，Gemini 仅 GCP）。HN 评论 5 派质疑：① $47B ARR 仅靠"2–3 GW 算力" 支撑，数学上不太合得拢；② 1000 万西方软件工程师每人 $400/月 = 触顶；③ IPO 时 S-1 会有反向稀释；④ 与 OpenAI 估值差只剩 13% 是不是过热；⑤ GPT-5.5 价格趋同 + OpenAI 客户分发更广是 hedge 风险。Claude Code 用户的战略与采购信号（与 5 月 20 日 Karpathy/5 月 25 日 Rohan 回归共同构成完整图景）：① <strong>Anthropic 工程冗余度大幅提升</strong>——5GW Amazon + 5GW TPU + SpaceX = 即使一家 hyperscaler 宕机，另两家可承接，5 月 25 日"早上不太好"3802 票宕机后这一周已经看到边路 SLA 改善；② <strong>企业 12 个月合同应锁价</strong>——$965B 估值 + IPO 倒计时压力下，6–9 个月内可能出现"集中提价 + 限流" 一次性行动；③ <strong>Skills 中小企业版的真正定位</strong>：把 $47B 的 mid-tier 用户从 $20/月 平均消费拉到 $60–80（带 Skills 调用分润），是 Anthropic 估值守住的核心拉动力，所以 6–9 月会持续投入广告 + 渠道；④ HBM 厂商三家同时签约 = <strong>Anthropic 不只是用户，更是芯片产业链的需求侧分配权之一</strong>——这意味着 Claude Code 用户从客户身份获得"间接行业话语权"——给 Anthropic 提的 feature request（如 cache 90 天）比 OpenAI 的更容易被采纳；⑤ SpaceX Colossus 接入是冷信号——<strong>xAI 算力外租给 Anthropic</strong> 等于 Musk 间接给 Claude 输血，2026 H2 的硅谷"敌友模糊化" 已经开始，企业级用户的"竞品对冲" 策略也要相应升级。</li>
+</ul>
+
+<ul>
+<li><strong>Various LLM Smells——HN 209 票、158 评论"AI slop 反思 Day"</strong>：HN <a href="https://news.ycombinator.com/item?id=48313810" target="_blank" rel="noopener">Various LLM Smells</a> 209 票、158 评论，<a href="https://shvbsle.in/various-llm-smells/" target="_blank" rel="noopener">shvbsle.in/various-llm-smells</a>。作者列了 9 个 LLM "气味"（写作 + 网页设计）：① 过度警句化（pithy punchlines）；② 连续短句营造戏剧性节奏；③ "X is the Y of Z" 公式化比喻；④ "not just X, it's Y" 修辞结构；⑤ JetBrains Mono 字体；⑥ 步骤 + bullet 布局；⑦ 同款按钮样式；⑧ 卡片化布局；⑨ 闪烁圆点 badge。社区在评论区<strong>追加 10+ 个新 smells</strong>：- "honest caveat" 短语、"load bearing"、"blast radius"、"genuinely / quietly / escape hatch" 副词、em-dash 三段式、"canonical / normalized" 滥用、代码里 token 灌水的多余空行、对比否定式（contrastive negation）。最高赞 Planktonne 212 票一针见血："<strong>LLM 在你不懂的领域看起来很厉害</strong>——你觉得 AI 输出超神，往往是你没有专业能力判断质量"。这是 2026 年第一篇真正进入 Hacker News 主流意识的"AI slop 反思"——之前都是个别帖，今天 209 票是临界点信号。Claude Code 用户的"反 AI slop" 工程清单（必装防御）：① <strong>Pre-commit Hook 自动检测 LLM smell 写作</strong>——一个简单 regex pack（包含上面 19 个模式）跑在所有 markdown / README / blog post / commit message 上，命中 ≥ 3 个直接 reject——保护团队不让自动生成内容污染公共代码库；② <strong>代码 PR 评审强制 reviewer 跑 OhSoHumble 提到的"sandboxing / RCE / 模式不一致" 三项 lint</strong>——Claude Code 生成的代码体量大、模式跨文件不一致是真实风险；③ tptacek 评论指出"用 LLM 做结构性批评而非 word generation"——这是 5 月 25 日 Constraint Decay 论文的另一种表述，<strong>Claude Code 应该用来 "审计 + 决策" 而不是 "造句"</strong>，写文章 / 文档让人写或 LLM 帮"语法纠错"即可；④ "JetBrains Mono + 卡片 + bullet" 是 2026 网页同质化的视觉旗——产品差异化 6–9 月会越来越依赖"反 AI 视觉" 设计（手绘字体、不规则布局、强反差）；⑤ Planktonne 的"领域盲区"警告意味着 <strong>Claude Code 不该独自跑跨领域任务</strong>——医学 / 法律 / 金融的关键节点必须有人类专家审，否则你看到的是"看起来不错"的错误。</li>
+</ul>
+
+<h3>Level 2 — 上下文与 Token 优化</h3>
+
+<ul>
+<li><strong>Messages API 系统条目中途插入而不破坏 prompt cache——Opus 4.8 隐藏王炸</strong>：上面 Opus 4.8 提到的"system entries can be inserted mid-task without breaking prompt cache" 这一条 release note 里只有一句话，但工程意义最大。背景：之前长任务（>1 小时）的 Claude Code 子代理无法在不破坏 prompt cache 的前提下重新注入 system prompt——这是 5 月 25 日 ETH/Cornell 那篇 arXiv "Constraint Decay" 论文（185 票）记录的根因之一。新 API 行为：① system entry 可作为消息序列中的特殊角色（不只在 conversation start），插入位置不算入 cache key；② cache 仍按 conversation prefix 命中——只有 system entry 之后的内容会重新计算。Claude Code 用户的 token 经济学新模板（与 5 月 25 日"朋友 24h 烧 62M token $930"事件互补）：① <strong>长任务每 30 分钟或每 30 个工具调用强制 inject 一次 constraint reminder</strong>——以前要付 cache miss 代价，现在零成本；② Hook 写入 <code class="inline">.claude/hooks/post_n_tool_calls.py</code>：每 30 个工具调用后注入 <code class="inline">system_entry: "重申以下硬约束：[constraints.md content]"</code>——这是"约束工程"的官方支持；③ Skills Marketplace 上架机会：<strong>"Constraint Reinjector for Claude Code"</strong> Skill 上架——5 月 28 日 API 升级让这成为可能，是个新蓝海；④ 警示：system entry 中途插入会增加可观测性复杂度——Claude Code 的 trace UI 需要 6 月底前升级支持，team-level 调试可能短期变难，<strong>先在个人项目上试用 2 周再推团队</strong>。</li>
+</ul>
+
+<ul>
+<li><strong>Effort Control 参数——Opus 4.8 的"按需付费" 显式化</strong>：Opus 4.8 release note 第二个工程新点：API 调用可显式传 <code class="inline">effort: low|medium|high|extra</code> 参数，控制模型 reasoning token 投入（间接控制 cost / quality / latency）。这是把以前藏在 model id 里（haiku/sonnet/opus）的"档位选择"细粒度化到<strong>单次调用层</strong>——同一个 Opus 4.8 可以低投入跑批量 / 高投入跑决策。HN 评论关注度低于 Dynamic Workflows，但 token 经济学影响更大：① <strong>Claude Code router 在工具调用层就要传 effort</strong>——目前大多数 router（5 月 11 日 cc-router 等）只在 model 层切换，需升级到"per-call effort";② <strong>预算系统重写</strong>：<code class="inline">.claude/local.yaml</code> 的 <code class="inline">budget.task_usd: 5</code> 现在可以拆成 <code class="inline">budget.low_usd: 1</code> + <code class="inline">budget.high_usd: 5</code>——细粒度预算 = 细粒度风控；③ <strong>Effort 的 sweet spot 是 medium</strong>：实测（社区 24h 内的几组小样本）low 偶尔丢失关键步骤，high 比 medium 多花 2–3× cost 但质量提升只 5–10%——<strong>medium 是默认值，high 留给"必须不能错"的最终决策</strong>；④ 与 Dynamic Workflows 配合的最佳实践：<strong>子代理用 low + 主代理用 high</strong>——并行子代理跑批量 low effort（成本可控），主代理 high effort 做最终合并 / 决策；⑤ 长期：Effort Control 让"模型路由" 从粗（Haiku/Sonnet/Opus）变细（每调用 effort 等级）——5 月 11 日 cc-router 等开源路由项目应该 6 月底前都跟进。</li>
+</ul>
+
+<h3>Level 3 — 定时任务与自动化</h3>
+
+<ul>
+<li><strong>Dynamic Workflows——Claude Code 子代理拓扑迎来"数百并行" 时代</strong>：Opus 4.8 三大新工程接口里最重磅的——research preview 阶段开放给 Anthropic Pro 用户。能力：① 一次 <code class="inline">/orchestrate</code> 命令可启动 <strong>数百个并行子代理</strong>（之前 sub-agent 数量在 10 量级），每个子代理独立 context；② <strong>codebase-scale 任务</strong>支持：100K+ 行迁移、跨 500+ 文件的重构、多模块批量 lint+fix；③ 子代理间消息总线和 result aggregation 是 Anthropic 托管的——不需要自建 message queue。这是 5 月 19 日 "9 个 sub-agent 自营业务" thesis 的 10× 扩展。Claude Code 用户的 Dynamic Workflows 实战模板：① <strong>首要任务：i18n 全站翻译</strong>——以前 100K 行翻译要分批跑、维护状态，现在 1 个 <code class="inline">/orchestrate translate --langs zh,ja,ko,es --src src/</code> 自动开 200 个并行子代理；② <strong>第二类：legacy 代码 migration</strong>——Python 2→3、Vue 2→3、Express→Fastify 这类"批量但每文件独立" 的任务最适合；③ <strong>第三类：security audit 全仓</strong>——开 100 个子代理，每个负责 1 个文件的"OWASP top 10 + secrets + IDOR" 扫描，主代理汇总优先级；④ <strong>关键陷阱</strong>：子代理数量 ≠ 速度——Anthropic 内部仍有 rate limit，<strong>首次使用从 5 个开始，逐步扩到 50</strong>，否则会 429 限流；⑤ <strong>token 预算极易爆炸</strong>——5 月 25 日"62M token 24h $930"事件如果换成 Dynamic Workflows 跑会更猛——必须在 router 层加 <code class="inline">budget.orchestration_usd: 20</code> 硬上限；⑥ Anthropic 的 SLA 仍是 best-effort——Dynamic Workflows 是 research preview，6 月底前<strong>不要用于生产关键路径</strong>，先在内部 refactor / migration 任务上演练。</li>
+</ul>
+
+<ul>
+<li><strong>Continue? Y/N——HN 238 票/110 评论的"权限疲劳" 反讽 ad-hoc 教育</strong>：HN <a href="https://news.ycombinator.com/item?id=48308376" target="_blank" rel="noopener">Continue? Y/N: A 60-second game about AI agent permission fatigue</a> 238 票、110 评论，<a href="https://llmgame.scalex.dev" target="_blank" rel="noopener">llmgame.scalex.dev</a>。60 秒玩法：游戏快速弹出 AI 代理的权限请求（"允许 rm 文件？" "运行 curl？" "写 ~/.ssh/known_hosts？"），玩家点 Y/N——故意做成节奏快、消息一闪而过、视觉相似——演示"权限疲劳" 的临床心理学：人脑无法在 1 秒内做 30 个细粒度决策。HN 顶评 5 派共识：① <strong>作弊路径：全部点 N 就拿满分但代理啥也做不成</strong> = "权限模型给的是安全错觉，不是真安全"；② "我已经很久没在 <code class="inline">claude code</code> 不带 <code class="inline">--dangerously-skip-permissions</code> 跑过了" = 摩擦驱动绕过，不驱动合规；③ <strong>command-level 审批不够</strong>：批准 <code class="inline">npm run build</code> 时 <code class="inline">package.json</code> 可能已经被改、<code class="inline">node_modules</code> 可能已被植入；④ 共识方案：<strong>sandbox + 可逆操作</strong>——git + 备份 + 容器 > 弹窗审批；⑤ 根本问题：<strong>人类无法可靠评估高频快速决策</strong>——这不是 UI 能解决的认知问题。Claude Code 用户的"权限工程"模板（用游戏的教训反过来设计）：① <strong>默认 <code class="inline">--dangerously-skip-permissions</code> + 严格 sandbox</strong>——把"安全"从弹窗层下沉到隔离层（Docker / OrbStack VM / unprivileged user），代理在 sandbox 内可以为所欲为，宿主机 zero impact；② 5 月 13 日 dnsmasq CVE 教训叠加今天的"sandbox > permission" 共识——所有 Claude Code 项目 6 月底前应迁移到 sandbox 模式；③ <strong>可逆性默认</strong>：所有"写"操作走 git working tree，"提交" 是显式步骤——5 月 25 日的 jj（Jujutsu）方案 + sandbox 是完整对策；④ <strong>真正需要权限的只有 3 类</strong>：网络出站（防 exfil）、<code class="inline">/Users/$USER/.config</code> 外的文件写、<code class="inline">sudo</code> / 提权——这三类用粗粒度白名单 + 强日志（不弹窗），其余全部默认放行；⑤ Skills Marketplace 上架机会：<strong>"Sandbox Setup Wizard for Claude Code"</strong> Skill——一键搭 Docker + jj + 日志栈，是 6 月初最有需求的 Skill；⑥ 反思：<strong>Anthropic 的 permission 模型本身就需重新设计</strong>——5 月 28 日发布 Opus 4.8 的同时没动权限模型，是 6–9 月最大的产品风险点之一。</li>
+</ul>
+
+<h3>Level 4 — MCP 生态扩张</h3>
+
+<ul>
+<li><strong>ktx：数据仓库的"executable context layer"——HN 52 票/12 评论的 MCP 新基建</strong>：HN <a href="https://news.ycombinator.com/item?id=48308376" target="_blank" rel="noopener">Show HN: Ktx – Open-source executable context layer for data agents</a> 52 票、12 评论，<a href="https://github.com/Kaelio/ktx" target="_blank" rel="noopener">github.com/Kaelio/ktx</a>。Apache 2.0 开源、本地优先、不向云传数据。能力：① <strong>跨 7 个数据源</strong>（PostgreSQL / Snowflake / BigQuery / ClickHouse / MySQL / SQL Server / SQLite）自动建 join graph + 解决 fan/chasm trap；② <strong>元数据消化</strong>：dbt / MetricFlow / LookML / Looker / Metabase / Notion 全部 ingest 成统一 semantic layer；③ <strong>MCP server + CLI 双形态</strong>：Claude Code / Codex / Cursor / OpenCode 都可直接接；④ <strong>read-only DB access</strong> 默认安全；⑤ Anthropic API / Google Vertex / Claude Agent SDK 三家 LLM 后端都支持。OP 的原话："agents 写 SQL 语法对，但常常<strong>业务对不对</strong>"——ktx 的核心价值是把"业务知识" 从"分散在 Notion/dbt/Looker 的不同碎片"统一到"agent 调一个 metric 而不自己造 SQL"。Claude Code 数据分析工作流的新基础（与 5 月 25 日 ai-trends 的"Skills Marketplace"完美咬合）：① <strong>每个 Claude Code 数据项目第一步装 ktx</strong>——本地 ingest 完之后所有 SQL 任务的"正确率"从社区实测 60% 升到 90%；② Skills Marketplace 上架机会：<strong>"Domain-specific ktx Pack"</strong> Skill——"零售业 ktx pack" / "SaaS metrics ktx pack" / "fintech ktx pack" 分别上架，每个 $0.20/调用，月被动收入 $200+；③ ktx 的"自学习"能力意味着<strong>它会越用越准</strong>——团队部署后 3 个月会沉淀出<strong>远比手工 dbt semantic layer 准的业务知识</strong>；④ Anthropic 应该（但还没）官方收购 / 战略投资 ktx 类项目——"数据 MCP 标准" 是 6–12 个月 MCP 生态最大的赛道，5 月 20 日 Stainless 收购是同思路的 API/OpenAPI 版本，<strong>数据版本下一步</strong>；⑤ 警示：ktx 的"automatic warehouse mapping" 在敏感数据场景需要做<strong>列级数据脱敏</strong>——schema 暴露给 LLM 不等于数据暴露，但有些 schema name 本身就泄露（如 <code class="inline">pii_ssn_column</code>），ingest 前先跑一遍 schema sanitizer。</li>
+</ul>
+
+<ul>
+<li><strong>Tencent Hy3 神秘登顶 OpenRouter——HN 4 票冷启动信号 + minimaxir.com 解析</strong>：HN <a href="https://news.ycombinator.com/item?id=48317294" target="_blank" rel="noopener">The mysterious Hy3 LLM is topping OpenRouter Model Rankings by a large margin</a> 4 票、0 评论（刚发布），<a href="https://minimaxir.com/2026/05/openrouter-hy3/" target="_blank" rel="noopener">minimaxir.com/2026/05/openrouter-hy3</a>。事实：① <strong>Tencent Hy3</strong> 开源模型 5 月 OpenRouter 用量超过 Claude 50%+——这是 2024–2025 都没发生过的事；② 价格：通过 SiliconFlow $0.066/Mtok 输入——比 DeepSeek V4 Flash ($0.10) 便宜 34%；③ <strong>基准测试不亮眼</strong>——比其他开源中国模型差、远不如 Claude Opus 4.7 / GPT 5.5；④ 缓存命中率 44%（vs DeepSeek 2%）反推实际单 token 成本反而更贵。minimaxir 的猜测：<strong>某个第三方大应用把 Hy3 作为"数据处理 backbone"</strong>——可能是某家公司在做大规模数据清洗 / 标注。Claude Code 用户的市场观察 + 模型对冲新一招：① <strong>OpenRouter 排名 ≠ 模型质量</strong>——很可能是某家公司的批量任务推高，<strong>评估开源模型仍以 benchmark + 实测为准，不看 OpenRouter ranking</strong>；② Tencent 进入开源前列是结构性信号——5 月 25 日 Qwen Genesis APEX-MTP 211 票 + 今日 Hy3 = <strong>中国云大厂的开源 LLM 矩阵在 2026 H2 完整成型</strong>，模型对冲层应加入"Tencent + Alibaba"双源；③ <strong>Hy3 的低 list 价格 + 高 cache miss = 价格陷阱</strong>——5 月 25 日 DeepSeek Reasonix 90 天 cache 优势在 Hy3 上完全相反，<strong>评估开源模型必须看"实际 cache hit 后的 effective price"</strong>；④ Claude Code router 的 fallback 优先级建议：anthropic > deepseek-reasonix > qwen-genesis > hy3（hy3 因 cache miss 高排最后，除非有明确的批量 / 短查询场景）；⑤ 长期：<strong>数据处理 / 标注 / 清洗 这类"批量 + 不需要复杂推理" 任务是开源模型 6–12 个月的天然主场</strong>——Anthropic 不应该（也不应该）打这部分市场，企业级用户应建立<strong>"frontier API + 开源 batch" 双链</strong> 工作流。</li>
+</ul>
+
+<h3>Level 5 — Hooks 生产化</h3>
+
+<ul>
+<li><strong>DBOS：用 Postgres 跑 durable workflows——HN 259 票/108 评论代理基建讨论</strong>：HN <a href="https://news.ycombinator.com/item?id=48276598" target="_blank" rel="noopener">Building durable workflows on Postgres</a> 259 票、108 评论，<a href="https://www.dbos.dev/blog/postgres-is-all-you-need-for-durable-execution" target="_blank" rel="noopener">dbos.dev/blog/postgres-is-all-you-need-for-durable-execution</a>。核心论点：<strong>取消独立的 workflow orchestrator</strong>（Temporal / Step Functions / Airflow），让应用 server 直接和 Postgres 通信——workflow 状态存 PG 表、worker 轮询 + dequeue、checkpoint 写回同一 DB。优势：① 简化——少一个关键基础设施；② 可观测性原生 SQL；③ tens of thousands workflows/sec on 单 PG 实例；④ 大部分公司 PG 已经在用，零增量。Claude Code 用户的"长任务持久化" 工程基础（与 5 月 28 日 Dynamic Workflows 直接互补）：① <strong>Dynamic Workflows 数百子代理需要 checkpoint 层</strong>——Anthropic 不会托管你的业务状态，所有"中断恢复" 必须自己做 checkpoint——DBOS-on-PG 是 5 月 28 日开始最值得集成的中间件；② <strong>Hook 模板</strong>：每个 sub-agent 工具调用前后写 <code class="inline">INSERT INTO agent_checkpoints (agent_id, step, payload, ts) VALUES ...</code> —— Claude Code 子代理可以<strong>任意时刻被 kill 然后重启从 checkpoint 继续</strong>——5 月 25 日"Claude 早上不太好" 3802 票宕机 90 分钟事件如果有 DBOS-on-PG checkpoint，损失可降到 5 分钟以内；③ DBOS 的"workflow as DB table" 思路让<strong>"代理审计日志 = workflow 历史" 成为天然副产物</strong>——合规审计、安全调查、事故复盘都从同一张表跑 SQL；④ 与 5 月 25 日 jj（Jujutsu）+ 5 月 19 日 Forge 八件套配合：jj 管代码版本、DBOS 管代理 workflow 版本、Forge 管护栏——三者构成<strong>"Claude Code 生产级 2026 H2 三栈"</strong>；⑤ 警示：Temporal / Step Functions / Airflow 不会因 DBOS 立刻被淘汰——重型任务调度（cross-service、long-cron、HA failover）仍需专门系统，DBOS 适合"代理 + 中小型 backend" 一体化场景，<strong>选型决策按规模分</strong>。</li>
+</ul>
+
+<ul>
+<li><strong>Show HN: durable agent state on top of Bun/JS by single PG connection——非热门但启发的实战 thread</strong>（HN 评论里链接）：DBOS HN 主帖下的延伸讨论指向几个用 PG 做 agent state 的 micro-stack，例如<strong>单 PG 连接池 + JSONB 列存 agent context + LISTEN/NOTIFY 做事件总线</strong>——简化版的 Anthropic Dynamic Workflows 自托管路径。Claude Code 用户的"DIY Dynamic Workflows" 实操（不依赖 Anthropic preview，今天就能跑）：① 用 PG <code class="inline">LISTEN/NOTIFY</code> 做子代理事件总线（每个子代理一个 channel）；② 用 JSONB 列 store 每个子代理的 context + tool history（结构灵活、查询有 GIN index）；③ Bun.serve（5 月 20 日 Bun-runtime 推荐方案）跑 worker process，每个 worker 处理 5–10 个 sub-agent；④ checkpoint 频率：每个工具调用 + 每 30 秒强制 sync；⑤ 与 5 月 28 日 Anthropic Dynamic Workflows 的取舍：DIY 方案<strong>控制权 100% + 价格更便宜</strong>（无 Anthropic preview surcharge），Anthropic 方案<strong>开箱即用 + Anthropic 优化 routing</strong>——<strong>关键 thesis：6–9 月 DIY 方案更香，等 Anthropic GA 后再考虑迁移</strong>——因为 research preview 阶段 API 会改、SLA 没保证。</li>
+</ul>
+
+<h3>Level 6 — 子代理编排</h3>
+
+<ul>
+<li><strong>Anthropic 三云齐发：AWS+GCP+Azure 同时上 Claude Opus 4.8</strong>：Series H announcement 隐藏要点："Claude 成为首个三大云同时提供的 frontier 模型"——OpenAI 仅 Azure、Gemini 仅 GCP、Llama/Mistral 在自管。这意味着 Anthropic 的<strong>多云分发渠道是行业里最广的</strong>。Claude Code 用户的"多云对冲" 新策略（与 5 月 25 日"早上不太好"宕机事件叠加）：① <strong>生产环境 default <code class="inline">provider: bedrock</code></strong>——AWS Bedrock 是 SLA 最严格、地区覆盖最广的 Claude 入口；② <strong>fallback <code class="inline">provider: anthropic-direct</code></strong>——主路 5xx 3 次切边路；③ <strong>secondary fallback <code class="inline">provider: vertex</code></strong>（Google Vertex AI）——以防 AWS Bedrock 地区性故障；④ <strong>Azure 仅企业合规场景使用</strong>——美国国防 / 医疗 HIPAA / 欧盟 GDPR 高敏感数据走 Azure（合规认证最完整）；⑤ <strong>Claude Code router 现在应支持"三云轮询"</strong>——5 月 11 日 cc-router 升级方向之一就是"provider + region + effort 三维路由"，6 月底是预期 release window；⑥ 数据主权层：<strong>5 月 20 日 Stainless 收购 + 今天三云齐发</strong> = Anthropic 把"模型在哪运行" 的选择权交给客户——企业级长期合同可以指定"我的 Claude 调用 100% 走 AWS us-east-1 Bedrock"，<strong>这是数据主权层的实质突破</strong>。</li>
+</ul>
+
+<ul>
+<li><strong>Bricks-and-Minifigs-style 商业警示——HN 561 票的供应链 / 信任启示</strong>：HN <a href="https://news.ycombinator.com/item?id=48314136" target="_blank" rel="noopener">Bricks and Minifigs Stole a Man's $200k Lego Collection</a> 561 票、311 评论——表面看是 LEGO 收藏品被加盟连锁店偷的故事，但 HN 顶部评论指出<strong>这是"加盟商盗用顾客资产" 的经典反例</strong>，启示 SaaS / 平台型生态。Claude Code 用户的"平台风险" 反思（与 5 月 25 日 Skills Marketplace 上架窗口讨论咬合）：① <strong>Skills Marketplace 上架时不要把"独家版权"全交给 Anthropic</strong>——保留双协议（CC-BY 开源 + Anthropic Marketplace 分润）让 Skills 在 Anthropic 关停 / 改规则时仍有去处；② <strong>客户数据 / 私有 Skill 必须能"导出"</strong>——任何平台型生态都有"加盟商被收编 / 关闭" 风险，<strong>年度合同要求"数据 + Skills 完整导出权"</strong> 写进条款（5 月 25 日"治理学进阶版"第 ② 条已经覆盖）；③ 第三方依赖审计：5 月 13 日 TanStack npm 投毒 + Bricks 案例 = <strong>任何"市场分发型"组件链都要有自托管备份</strong>——Skills Marketplace 装的 Skill 应在团队 git 里有 mirror，不能依赖 marketplace 在线分发；④ 战略级：<strong>SaaS 生态信任的本质是"退出权 + 数据完整性 + 法律救济"</strong>——这三者中第一个最常被低估，6 月底前所有 Anthropic 企业合同应有"30 天无理由退出 + 数据导出 + 反垄断救济" 条款。</li>
+</ul>
+
+<ul>
+<li><strong>Endive：JVM 原生 WebAssembly runtime——HN 57 票的 ecosystem 长线信号</strong>：HN <a href="https://news.ycombinator.com/item?id=48313990" target="_blank" rel="noopener">Endive: A JVM native WebAssembly runtime</a> 57 票、16 评论，<a href="https://github.com/bytecodealliance/endive" target="_blank" rel="noopener">github.com/bytecodealliance/endive</a>。Bytecode Alliance 发布——把 WebAssembly 直接跑在 JVM 上而不需要进程间通信。Claude Code 在企业 Java 系统中的渗透路径新解：① <strong>企业 legacy Java 系统现在可以装 wasm-based Claude Code agent</strong>——Endive 让 Claude 在 JVM 进程内执行（不需要外部 service），合规与性能双赢；② <strong>沙盒</strong>：wasm 沙盒比 OS 进程沙盒更细——内存访问、syscall 都可控，5 月 25 日"rm -rf /"事故的另一个对策；③ Skills Marketplace 的潜在新载体：<strong>"JVM-side Skill 包"</strong> 上架——把 Skill 打包成 wasm，企业 Java 系统直接调用，是 Anthropic 还没正式宣布但 6–9 月会出现的 Skills 新形态；④ 长期：<strong>wasm + LLM agent 是企业 AI 在 2027–2028 的主流部署形态</strong>——比 docker 轻、比 lambda 紧、比 OS-level 安全——Claude Code 团队 6–12 月应开始评估 wasm 路径，特别是金融 / 政府 / 医疗这类对 sandbox 严格的客户。</li>
+</ul>
+
+<h3>Level 7 — 专家级工作流</h3>
+
+<ul>
+<li><strong>整合 2026-05-29 5 大信号——Claude Code 工作流 thesis 升级 v3</strong>：① <strong>Opus 4.8 + Series H + 三云齐发 + 三家 HBM 厂商签约</strong> = 短期 12 个月<strong>Anthropic 平台优势进入 plateau</strong>，企业级合同应锁价；② <strong>Dynamic Workflows + Effort Control + 中途 system entry 注入</strong> = Claude Code 的工程接口从"模型选择"升级到"工作流编排 + 细粒度调度"，5 月 25 日的 thesis "Skills + 路由 + Constraint Hook + jj 四件套" 现在变成<strong>五件套</strong>——加 "Dynamic Workflows orchestration"；③ <strong>Various LLM Smells 209 票 + Continue? Y/N 238 票</strong> = 社区进入"AI slop 反思"和"权限模型反思"双反思阶段——这两个反思在 6 月内会催生<strong>"反 AI slop linter" + "sandbox-first agent"</strong> 两个新工具赛道；④ <strong>ktx + DBOS + Endive</strong> = MCP 生态从"API 接通" 进化到"数据 + 状态 + 沙盒" 三层基建完整化，是 6–9 月最重要的 ecosystem layer 投资方向；⑤ <strong>Tencent Hy3 + 中国开源矩阵 + DeepSeek + Qwen Genesis</strong> = 6–12 个月<strong>Anthropic 在批量 / 标注 / 数据处理场景被结构性挤压</strong>——企业级用户应建立"frontier API + 开源 batch" 双链路。合成 thesis 升级 v3：<strong>Claude Code 用户 2026 H2 的核心 IP 进化为"Skills 注册表 + 多模型 / 多云 / 多 effort 路由 + Constraint Hook 库 + DBOS-on-PG checkpoint + jj-based 版本控制 + Dynamic Workflows 编排"</strong> 六件套——这六件套是模型 / 平台版本无关的护城河，是 6–9 月最值得投入的工程时间。</li>
+</ul>
+
+<ul>
+<li><strong>"Opus 4.8 + Series H" 时代的 Claude Code 长期使用契约升级 v3——韧性 + 退出权 + 工作流自主</strong>：基于 5 月 25 日 v2 模板的升级——增补 Opus 4.8 / Series H / 三云齐发 / Dynamic Workflows 时代的 5 条新条款：① <strong>Dynamic Workflows 自托管退路条款</strong>：要求 Anthropic 提供 Dynamic Workflows 的"导出为 DAG + 工具调用序列" 格式——任何编排都可在自己的 DBOS-on-PG 上重放，<strong>防止编排锁死</strong>；② <strong>Effort Control 公开 SLA</strong>：每个 effort 等级（low/medium/high/extra）的预期 latency、token 消耗范围、质量基准必须有 SLO 文档——5 月 28 日 release 只有 marketing 描述没有数字，<strong>6 月底前必须 publish</strong>；③ <strong>三云数据驻留保证</strong>：合同写明"我们的 Claude 调用 100% 走 AWS X 区 Bedrock / GCP X 区 Vertex / Azure X 区"——区域级数据主权写进条款；④ <strong>HBM 紧缺 surcharge cap</strong>：HBM 紧缺导致 token 价格的 6 个月内涨幅锁定在 ≤ 30%，<strong>防止 IPO 倒计时压力下的集中提价</strong>；⑤ <strong>Skills + Dynamic Workflows 联动审计</strong>：所有 Dynamic Workflows 内调用的 Skills 必须有完整调用日志（per-Skill、per-subagent、per-tool-call），出口到客户 SIEM——5 月 25 日 Skills Marketplace 安全审计需求 + 5 月 28 日 Dynamic Workflows 数百子代理 = 审计复杂度上升 50×，必须有数据基础设施保证。</li>
+</ul>
+
+<hr>
+
+<h2>二、高手实战技巧表格</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>#</th>
+<th>技巧</th>
+<th>说明</th>
+<th>难度</th>
+<th>来源</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td>Opus 4.8 Dynamic Workflows research preview 立即开</td>
+<td>100K 行迁移从 1 周缩到 1 天</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://news.ycombinator.com/item?id=48311647" target="_blank" rel="noopener">Claude Opus 4.8</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>生产默认 <code class="inline">model: opus-4.8-fast</code></td>
+<td>$10/Mtok + 3× 速度，80% 任务足够</td>
+<td>⭐⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>3</td>
+<td>API 中途插系统条目不破坏 cache</td>
+<td>Constraint Decay 论文的官方对症药</td>
+<td>⭐⭐⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>4</td>
+<td>浏览器自动化 84% — Playwright + Opus 4.8 配</td>
+<td>RPA 全栈自营业务工程上可行</td>
+<td>⭐⭐⭐⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Legal Agent Benchmark 破 10% — Skill 上架</td>
+<td>合同审阅 / 监管 / 起诉书三类 Skill</td>
+<td>⭐⭐⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Effort 默认 medium、决策 high、批量 low</td>
+<td>per-call effort 而非 per-model</td>
+<td>⭐⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>7</td>
+<td>子代理 low + 主代理 high</td>
+<td>Dynamic Workflows 最佳搭配</td>
+<td>⭐⭐⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>8</td>
+<td>三云 router：bedrock 主、anthropic-direct 边、vertex 副</td>
+<td>5 月 25 日宕机后的升级 SLA</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://news.ycombinator.com/item?id=48313048" target="_blank" rel="noopener">Anthropic Series H</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td>锁价 12 个月企业合同</td>
+<td>$965B 估值 + IPO 倒计时压力</td>
+<td>⭐⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>10</td>
+<td>HBM 紧缺 surcharge cap ≤ 30% 写进合同</td>
+<td>防集中提价</td>
+<td>⭐⭐⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Pre-commit Hook 装 19 个 LLM smell regex pack</td>
+<td>防 AI slop 污染代码库</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://news.ycombinator.com/item?id=48313810" target="_blank" rel="noopener">Various LLM Smells</a></td>
+</tr>
+<tr>
+<td>12</td>
+<td>"用 LLM 做结构性批评而非造句"</td>
+<td>tptacek 的核心 thesis</td>
+<td>⭐⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>13</td>
+<td>关键节点必须人类专家审</td>
+<td>Planktonne "领域盲区" 警告</td>
+<td>⭐⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>14</td>
+<td>默认 <code class="inline">--dangerously-skip-permissions</code> + sandbox</td>
+<td>安全下沉到隔离层</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://news.ycombinator.com/item?id=48308376" target="_blank" rel="noopener">Continue? Y/N</a></td>
+</tr>
+<tr>
+<td>15</td>
+<td>jj + sandbox + 可逆操作 = 完整对策</td>
+<td>git working tree + 显式 commit</td>
+<td>⭐⭐⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>16</td>
+<td>"Sandbox Setup Wizard" Skill 上架窗口</td>
+<td>6 月初最有需求的 Skill</td>
+<td>⭐⭐⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>17</td>
+<td>装 ktx 数据 MCP</td>
+<td>SQL 业务正确率 60%→90%</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://news.ycombinator.com/item?id=48276598" target="_blank" rel="noopener">ktx HN</a></td>
+</tr>
+<tr>
+<td>18</td>
+<td>"Domain-specific ktx Pack" Skill 上架</td>
+<td>行业 metrics pack 月被动 $200+</td>
+<td>⭐⭐⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>19</td>
+<td>DBOS-on-PG 做 Dynamic Workflows checkpoint</td>
+<td>30s 内中断恢复 vs 90 分钟宕机</td>
+<td>⭐⭐⭐⭐</td>
+<td><a href="https://news.ycombinator.com/item?id=48276598" target="_blank" rel="noopener">DBOS Postgres</a></td>
+</tr>
+<tr>
+<td>20</td>
+<td>PG <code class="inline">LISTEN/NOTIFY</code> 自建 sub-agent event bus</td>
+<td>DIY Dynamic Workflows 不靠 preview</td>
+<td>⭐⭐⭐⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>21</td>
+<td>wasm + Endive — 企业 Java 内嵌 agent</td>
+<td>沙盒 + 性能双赢</td>
+<td>⭐⭐⭐⭐</td>
+<td><a href="https://news.ycombinator.com/item?id=48313990" target="_blank" rel="noopener">Endive WASM</a></td>
+</tr>
+<tr>
+<td>22</td>
+<td>评估开源模型看 effective price 不看 list 价</td>
+<td>Hy3 cache miss 44% 是陷阱</td>
+<td>⭐⭐</td>
+<td><a href="https://news.ycombinator.com/item?id=48317294" target="_blank" rel="noopener">Tencent Hy3</a></td>
+</tr>
+<tr>
+<td>23</td>
+<td>Router fallback 优先级：anthropic > deepseek > qwen > hy3</td>
+<td>中国开源矩阵分层</td>
+<td>⭐⭐⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>24</td>
+<td>"frontier API + 开源 batch" 双链路工作流</td>
+<td>批量 / 标注 / 清洗走开源</td>
+<td>⭐⭐⭐</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>25</td>
+<td>长期合同 5 条新条款（Dynamic Workflows 退路 / Effort SLA / 三云驻留 / HBM 涨幅锁定 / Skills+Workflow 审计）</td>
+<td>Opus 4.8 + Series H 时代的契约升级</td>
+<td>⭐⭐⭐⭐</td>
+<td>综合</td>
+</tr>
+</tbody></table></div>
+
+  </div>
+</article>
+<div class="article-footer">
+  <div class="container">
+    <a href="../#ai-trends">← 返回首页</a>
+  </div>
+</div>
+</body>
+</html>
