@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 动态追踪日报 — Claude Cowork & Claude Code | 张翰之</title>
+<meta name="description" content="2026-07-06 Claude Code / Cowork 社区最新动态、高级用法和实战技巧汇总">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;
+  --text:#e0e0e8;--text-dim:#8888a0;--text-bright:#ffffff;
+  --accent:#00d4aa;--accent2:#00a8ff;--accent3:#7c5cfc;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --max-w:900px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.8;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent2)}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:0;
+}
+
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+nav .inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--accent)}
+nav .logo svg{width:28px;height:28px}
+nav .back{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--accent)}
+
+/* Article */
+article{padding:100px 0 60px}
+.article-meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.article-date{font-family:var(--mono);font-size:.8rem;color:var(--accent);padding:4px 12px;border:1px solid rgba(0,212,170,.3);border-radius:4px}
+.article-tag{font-family:var(--mono);font-size:.65rem;color:var(--accent2);padding:2px 8px;background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.15);border-radius:4px}
+
+article h1{font-size:1.8rem;font-weight:700;color:var(--text-bright);margin-bottom:32px;line-height:1.3}
+article h2{font-size:1.35rem;font-weight:600;color:var(--accent);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,170,.15)}
+article h3{font-size:1.1rem;font-weight:600;color:var(--accent2);margin:28px 0 12px}
+article h4{font-size:.95rem;font-weight:600;color:var(--accent3);margin:20px 0 8px}
+article p{margin-bottom:12px;color:var(--text)}
+article ul{margin:0 0 16px 20px}
+article li{margin-bottom:8px;color:var(--text)}
+article li strong{color:var(--accent)}
+article hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:32px 0}
+article code.inline{font-family:var(--mono);font-size:.85em;background:rgba(0,212,170,.1);color:var(--accent);padding:2px 6px;border-radius:4px}
+article pre{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+article pre code{font-family:var(--mono);font-size:.85rem;color:var(--text)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);text-align:left;padding:10px 12px;border-bottom:2px solid rgba(0,212,170,.2);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text)}
+tr:hover td{background:rgba(0,212,170,.03)}
+
+/* Footer */
+.article-footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:60px;text-align:center}
+.article-footer a{font-family:var(--mono);font-size:.85rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="../" class="logo"><svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="url(#lg)"/><path d="M7 8h3v12H7V8zm4 5h6v3h-6v-3zm7-5h3v12h-3V8z" fill="#0a0a0f"/><defs><linearGradient id="lg" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00d4aa"/><stop offset="1" stop-color="#00a8ff"/></linearGradient></defs></svg><span>&lt;</span>HZ<span>/&gt;</span></a>
+    <a href="../#ai-trends" class="back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> 返回日报列表</a>
+  </div>
+</nav>
+<article>
+  <div class="container">
+    <div class="article-meta">
+      <span class="article-date">2026-07-06</span>
+      <span class="article-tag">CLAUDE.md</span> <span class="article-tag">Skills</span> <span class="article-tag">Scheduled Tasks</span> <span class="article-tag">MCP</span> <span class="article-tag">Hooks</span>
+    </div>
+    <h1>AI 动态追踪日报 — Claude Cowork & Claude Code</h1>
+    <hr>
+
+<h2>一、高级用法精选（按难度分层）</h2>
+
+<h3>Level 1 — 基础配置</h3>
+
+<ul>
+<li><strong>CLAUDE.md 仍是 r/ClaudeAI 讨论度第一的配置话题</strong>：根据 <a href="https://www.aitooldiscovery.com/guides/claude-code-reddit" target="_blank" rel="noopener">Claude Code Reddit 2026 社区实践综述</a>，项目根目录的 CLAUDE.md（告诉 Claude Code 在该代码库中如何行事）是 2026 年被讨论最多的 setup 主题；搭配 <code class="inline">/context</code> 命令可防止大代码库的上下文膨胀烧 token。X 上 <a href="https://x.com/MaryamMiradi" target="_blank" rel="noopener">@MaryamMiradi</a> 的 50 Pro Tips 也把 "先跑 <code class="inline">/init</code> 生成 CLAUDE.md、理解 root + 全局 <code class="inline">~/.claude/claude.md</code> 的层级关系" 列为 Foundations 前三条。</li>
+<li><strong><code class="inline">/statusline</code> 自定义</strong>：日本社区账号 <a href="https://x.com/sou_to_claude" target="_blank" rel="noopener">@sou_to_claude</a> 分享 "朴素但积累起来最有效" 的设定——自定义 statusline，让每次回到画面都能一眼看到会话状态、模型与消耗。</li>
+</ul>
+
+<h3>Level 2 — Skills 技巧</h3>
+
+<ul>
+<li><strong>自作 Skill 在 Claude Code 可用、Cowork 里不显示的排查</strong>：Qiita 热帖（经 <a href="https://x.com/qiitapoi" target="_blank" rel="noopener">@qiitapoi</a> 自动推送，👁224）给出解法——Cowork 对 Skill 的发现机制与 Claude Code 不同，需检查 Skill 安装位置与 Settings > Capabilities 中的启用状态。这是本周期 Cowork Skills 侧最实用的一手排障贴。</li>
+<li><strong>Skill + 知识库组合</strong>：YouTube 新鲜出炉的 "Your Claude Knowledge Base Is Missing This Skill"（21 小时前发布）演示把个人知识库整理成 Skill 后被 Claude 稳定调用的流程。</li>
+</ul>
+
+<h3>Level 3 — 定时任务</h3>
+
+<ul>
+<li><strong>Cowork <code class="inline">/schedule</code> 双入口</strong>：在任意 Cowork 任务里输入 <code class="inline">/schedule</code>，或侧栏 "Scheduled" → "New task"（<a href="https://support.claude.com/en/articles/13854387-schedule-recurring-tasks-in-claude-cowork" target="_blank" rel="noopener">官方帮助文档</a>）。定时任务继承已配置的 connectors、skills、plugins。</li>
+<li><strong>本地 vs 云端运行的关键差异</strong>：本地定时任务要求电脑唤醒 + 桌面 App 打开；改用 <a href="https://claude.ai/code/scheduled" target="_blank" rel="noopener">claude.ai/code/scheduled</a> 的云端运行则不依赖本机（<a href="https://www.xda-developers.com/claude-scheduled-tasks-feature/" target="_blank" rel="noopener">XDA 评测</a>）。常见组合：每日邮件/Slack 简报、每周指标汇总、行业动态追踪、文件自动整理。</li>
+</ul>
+
+<h3>Level 4 — Connectors & MCP</h3>
+
+<ul>
+<li><strong>Cowork 用 connectors 打通 Gmail / Notion / Calendar / Figma</strong>：<a href="https://support.claude.com/en/articles/13345190-get-started-with-claude-cowork" target="_blank" rel="noopener">官方入门指南</a> 强调 Cowork 的定位是 "伸进你已有工具的桌面代理"。X 实战案例：<a href="https://x.com/bombasticzzz" target="_blank" rel="noopener">@bombasticzzz</a> 让 Cowork 每天自动找新职位并为每个岗位生成定制 CV；<a href="https://x.com/hajarsabrani" target="_blank" rel="noopener">@hajarsabrani</a> 用 Cowork 做合作社系统的调研与设计。</li>
+<li><strong>MCP 跨厂商兼容性继续是护城河</strong>：r/ClaudeAI 社区（98.6 万成员，<a href="https://gummysearch.com/r/ClaudeAI/" target="_blank" rel="noopener">GummySearch 统计</a>）高频话题仍是自建 MCP server 与系统权限边界。</li>
+</ul>
+
+<h3>Level 5 — Hooks 自动化控制</h3>
+
+<ul>
+<li><strong>用 hooks 建 "routing file" 抗模型下架</strong>：X 热帖 "Claude Fable 5 went dark for 19 days in June. Builders with a routing file didn't lose a single day"（💬3 🔁1 ❤️9 👁620）复盘 6 月 Fable 5 因出口管制下架 19 天期间，配置了模型路由降级（Fable 5 → Opus 4.8 fallback）的团队零中断。7 月 7 日 Fable 5 将暂时移出订阅计划（<a href="https://www.anavem.com/en/news/tech/anthropic-pulls-claude-fable-5-from-subscriptions-july-7" target="_blank" rel="noopener">官方口径为临时调整</a>），routing file 的价值再次凸显。</li>
+<li><strong><code class="inline">/config</code> 检查静默降级</strong>：<a href="https://x.com/Oluwaphilemon1" target="_blank" rel="noopener">@Oluwaphilemon1</a> 转述的 7 条 Fable 5 实操技巧第一条——触发分类器护栏后会话会被静默路由到 Opus 4.8，务必用 <code class="inline">/config</code> 开启模型切换提示，避免 "以为在用旗舰、其实已被降级" 的费用与行为错配。</li>
+</ul>
+
+<h3>Level 6 — 子代理编排</h3>
+
+<ul>
+<li><strong>50 Pro Tips 的 Advanced 层</strong>：<a href="https://x.com/MaryamMiradi" target="_blank" rel="noopener">@MaryamMiradi</a>（👁1,190）的图谱把 "理解并善用 subagents 处理多步任务"、"用 Plan Mode + custom commands"、"MCP + Skills + Plugins 组合工作流" 列为 Power User → Advanced 阶梯，是本周期最完整的一张 Claude Code 进阶路线图。</li>
+<li><strong>公共训练仓库化的子代理课程</strong>：<a href="https://x.com/DanKornas" target="_blank" rel="noopener">@DanKornas</a>（💬4 🔁5 ❤️14 👁1,527）发布 Claude Code Training Course——含 Slidev 课件与 hands-on labs 的公开 repo，覆盖 branch-first 工作流、Plan Mode、Skills/Plugins 扩展、输出风格定制与 "为复杂多步任务理解和调度 subagents"。</li>
+</ul>
+
+<h3>Level 7 — 专家级工作流</h3>
+
+<ul>
+<li><strong>把 Cowork 当 "自治雇员" 而非聊天框</strong>：<a href="https://x.com/Ambrose0_X" target="_blank" rel="noopener">@Ambrose0_X</a> 的入门线程强调 Cowork "装在你电脑上、读你的文件，不是 chatbot"；结合 <a href="https://karozieminski.substack.com/p/claude-cowork-guide-plugins-memory-sub-agents-tips" target="_blank" rel="noopener">Cowork 高级用户 50+ 实测技巧</a>（plugins、memory、sub-agents），专家级玩法是把 Cowork 组织成 "记忆 + 技能 + 定时任务 + connectors" 的常驻系统。</li>
+<li><strong>一手灾备经验</strong>：土耳其用户 <a href="https://x.com/okankeklikk" target="_blank" rel="noopener">@okankeklikk</a>（👁172）截图记录 7 月 6 日 Claude API / Code / Cowork "Degraded Performance" 事件导致任务中断——长任务应拆 checkpoint、重要交付避开事故窗口。</li>
+</ul>
+
+<h2>二、高手实战技巧表格</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>#</th>
+<th>技巧</th>
+<th>说明</th>
+<th>难度</th>
+<th>来源</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td><code class="inline">/init</code> 生成分层 CLAUDE.md</td>
+<td>root + <code class="inline">~/.claude/claude.md</code> 全局层级</td>
+<td>⭐</td>
+<td><a href="https://x.com/MaryamMiradi" target="_blank" rel="noopener">@MaryamMiradi</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code class="inline">/context</code> 防上下文膨胀</td>
+<td>大代码库省 token 首选命令</td>
+<td>⭐</td>
+<td><a href="https://www.aitooldiscovery.com/guides/claude-code-reddit" target="_blank" rel="noopener">r/ClaudeAI 综述</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code class="inline">/statusline</code> 自定义</td>
+<td>会话状态一目了然</td>
+<td>⭐</td>
+<td><a href="https://x.com/sou_to_claude" target="_blank" rel="noopener">@sou_to_claude</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td><code class="inline">/config</code> 开模型切换提示</td>
+<td>防 Fable 5 → Opus 4.8 静默降级</td>
+<td>⭐⭐</td>
+<td><a href="https://x.com/Oluwaphilemon1" target="_blank" rel="noopener">@Oluwaphilemon1</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Routing file 模型降级</td>
+<td>模型下架/宕机零中断</td>
+<td>⭐⭐⭐</td>
+<td>X 热帖（👁620）</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code class="inline">/schedule</code> 定时任务</td>
+<td>云端跑不依赖本机唤醒</td>
+<td>⭐⭐</td>
+<td><a href="https://support.claude.com/en/articles/13854387-schedule-recurring-tasks-in-claude-cowork" target="_blank" rel="noopener">官方文档</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td>Skill 在 Cowork 不显示排查</td>
+<td>检查安装位置与 Capabilities 启用</td>
+<td>⭐⭐</td>
+<td><a href="https://x.com/qiitapoi" target="_blank" rel="noopener">Qiita via @qiitapoi</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Cowork + connectors 自动求职</td>
+<td>每日找岗 + 定制 CV</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://x.com/bombasticzzz" target="_blank" rel="noopener">@bombasticzzz</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td>子代理调度多步任务</td>
+<td>Plan Mode + subagents + MCP 组合</td>
+<td>⭐⭐⭐⭐</td>
+<td><a href="https://x.com/DanKornas" target="_blank" rel="noopener">@DanKornas</a></td>
+</tr>
+<tr>
+<td>10</td>
+<td>Cowork 常驻系统化</td>
+<td>memory + skills + 定时 + connectors</td>
+<td>⭐⭐⭐⭐</td>
+<td><a href="https://karozieminski.substack.com/p/claude-cowork-guide-plugins-memory-sub-agents-tips" target="_blank" rel="noopener">Power User 指南</a></td>
+</tr>
+<tr>
+<td>11</td>
+<td>长任务 checkpoint 拆分</td>
+<td>应对 7/6 Degraded Performance 类事故</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://x.com/okankeklikk" target="_blank" rel="noopener">@okankeklikk</a></td>
+</tr>
+<tr>
+<td>12</td>
+<td>2x 用量窗口期冲刺</td>
+<td>Cowork 双倍额度延至 8 月 5 日</td>
+<td>⭐</td>
+<td><a href="https://x.com/robinebers" target="_blank" rel="noopener">@robinebers</a></td>
+</tr>
+</tbody></table></div>
+
+<h2>三、YouTube 教程推荐</h2>
+
+<p>> 以下数据通过 Chrome 浏览器实时采集于 YouTube 搜索页面（2026-07-06）</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>视频标题</th>
+<th>作者</th>
+<th>观看量</th>
+<th>时长</th>
+<th>特色内容</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=FULL+Claude+Code+Tutorial+For+Beginners+in+2026+AI+Foundations" target="_blank" rel="noopener">FULL Claude Code Tutorial For Beginners in 2026! (Become a PRO)</a></td>
+<td>AI Foundations</td>
+<td>2.8万次观看 · 5天前</td>
+<td>1:00:55</td>
+<td>26 章节；讲清 Claude Code / Claude Chat / Claude Cowork 三者差异与从零搭建</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=The+Only+Beginner%27s+Claude+Code+Tutorial+You+Need+AI+LABS" target="_blank" rel="noopener">The Only Beginner's Claude Code Tutorial You Need</a></td>
+<td>AI LABS</td>
+<td>7953次观看 · 6天前</td>
+<td>—</td>
+<td>4K；"年中盘点"角度覆盖今年上百个新特性</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Your+Claude+Knowledge+Base+Is+Missing+This+Skill" target="_blank" rel="noopener">Your Claude Knowledge Base Is Missing This Skill</a></td>
+<td>Eric Tech</td>
+<td>900次观看 · 21小时前</td>
+<td>—</td>
+<td>最新发布；知识库 + Skill 组合实操</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=1000+hours+of+Learning+Claude+in+15+Minutes+Dan+Martell" target="_blank" rel="noopener">1000+ hours of Learning Claude in 15 Minutes (Beginner to Pro)</a></td>
+<td>Dan Martell</td>
+<td>57万次观看 · 2周前</td>
+<td>—</td>
+<td>高浓缩 Beginner→Pro 路线</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Learn+97%25+of+Claude+in+Under+16+Minutes+Dan+Martell" target="_blank" rel="noopener">Learn 97% of Claude in Under 16 Minutes</a></td>
+<td>Dan Martell</td>
+<td>176万次观看 · 1个月前</td>
+<td>15:13</td>
+<td>播放量最高；订阅费值回票价角度</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Ultimate+Claude+Code+Guide+How+to+Use+Claude+Code+for+Beginners+in+2026+AI+Master" target="_blank" rel="noopener">Ultimate Claude Code Guide: How to Use Claude Code for Beginners in 2026</a></td>
+<td>AI Master</td>
+<td>6.5万次观看 · 1个月前</td>
+<td>—</td>
+<td>14 章节；含 Cursor 对比与实战项目</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=32+Tricks+to+Level+Up+Claude+Code+in+16+Mins+Nate+Herk" target="_blank" rel="noopener">32 Tricks to Level Up Claude Code in 16 Mins</a></td>
+<td>Nate Herk \</td>
+<td>AI Automation</td>
+<td>36万次观看 · 2个月前</td>
+<td>~16:00</td>
+<td>Beginner/Intermediate/Pro Hacks 分层 32 招</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=27+Claude+Code+TIPS+you+didn%27t+know+about+Jono+Catliff" target="_blank" rel="noopener">27 Claude Code TIPS you didn't know about (in 12 minutes)</a></td>
+<td>Jono Catliff</td>
+<td>2.4万次观看 · 3个月前</td>
+<td>12:58</td>
+<td>冷门技巧向；含插件生态迁移提示</td>
+</tr>
+</tbody></table></div>
+
+<h2>四、Reddit 讨论精选</h2>
+
+<p>> Reddit 因浏览器安全限制无法直接访问，以下数据通过 WebSearch 采集</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>帖子标题 / 主题</th>
+<th>子版块</th>
+<th>要点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://www.aitooldiscovery.com/guides/claude-code-reddit" target="_blank" rel="noopener">CLAUDE.md 配置实践（2026 社区综述）</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a> / <a href="https://www.reddit.com/r/ClaudeCode/" target="_blank" rel="noopener">r/ClaudeCode</a></td>
+<td>2026 年讨论度第一的话题；项目根目录 CLAUDE.md 定义行为规范</td>
+</tr>
+<tr>
+<td><a href="https://www.aitooldiscovery.com/guides/claude-code-reddit" target="_blank" rel="noopener"><code class="inline">/context</code> 命令省 token 实践</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>大代码库/monorepo 防止上下文膨胀烧钱的首选</td>
+</tr>
+<tr>
+<td><a href="https://www.aitooldiscovery.com/guides/claude-code-reddit" target="_blank" rel="noopener">对话式 debug 优于 Cursor/Copilot 的社区共识</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>"描述错误 → 解释推理而非只给修复" 是开发者留在 Claude Code 的核心理由</td>
+</tr>
+<tr>
+<td><a href="https://gummysearch.com/r/ClaudeAI/" target="_blank" rel="noopener">MCP server 自建与系统权限边界讨论</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>98.6 万成员；高频话题为 MCP 构建、模型/思考模式选择、系统访问安全性</td>
+</tr>
+</tbody></table></div>
+
+<p><em>注：本期搜索引擎对 Reddit 单帖索引较弱，未能取得当日单帖票数；如未来 Reddit MCP connector 可用，应切换为 connector 获取一手数据。</em></p>
+
+<h2>五、X 热门帖子</h2>
+
+<p>> 以下数据通过 Chrome 浏览器实时采集于 X 搜索页面（2026-07-06，"最新"排序）</p>
+
+<h3>Claude Code Tips 热帖</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>作者</th>
+<th>内容摘要</th>
+<th>互动</th>
+<th>亮点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://x.com/DanKornas" target="_blank" rel="noopener">@DanKornas</a></td>
+<td>Claude Code Training Course：含 Slidev 课件 + hands-on labs 的公开训练仓库，覆盖 Plan Mode、Skills/Plugins、subagents</td>
+<td>💬4 🔁5 ❤️14 👁1,527</td>
+<td>系统化课程 repo，适合团队内训</td>
+</tr>
+<tr>
+<td><a href="https://x.com/MaryamMiradi" target="_blank" rel="noopener">@MaryamMiradi</a></td>
+<td>"My 50 Pro Tips to build AI agents with Claude Code"：Foundations → CLAUDE.md Rules → Daily Workflow → Power User → Advanced 五层图谱</td>
+<td>💬3 ❤️7 👁1,190</td>
+<td>一图流进阶路线，含配图</td>
+</tr>
+<tr>
+<td>匿名热帖（经 Claudecode_JP 转发）</td>
+<td>"Claude Fable 5 went dark for 19 days in June. Builders with a routing file didn't lose a single day"——6 月下架事件复盘</td>
+<td>💬3 🔁1 ❤️9 👁620</td>
+<td>Routing file 灾备最佳案例</td>
+</tr>
+<tr>
+<td><a href="https://x.com/Oluwaphilemon1" target="_blank" rel="noopener">@Oluwaphilemon1</a></td>
+<td>7 条 Fable 5 实操：当自治代理用、<code class="inline">/config</code> 防静默 Opus 降级、控预算防护栏触发</td>
+<td>💬1 🔁3 ❤️3 👁277</td>
+<td>引用 Substack 长文，含视频</td>
+</tr>
+<tr>
+<td><a href="https://x.com/sou_to_claude" target="_blank" rel="noopener">@sou_to_claude</a></td>
+<td><code class="inline">/statusline</code> 自定义是 "朴素但最有效" 的日常设定（日语）</td>
+<td>❤️1 👁20</td>
+<td>日本 Claude Code 情报账号每日 tips</td>
+</tr>
+<tr>
+<td><a href="https://x.com/Mayaikos" target="_blank" rel="noopener">@Mayaikos</a></td>
+<td>"Fable 5 is scary"：17 岁少年一次会话产出电影级活动网站，附复刻 mini guide</td>
+<td>👁—</td>
+<td>含视频演示</td>
+</tr>
+</tbody></table></div>
+
+<h3>Claude Cowork 热帖</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>作者</th>
+<th>内容摘要</th>
+<th>互动</th>
+<th>亮点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://x.com/robinebers" target="_blank" rel="noopener">@robinebers</a></td>
+<td>Claude Cowork 2x 用量延长至 8 月 5 日，附官方弹窗截图</td>
+<td>💬3 ❤️12 👁440</td>
+<td>用量窗口期情报，实测截图</td>
+</tr>
+<tr>
+<td><a href="https://x.com/qiitapoi" target="_blank" rel="noopener">@qiitapoi</a></td>
+<td>Qiita 热文：自作 Skill 在 Claude Code 可用但 Cowork 不显示的解决方案（日语）</td>
+<td>👁224</td>
+<td>一手排障文，外链 Qiita</td>
+</tr>
+<tr>
+<td><a href="https://x.com/okankeklikk" target="_blank" rel="noopener">@okankeklikk</a></td>
+<td>"Claude cowork patlamış"：7 月 6 日 Degraded Performance 事故导致任务中断（土耳其语），附状态页截图</td>
+<td>👁172</td>
+<td>当日事故一手记录</td>
+</tr>
+<tr>
+<td><a href="https://x.com/akashchanran" target="_blank" rel="noopener">@akashchanran</a></td>
+<td>在 Cowork 出现前就做过同类产品 mally.fyi，计划以 "Obsidian 式记忆系统" 复活</td>
+<td>💬2 ❤️2 👁30</td>
+<td>Cowork + 记忆系统的产品思路</td>
+</tr>
+<tr>
+<td><a href="https://x.com/Ambrose0_X" target="_blank" rel="noopener">@Ambrose0_X</a></td>
+<td>Cowork 入门线程 Step 1：下载 Claude 应用 → 打开 Cowork tab，"不是 chatbot，装在你电脑上、读你的文件"</td>
+<td>💬1 👁16</td>
+<td>新手友好的定位科普</td>
+</tr>
+<tr>
+<td><a href="https://x.com/bombasticzzz" target="_blank" rel="noopener">@bombasticzzz</a></td>
+<td>用 Cowork 每天自动找新职位并生成定制 CV 投递</td>
+<td>👁5</td>
+<td>求职自动化真实用例</td>
+</tr>
+</tbody></table></div>
+
+<h2>六、跨平台趋势总结</h2>
+
+<p>1. <strong>Fable 5 的 "下架—回归—再调整" 成为全平台第一话题</strong>：6 月 9 日发布 → 因 Amazon 报告的 jailbreak 触发出口管制下架 19 天 → 7 月 1 日携新分类器回归（拦截率 >99%，触发时路由 Opus 4.8）→ 7 月 3 日宣布 7 月 7 日暂时移出订阅计划（<a href="https://thehackernews.com/2026/07/anthropic-restores-claude-fable-5-after.html" target="_blank" rel="noopener">The Hacker News</a> / <a href="https://www.marktechpost.com/2026/07/01/anthropic-redeploys-claude-fable-5-on-july-1-after-us-export-controls-lift-adds-new-cybersecurity-classifier/" target="_blank" rel="noopener">MarkTechPost</a>）。X 上的实操讨论已从 "怎么用 Fable 5" 转向 "怎么在模型随时可能变动时保持工作流稳定"——routing file、<code class="inline">/config</code> 显式确认、降级预案是三个高频答案。</p>
+<p>2. <strong>Cowork 从尝鲜转向生产</strong>：2x 用量延长至 8 月 5 日降低了试错成本；求职自动化、合作社系统调研、每日 CV 定制等真实用例在多语言社区（英/日/土/印尼）同时出现——Cowork 的讨论主体明显从英语圈扩散到全球。</p>
+<p>3. <strong>教程生态 "年中换代"</strong>：5～6 天前发布的两支新教程（AI Foundations、AI LABS）都以 "2026 年中、上百个新特性" 为卖点，替代 2～3 个月前的旧 tips 视频；Claude Code / Chat / Cowork 三产品边界成为新手教学必讲点。</p>
+<p>4. <strong>7 月 6 日服务事故提醒</strong>：API / Code / Cowork 同日 Degraded Performance，多语言用户实时吐槽——长任务 checkpoint 化与关键交付避开事故窗口仍是必修课。</p>
+
+<h2>七、进阶路线图</h2>
+
+<p>1. <strong>本周（基础）</strong>：跑 <code class="inline">/init</code> 梳理 CLAUDE.md 层级；配置 <code class="inline">/statusline</code>；用 <code class="inline">/config</code> 开启模型切换确认，确认自己是否受 7 月 7 日 Fable 5 订阅调整影响。</p>
+<p>2. <strong>两周内（自动化）</strong>：把 1 个重复性工作变成 Cowork <code class="inline">/schedule</code> 云端定时任务；排查自有 Skills 在 Cowork 的可见性。</p>
+<p>3. <strong>本月（编排）</strong>：参照 @DanKornas 训练仓库与 @MaryamMiradi 50 Tips 的 Advanced 层，把一个多步工作流改造成 Plan Mode + subagents + MCP 组合。</p>
+<p>4. <strong>持续（韧性）</strong>：建 routing file 降级预案（Fable 5 → Opus 4.8 → Sonnet 5）；长任务全部 checkpoint 化；趁 2x 用量窗口（至 8 月 5 日）做高消耗实验。</p>
+
+<h2>八、推荐行动</h2>
+
+<ul>
+<li><strong>今天就做</strong>：<code class="inline">/config</code> 检查模型切换提示——7 月 7 日 Fable 5 移出订阅计划前，确认你的会话没有被静默降级计费。</li>
+<li><strong>值得收藏</strong>：AI Foundations 的 26 章节全教程（5 天前，覆盖 Cowork）+ @MaryamMiradi 50 Pro Tips 图谱，一长一短构成完整学习闭环。</li>
+<li><strong>窗口期红利</strong>：Cowork 2x 用量只到 8 月 5 日，适合现在跑重型定时任务与多代理实验。</li>
+<li><strong>灾备刚需</strong>：参考 "19 天下架零中断" 案例，为主力模型写 routing fallback——这是本周期社区验证过 ROI 最高的一项工程投资。</li>
+</ul>
+
+  </div>
+</article>
+<div class="article-footer">
+  <div class="container">
+    <a href="../#ai-trends">← 返回首页</a>
+  </div>
+</div>
+</body>
+</html>
