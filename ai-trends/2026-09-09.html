@@ -4,9 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI 动态追踪日报 — Claude Cowork & Claude Code | 张翰之</title>
-<meta name="description" content="25 倍**价格（1 小时缓存则 2 倍）重写缓存
-- **`defer_loading`** —— 罕用工具照常声明但标记延迟加载，它们不进缓存前缀，Claude 用工具搜索找到时才追加
-- ...">
+<meta name="description" content="本周的主线是「成本可观测性」，不是「更强的模型」。 — 官方博客（`/claude-api cost-optimize`）、changelog（`/skill-doctor`）、GitHub 热...">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -177,7 +175,7 @@ tr:hover td{background:rgba(0,212,170,.03)}
 <li><strong>前缀里别放易变值</strong> —— 系统提示词里的动态时间戳或 ID 每次调用都在砸缓存</li>
 <li><strong>工具定义别自己重排</strong> —— 工具定义渲染在最顶部，任何变动都破缓存</li>
 <li><strong>分叉要当心</strong> —— 子代理和分支只有在<strong>前缀逐字节相同、同模型、同 effort</strong> 时才共享父级缓存</li>
-<li><strong>别让同步工具调用/子代理跑过 TTL</strong> —— 5 分钟 TTL 从请求开始计时，超时后下一轮要按 <strong>1.25 倍</strong>价格（1 小时缓存则 2 倍）重写缓存</li>
+<li><strong>别让同步工具调用/子代理跑过 TTL</strong> —— 5 分钟 TTL 从请求开始计时，超时后下一轮要<strong>按 1.25 倍价格</strong>（1 小时缓存则 2 倍）重写缓存</li>
 <li><strong><code class="inline">defer_loading</code></strong> —— 罕用工具照常声明但标记延迟加载，它们不进缓存前缀，Claude 用工具搜索找到时才追加</li>
 <li><strong>中途系统指令走 message，不改 system prompt</strong> —— Platform 支持这么干，缓存保住</li>
 <li><strong>压缩（compaction）时顺手换模型/effort</strong> —— 反正那一刻缓存已经要重写，是免费的换挡窗口</li>
