@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 动态追踪日报 — Claude Cowork & Claude Code | 张翰之</title>
+<meta name="description" content="权限范式的转折点已经发生。** auto 模式默认化不只是一个开关变更，它宣告了 Anthropic 的一个明确判断：**在高频 agentic 循环中，人类逐条审批既低效又不可靠**（13.6...">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;
+  --text:#e0e0e8;--text-dim:#8888a0;--text-bright:#ffffff;
+  --accent:#00d4aa;--accent2:#00a8ff;--accent3:#7c5cfc;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --max-w:900px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.8;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent2)}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:0;
+}
+
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+nav .inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--accent)}
+nav .logo svg{width:28px;height:28px}
+nav .back{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--accent)}
+
+/* Article */
+article{padding:100px 0 60px}
+.article-meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.article-date{font-family:var(--mono);font-size:.8rem;color:var(--accent);padding:4px 12px;border:1px solid rgba(0,212,170,.3);border-radius:4px}
+.article-tag{font-family:var(--mono);font-size:.65rem;color:var(--accent2);padding:2px 8px;background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.15);border-radius:4px}
+
+article h1{font-size:1.8rem;font-weight:700;color:var(--text-bright);margin-bottom:32px;line-height:1.3}
+article h2{font-size:1.35rem;font-weight:600;color:var(--accent);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,170,.15)}
+article h3{font-size:1.1rem;font-weight:600;color:var(--accent2);margin:28px 0 12px}
+article h4{font-size:.95rem;font-weight:600;color:var(--accent3);margin:20px 0 8px}
+article p{margin-bottom:12px;color:var(--text)}
+article ul{margin:0 0 16px 20px}
+article li{margin-bottom:8px;color:var(--text)}
+article li strong{color:var(--accent)}
+article hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:32px 0}
+article code.inline{font-family:var(--mono);font-size:.85em;background:rgba(0,212,170,.1);color:var(--accent);padding:2px 6px;border-radius:4px}
+article pre{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+article pre code{font-family:var(--mono);font-size:.85rem;color:var(--text)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);text-align:left;padding:10px 12px;border-bottom:2px solid rgba(0,212,170,.2);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text)}
+tr:hover td{background:rgba(0,212,170,.03)}
+
+/* Footer */
+.article-footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:60px;text-align:center}
+.article-footer a{font-family:var(--mono);font-size:.85rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="../" class="logo"><svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="url(#lg)"/><path d="M7 8h3v12H7V8zm4 5h6v3h-6v-3zm7-5h3v12h-3V8z" fill="#0a0a0f"/><defs><linearGradient id="lg" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00d4aa"/><stop offset="1" stop-color="#00a8ff"/></linearGradient></defs></svg><span>&lt;</span>HZ<span>/&gt;</span></a>
+    <a href="../#ai-trends" class="back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> 返回日报列表</a>
+  </div>
+</nav>
+<article>
+  <div class="container">
+    <div class="article-meta">
+      <span class="article-date">2026-08-15</span>
+      <span class="article-tag">CLAUDE.md</span> <span class="article-tag">Skills</span> <span class="article-tag">Scheduled Tasks</span> <span class="article-tag">MCP</span> <span class="article-tag">Hooks</span>
+    </div>
+    <h1>AI 动态追踪日报 — Claude Cowork & Claude Code</h1>
+    <p><strong>日期：</strong> 2026-08-15</p>
+<p><strong>数据来源：</strong> Web · Hacker News · YouTube · Reddit/社区聚合</p>
+
+<p>> ⚠️ <strong>本期数据采集方式说明：</strong> 今日 Chrome 浏览器扩展未连接（Claude in Chrome 不可达，重试 3 次均失败），因此 X 与 YouTube 的一手实时数据无法采集。本期全部内容改用 WebSearch 采集，所有条目均标注可验证的公开来源链接。互动量、观看量等需要浏览器实测的字段本期从略，不做估算。</p>
+
+<hr>
+
+<h2>今日焦点</h2>
+
+<p><strong>Auto 模式于 8 月 14 日正式成为 Claude Code 默认权限模式。</strong> 这是本周最具分量的一次行为变更：Pro / Max / Team 计划的<strong>新会话</strong>不再逐条弹出工具调用批准框，改由一个独立的分类器模型实时审查每一次调用。Anthropic 公布的对照实验数据是这次决定的核心依据——在 1053 人参与的受控测试中，人类审核者只能识别出植入的危险命令 <strong>13.6%</strong>，而 auto 模式识别率达 <strong>89%</strong>；同时数据显示用户在旧流程下对权限弹窗的批准率高达 <strong>97%</strong>，即"人工把关"在实践中已近乎橡皮图章。Enterprise 与 API 账户暂维持 opt-in。</p>
+
+<p>社区反应偏向"好奇多于警惕"。Simon Willison 的评价是 Anthropic 对 auto 模式"自信、甚至可能过度自信"，这也是独立观察者中最主流的一种解读；Hacker News 讨论串里已有开发者反馈"用 auto 模式跑了几个月重度 sysadmin 任务未出灾难性问题"。值得注意的是：<strong>如果你此前已手动 pin 过默认权限模式，则不受影响</strong>；否则会收到一次性切换询问。</p>
+
+<hr>
+
+<h2>一、高级用法精选（按难度分层）</h2>
+
+<h3>Level 1 — 基础配置</h3>
+
+<ul>
+<li><strong>先确认自己的权限模式落点</strong>：8/14 之后新会话默认 auto。如果你的工作目录里有生产配置、密钥或未纳入 git 的资产，建议显式 pin 回 <code class="inline">plan</code> 或 <code class="inline">default</code> 模式，而不是依赖分类器兜底。切换随时可做，模式是会话级的。</li>
+<li><strong><code class="inline">/voice</code> 语音输入</strong>：Claude Code 内置语音口述（3 月上线），Mac / Windows 均可用，支持"按住说"与"点按说"两种模式。口述速度约 150 WPM vs 打字 40 WPM，实际收益不在速度而在<strong>不会因为懒得打字而砍掉关键上下文</strong>。内置识别对 regex、OAuth、JSON、localhost 等术语做过调优，并自动把项目名和 git 分支加入识别提示词。</li>
+<li><strong>默认用 push-to-talk 而非常开麦</strong>：按住键说话意味着麦克风只在你想让它听时才听——嘈杂环境下准确率更高，信任成本也更低。可以打字和说话混用：好打的部分打，好说的部分说。</li>
+</ul>
+
+<h3>Level 2 — Skills 技巧</h3>
+
+<ul>
+<li><strong>Skills 是跨产品线通用资产</strong>：同一个 Skill 可在 Chat、Cowork、Claude Code 三处运行。把多步工作流固化成一次点击的可复用动作，是当前投入产出比最高的一类沉淀。</li>
+<li><strong>判断该用 Skill 还是别的机制</strong>：社区已形成较清晰的分工共识——<strong>必须强制执行的规则</strong> → Hooks 或 permissions；<strong>上下文知识</strong> → Skills；<strong>委派边界</strong> → Subagents；<strong>始终生效的项目指引</strong> → CLAUDE.md（且保持简短）。这个四分法能避免把所有东西都往 CLAUDE.md 里堆。</li>
+</ul>
+
+<h3>Level 3 — 定时任务</h3>
+
+<ul>
+<li><strong>服务端执行已落地</strong>：Cowork 定时任务现已在服务端按计划运行，<strong>不再需要设备在线或唤醒</strong>。这是相较年初的关键变化，意味着"关上笔记本，任务照跑"。</li>
+<li><strong>在 prompt 里用 <code class="inline">/</code> 直接拉取 Skills 和插件</strong>：创建定时任务时，任务 prompt 框内输入 <code class="inline">/</code> 即可引用已装 Skills / 插件，频率支持 hourly / daily / weekly / weekdays / manual。</li>
+<li><strong>任务 prompt 会自我进化</strong>：一个容易被忽略的行为——你最初写的 prompt 不会原样保留。首次运行后 Claude 会根据实际执行经验重写它，把"信息在哪、该用哪个 connector"沉淀进去。因此<strong>第一次运行的质量决定了后续所有运行的质量</strong>，值得认真盯一次首跑。</li>
+</ul>
+
+<h3>Level 4 — Connectors & MCP</h3>
+
+<ul>
+<li><strong>Live Artifacts 面板化</strong>：可以直接要求 Claude 生成带指定面板的 Live Artifact，并指明每个面板查询哪个 connector（Gmail、Granola、HubSpot、Calendar、Notion、Slack 等）、展示什么内容。适合把"每天要看一眼"的信息做成常驻页面。</li>
+<li><strong>Connectors 找不到就自建 MCP</strong>：官方 Connectors 目录未覆盖的工具，可通过自定义 MCP 接入。</li>
+<li><strong>跨端同步</strong>：Cowork 现已覆盖 web 与 mobile，会话可远程运行（beta），文件与会话状态存于 Claude 账户并跨设备同步。</li>
+</ul>
+
+<h3>Level 5 — Hooks 自动化控制</h3>
+
+<ul>
+<li><strong>Hooks 是生命周期事件处理器</strong>，在特定事件触发时运行确定性脚本：<code class="inline">PreToolUse</code>（工具执行前）、<code class="inline">SessionStart</code>（会话开始）、<code class="inline">SubagentStop</code>（子代理结束）等。能力包括阻断危险操作、注入上下文、记录日志、强制安全策略。</li>
+<li><strong>2026 年最常见的四类 Hook 配方</strong>：<code class="inline">PreToolUse</code> 阻止仓库外写入；<code class="inline">PostToolUse</code> 每次编辑后跑 prettier；<code class="inline">Stop</code> 时运行测试套件；每条 shell 命令上挂 redact-secrets 脱敏。</li>
+<li><strong>auto 模式时代 Hooks 的新定位</strong>：分类器负责"通用危险"，Hooks 应该聚焦分类器不可能知道的<strong>业务级规则</strong>——比如"这个目录永远不许动"、"这个脚本必须先备份"。两者是互补而非替代关系。</li>
+</ul>
+
+<h3>Level 6 — 子代理编排</h3>
+
+<ul>
+<li><strong>子代理 forking 现已默认开启</strong>（v2.1.232）。同版本还上线：在 prompt 中输入 <code class="inline">@</code> 按名字提及其他 Claude 会话；<code class="inline">SendMessage</code> 支持直接投递到与某个存活会话精确同名的裸名称。</li>
+<li><strong>跨会话消息收件控制</strong>：<code class="inline">/config</code> 新增 "Dialog expiry" 与 "Messages from your other sessions" 两项，支持 accept / hold / refuse 三态。多实例并行工作流终于有了官方通信原语。</li>
+<li><strong>嵌套子代理最深 5 层</strong>（v2.1.172 起）：level-0 是根会话，level-5 是叶子代理不能再派生。嵌套的动机是<strong>上下文管理</strong>——每个子代理拿到全新上下文窗口，嵌套让子代理能在自己上下文填满前继续卸载。</li>
+<li><strong>子代理派生上限已移除</strong>：本月更新去掉了 subagent spawn cap。</li>
+</ul>
+
+<h3>Level 7 — 专家级工作流</h3>
+
+<ul>
+<li><strong>Dynamic Workflows vs Subagents 的分野</strong>：Subagents 通过 Task 工具派生，由 Claude 动态编排；Dynamic Workflows 则是 Claude 写出一段 JavaScript 脚本，可驱动<strong>最多 1000 个并行代理</strong>同时保持主上下文窗口干净。前者适合探索性任务，后者适合大规模确定性扇出。</li>
+<li><strong>Self-hosted environments</strong>：<code class="inline">claude self-hosted-runner</code> 可把自有机器或容器变成 Claude Code web / mobile / desktop 会话的运行地（Team 与 Enterprise 计划）。同时新增服务端下发的 Claude Code hook 支持，用于自托管 runner 会话——合规敏感团队的落地路径。</li>
+<li><strong>分层架构思维</strong>：Claude Code 现已是一套分层代理系统，memory / hooks / skills / subagents / plugins / MCP 各为独立层。设计复杂工作流时应先问"这个需求属于哪一层"，而不是默认往 prompt 里加字。</li>
+</ul>
+
+<hr>
+
+<h2>二、高手实战技巧表格</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>#</th>
+<th>技巧</th>
+<th>说明</th>
+<th>难度</th>
+<th>来源</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td>显式 pin 权限模式</td>
+<td>8/14 后新会话默认 auto；敏感目录建议手动锁回 plan/default</td>
+<td>★</td>
+<td><a href="https://code.claude.com/docs/en/permission-modes" target="_blank" rel="noopener">Claude Code Docs</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code class="inline">/voice</code> push-to-talk 口述</td>
+<td>150 WPM vs 40 WPM，真正价值是不砍上下文；按住说而非常开麦</td>
+<td>★</td>
+<td><a href="https://willowvoice.com/blog/voice-ai-dictation-claude-code" target="_blank" rel="noopener">Willow</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code class="inline">/context</code> 审计 + <code class="inline">/compact</code> 摘要</td>
+<td>长任务保持会话可读，防止上下文悄悄劣化</td>
+<td>★★</td>
+<td><a href="https://willowvoice.com/blog/claude-code-projects" target="_blank" rel="noopener">Willow</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td>四分法选机制</td>
+<td>强制规则→Hooks；知识→Skills；委派→Subagents；项目指引→CLAUDE.md</td>
+<td>★★</td>
+<td><a href="https://ofox.ai/blog/claude-code-hooks-subagents-skills-complete-guide-2026/" target="_blank" rel="noopener">ofox.ai</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td>盯紧定时任务首跑</td>
+<td>prompt 首跑后会被 Claude 重写并固化，首次质量决定长期质量</td>
+<td>★★</td>
+<td><a href="https://aiblewmymind.substack.com/p/claude-cowork-scheduled-tasks-6-ways" target="_blank" rel="noopener">aiblewmymind</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Live Artifact 多面板仪表盘</td>
+<td>指定每个面板查询哪个 connector，做成每日常驻页</td>
+<td>★★★</td>
+<td><a href="https://techysurgeon.substack.com/p/claude-cowork-live-artifacts-and" target="_blank" rel="noopener">techysurgeon</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td><code class="inline">@</code> 提及其他会话 + SendMessage</td>
+<td>v2.1.232 跨会话通信，配合 accept/hold/refuse 三态收件控制</td>
+<td>★★★</td>
+<td><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">Claude Code Changelog</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td>业务级 Hooks 补位分类器</td>
+<td>auto 模式管通用危险，Hooks 管"分类器不可能知道"的项目规则</td>
+<td>★★★★</td>
+<td><a href="https://smartscope.blog/en/generative-ai/claude/claude-code-best-practices-advanced-2026/" target="_blank" rel="noopener">SmartScope</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td>嵌套子代理做上下文卸载</td>
+<td>最深 5 层，每层全新上下文窗口，防止单代理上下文爆掉</td>
+<td>★★★★</td>
+<td><a href="https://claudefa.st/blog/guide/agents/nested-subagents" target="_blank" rel="noopener">claudefa.st</a></td>
+</tr>
+<tr>
+<td>10</td>
+<td>Dynamic Workflows 千级并行</td>
+<td>Claude 写 JS 脚本驱动最多 1000 并行代理，主上下文保持干净</td>
+<td>★★★★★</td>
+<td><a href="https://aiagentsfirst.com/claude-code-dynamic-workflows-vs-subagents" target="_blank" rel="noopener">AI Agents First</a></td>
+</tr>
+<tr>
+<td>11</td>
+<td>self-hosted-runner 自建运行环境</td>
+<td>自有机器/容器承载 web/mobile/desktop 会话，含服务端下发 hooks</td>
+<td>★★★★★</td>
+<td><a href="https://releasebot.io/updates/anthropic/claude-code" target="_blank" rel="noopener">Releasebot</a></td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>三、YouTube 教程推荐</h2>
+
+<p>> ⚠️ 本期 Chrome 未连接，无法实时采集观看量与时长。以下为 WebSearch 检索到的教程，标题均为真实视频直链。</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>视频标题</th>
+<th>作者/频道</th>
+<th>发布时间</th>
+<th>特色内容</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=O_z9vDLgvoY" target="_blank" rel="noopener">Claude Skills Tutorial (2026): Build, Run, and Share</a></td>
+<td>—</td>
+<td>2026-05-27</td>
+<td>把任意 prompt 存成可复用 Skill，跨 Chat / Cowork / Claude Code 运行</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=PnPsf-hwGtI" target="_blank" rel="noopener">The ONLY Claude Cowork Tutorial You'll Ever Need in 2026</a></td>
+<td>—</td>
+<td>2026-05-04</td>
+<td>覆盖面最广的单集 Cowork 教程</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=UR0gac-ccjg" target="_blank" rel="noopener">How to Use Claude Cowork: Full Beginners Tutorial 2026</a></td>
+<td>—</td>
+<td>2026-06-21</td>
+<td>从零起步：设置 → 真实任务 → Skills → 接入应用</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=JdQ_FHgP5ms" target="_blank" rel="noopener">FULL Claude Cowork Tutorial For Beginners in 2026! (Zero to PRO)</a></td>
+<td>AI Foundations</td>
+<td>2026 年</td>
+<td>Sub Agents、Live Artifacts、Gmail Connector 实操</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=0UFSZ_5OSIk" target="_blank" rel="noopener">CLAUDE COWORK FULL COURSE 3 HOURS For Beginners (2026)</a></td>
+<td>—</td>
+<td>2026 年</td>
+<td>3 小时完整课程，适合系统性补齐</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=KuUzUBg78gM" target="_blank" rel="noopener">These 12 Claude CoWork Skills Will Make You $$$ In 2026</a></td>
+<td>—</td>
+<td>2026 年</td>
+<td>12 个偏商业变现方向的 Skill 案例</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=EZcYjH3jAo8" target="_blank" rel="noopener">How I Actually Use Claude Every Day in 2026</a></td>
+<td>—</td>
+<td>2026 年</td>
+<td>日常真实用法而非功能罗列</td>
+</tr>
+<tr>
+<td><a href="https://www.jeffsu.org/learn-80-of-claude-cowork-in-under-20-minutes/" target="_blank" rel="noopener">Learn 80% of Claude Cowork in Under 20 Minutes</a></td>
+<td>Jeff Su</td>
+<td>2026 年</td>
+<td>Chat / Cowork / Code 三者定位，20 分钟入门</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>四、Reddit 讨论精选</h2>
+
+<p>> Reddit 无 MCP connector 且浏览器受限，以下为 WebSearch 采集的社区/聚合讨论。本期 Hacker News 讨论质量显著高于 Reddit，故一并纳入。</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>帖子/文章标题</th>
+<th>版块/来源</th>
+<th>要点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://news.ycombinator.com/item?id=49239021" target="_blank" rel="noopener">Auto mode is now the default in Claude Code</a></td>
+<td><a href="https://news.ycombinator.com/" target="_blank" rel="noopener">Hacker News</a></td>
+<td>8/14 生效当日讨论串，开发者反馈"重度 sysadmin 场景用了数月无灾难性问题"</td>
+</tr>
+<tr>
+<td><a href="https://news.ycombinator.com/item?id=49214994" target="_blank" rel="noopener">Claude Code: Starting August 14, auto mode will be the default permission mode</a></td>
+<td><a href="https://news.ycombinator.com/" target="_blank" rel="noopener">Hacker News</a></td>
+<td>预告帖，社区反应"好奇多于警惕"</td>
+</tr>
+<tr>
+<td><a href="https://simonwillison.net/2026/Aug/8/auto-mode/" target="_blank" rel="noopener">Auto mode is now the default in Claude Code for Pro, Max, and Team plans</a></td>
+<td>Simon Willison 博客</td>
+<td>独立观察者最主流解读："自信，甚至可能过度自信"</td>
+</tr>
+<tr>
+<td><a href="https://karozieminski.substack.com/p/claude-cowork-guide-plugins-memory-sub-agents-tips" target="_blank" rel="noopener">Claude Cowork Guide for Power Users: 50+ Tested Tips</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a> 相关聚合</td>
+<td>50+ 条实测技巧，覆盖 Plugins / Skills / Sub-Agents / Memory</td>
+</tr>
+<tr>
+<td><a href="https://hackernoon.com/over-50-tested-tips-for-claude-cowork-everything-from-plugins-to-sub-agents-and-more" target="_blank" rel="noopener">Over 50 Tested Tips for Claude Cowork</a></td>
+<td>HackerNoon</td>
+<td>上文的 HackerNoon 转载版，便于快速浏览</td>
+</tr>
+<tr>
+<td><a href="https://www.nocode.mba/articles/claude-cowork-tips" target="_blank" rel="noopener">Claude Cowork Tips 2026: 10 Things I Wish I Knew</a></td>
+<td>No Code MBA</td>
+<td>面向非开发者的踩坑清单</td>
+</tr>
+<tr>
+<td><a href="https://smartscope.blog/en/generative-ai/claude/claude-code-best-practices-advanced-2026/" target="_blank" rel="noopener">Claude Code Advanced Best Practices: 11 Techniques for Hooks, Subagents & Context</a></td>
+<td>SmartScope</td>
+<td>进阶三件套的系统性拆解</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>五、X 热门帖子</h2>
+
+<p>> ⚠️ <strong>本期无法通过 Chrome 实时采集 X 数据</strong>（扩展未连接）。为避免编造用户名与互动量，本节仅收录 WebSearch 检索到的、可验证的真实 X 链接，互动数据从略。</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>作者</th>
+<th>内容摘要</th>
+<th>亮点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://x.com/GeekyGadgets" target="_blank" rel="noopener">@GeekyGadgets</a></td>
+<td><a href="https://x.com/GeekyGadgets/status/2024087166562025965" target="_blank" rel="noopener">50 Claude Code Tips & Tricks for Smoother Daily Coding in 2026</a></td>
+<td>50 条日常提效技巧汇总贴，适合作为团队内部速查起点</td>
+</tr>
+</tbody></table></div>
+
+<p><strong>恢复 X 采集的前置条件：</strong> 安装并登录 <a href="https://chromewebstore.google.com/detail/fcoeoabgfenejglbffodgkkbkcdhcgfn" target="_blank" rel="noopener">Claude in Chrome 扩展</a>，且账号与桌面 App 一致。扩展恢复后本节应回到"作者 / 内容 / 💬🔁❤️👁 / 亮点"四列格式。</p>
+
+<hr>
+
+<h2>六、跨平台趋势总结</h2>
+
+<p><strong>1. 权限范式的转折点已经发生。</strong> auto 模式默认化不只是一个开关变更，它宣告了 Anthropic 的一个明确判断：<strong>在高频 agentic 循环中，人类逐条审批既低效又不可靠</strong>（13.6% vs 89%，97% 批准率）。这会连锁影响社区的最佳实践——过去大量"用 PreToolUse hook 拦危险命令"的配方，正在被分类器内建化，Hooks 的价值重心正从"安全兜底"迁移到"业务规则"。</p>
+
+<p><strong>2. 编排能力从"能派生"走向"能通信"。</strong> v2.1.232 的 <code class="inline">@</code> 提及、SendMessage 裸名投递、跨会话收件三态控制，加上默认开启的子代理 forking 与已移除的派生上限，标志着多会话/多代理不再是靠人肉复制粘贴串起来的 hack，而是有了一等公民级的原语。配合最深 5 层嵌套与 Dynamic Workflows 的千级并行，<strong>上下文管理正在成为架构问题而非提示词问题</strong>。</p>
+
+<p><strong>3. Cowork 的"去设备化"完成。</strong> 服务端定时任务 + web/mobile 覆盖 + 远程会话 beta + 跨设备状态同步，四件事凑齐后，Cowork 从"桌面工具"变成了"账户级的持续运行代理"。这直接改变了自动化的设计假设——不必再考虑"我的电脑是否醒着"。</p>
+
+<p><strong>4. 企业化基建同步铺开。</strong> self-hosted-runner、服务端下发 hooks、Compliance API 扩展、技能恶意内容扫描——这条线的更新密度说明 Anthropic 正在认真解决"合规团队为什么不敢放行"的问题。</p>
+
+<hr>
+
+<h2>七、进阶路线图</h2>
+
+<pre><code>
+第 1 周 — 地基
+  ├─ 确认权限模式落点（敏感项目 pin 回 plan/default）
+  ├─ 写好 CLAUDE.md（保持简短，只放"始终生效"的项目指引）
+  └─ 开启 /voice，习惯 push-to-talk 口述完整需求
+
+第 2 周 — 沉淀
+  ├─ 把 2-3 个重复工作流固化成 Skills
+  ├─ 建 1 个 Cowork 定时任务，认真盯首跑（prompt 会被重写并固化）
+  └─ 养成 /context 审计 + /compact 的会话卫生习惯
+
+第 3 周 — 连接
+  ├─ 接入 2-3 个高频 Connectors
+  ├─ 缺口用自定义 MCP 补
+  └─ 做 1 个多面板 Live Artifact 作为每日常驻页
+
+第 4 周 — 控制
+  ├─ 写第一批业务级 Hooks（PreToolUse 目录保护 / PostToolUse 格式化 / Stop 跑测试）
+  └─ 明确四分法：规则→Hooks，知识→Skills，委派→Subagents，指引→CLAUDE.md
+
+第 5-6 周 — 编排
+  ├─ 设计子代理分工，用嵌套做上下文卸载（不超过必要深度）
+  ├─ 用 @ 提及 + SendMessage 打通多会话协作
+  └─ 大规模确定性扇出改用 Dynamic Workflows 而非手工派生
+
+第 7 周+ — 基建
+  └─ 合规敏感场景评估 self-hosted-runner 自建运行环境
+</code></pre>
+
+<hr>
+
+<h2>八、推荐行动</h2>
+
+<p><strong>今天就做（15 分钟内）</strong></p>
+
+<p>1. <strong>检查你的权限模式。</strong> 8/14 之后创建的新会话默认是 auto。跑一次 <code class="inline">/config</code> 确认，对含生产配置或密钥的项目显式 pin 回 <code class="inline">plan</code>。这是本周唯一一个"不看就可能踩坑"的变更。</p>
+<p>2. <strong>给最重要的 1 个仓库加一条 PreToolUse hook</strong>，限制仓库外写入。分类器管通用危险，这条管你的具体边界。</p>
+
+<p><strong>本周做</strong></p>
+
+<p>3. <strong>审计你的定时任务 prompt。</strong> 由于 prompt 会在首跑后被自动重写，去看一眼当前实际生效的版本是否还符合预期——很多人从没看过重写后的结果。</p>
+<p>4. <strong>把一个每周重复三次以上的动作做成 Skill。</strong> 投入约 20 分钟，跨 Chat / Cowork / Code 三处复用。</p>
+
+<p><strong>本月评估</strong></p>
+
+<p>5. <strong>如果你在跑多会话工作流</strong>，把手工协调换成 v2.1.232 的 <code class="inline">@</code> 提及 + SendMessage，并配置好跨会话收件的 accept/hold/refuse 策略。</p>
+<p>6. <strong>如果单个代理经常撞上下文上限</strong>，先考虑嵌套子代理做卸载，而不是继续压缩提示词。</p>
+<p>7. <strong>修复本日报的数据管道</strong>：安装并登录 Claude in Chrome 扩展，恢复 X / YouTube 一手数据采集能力。</p>
+
+<hr>
+
+<p><em>本期日报因浏览器扩展不可用，采用纯 WebSearch 数据源，互动量与观看量字段留空而非估算。所有链接均可点击验证。</em></p>
+
+  </div>
+</article>
+<div class="article-footer">
+  <div class="container">
+    <a href="../#ai-trends">← 返回首页</a>
+  </div>
+</div>
+</body>
+</html>

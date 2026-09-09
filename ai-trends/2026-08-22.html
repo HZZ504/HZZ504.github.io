@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 动态追踪日报 — Claude Cowork & Claude Code | 张翰之</title>
+<meta name="description" content="2026-08-22 Claude Code / Cowork 社区最新动态、高级用法和实战技巧汇总">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;
+  --text:#e0e0e8;--text-dim:#8888a0;--text-bright:#ffffff;
+  --accent:#00d4aa;--accent2:#00a8ff;--accent3:#7c5cfc;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --max-w:900px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.8;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent2)}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:0;
+}
+
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+nav .inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--accent)}
+nav .logo svg{width:28px;height:28px}
+nav .back{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--accent)}
+
+/* Article */
+article{padding:100px 0 60px}
+.article-meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.article-date{font-family:var(--mono);font-size:.8rem;color:var(--accent);padding:4px 12px;border:1px solid rgba(0,212,170,.3);border-radius:4px}
+.article-tag{font-family:var(--mono);font-size:.65rem;color:var(--accent2);padding:2px 8px;background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.15);border-radius:4px}
+
+article h1{font-size:1.8rem;font-weight:700;color:var(--text-bright);margin-bottom:32px;line-height:1.3}
+article h2{font-size:1.35rem;font-weight:600;color:var(--accent);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,170,.15)}
+article h3{font-size:1.1rem;font-weight:600;color:var(--accent2);margin:28px 0 12px}
+article h4{font-size:.95rem;font-weight:600;color:var(--accent3);margin:20px 0 8px}
+article p{margin-bottom:12px;color:var(--text)}
+article ul{margin:0 0 16px 20px}
+article li{margin-bottom:8px;color:var(--text)}
+article li strong{color:var(--accent)}
+article hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:32px 0}
+article code.inline{font-family:var(--mono);font-size:.85em;background:rgba(0,212,170,.1);color:var(--accent);padding:2px 6px;border-radius:4px}
+article pre{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+article pre code{font-family:var(--mono);font-size:.85rem;color:var(--text)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);text-align:left;padding:10px 12px;border-bottom:2px solid rgba(0,212,170,.2);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text)}
+tr:hover td{background:rgba(0,212,170,.03)}
+
+/* Footer */
+.article-footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:60px;text-align:center}
+.article-footer a{font-family:var(--mono);font-size:.85rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="../" class="logo"><svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="url(#lg)"/><path d="M7 8h3v12H7V8zm4 5h6v3h-6v-3zm7-5h3v12h-3V8z" fill="#0a0a0f"/><defs><linearGradient id="lg" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00d4aa"/><stop offset="1" stop-color="#00a8ff"/></linearGradient></defs></svg><span>&lt;</span>HZ<span>/&gt;</span></a>
+    <a href="../#ai-trends" class="back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> 返回日报列表</a>
+  </div>
+</nav>
+<article>
+  <div class="container">
+    <div class="article-meta">
+      <span class="article-date">2026-08-22</span>
+      <span class="article-tag">CLAUDE.md</span> <span class="article-tag">Skills</span> <span class="article-tag">Scheduled Tasks</span> <span class="article-tag">MCP</span> <span class="article-tag">Hooks</span>
+    </div>
+    <h1>AI 动态追踪日报 — Claude Cowork & Claude Code</h1>
+    <p><strong>日期：</strong> 2026-08-22</p>
+<p><strong>数据来源：</strong> X (Twitter) · YouTube · Web · Reddit（受限）</p>
+
+<p>> 📡 <strong>本期采集方式：</strong> X 与 YouTube 数据通过 Chrome 浏览器实时采集（4 组 X 搜索 + 2 组 YouTube 搜索，均按"最新/热门"双排序抓取），互动量与观看量为页面实测值。Reddit 本期仍无法直接采集——<code class="inline">reddit.com</code> 明确拒绝 Anthropic 爬虫 UA（WebSearch 亦返回 400），MCP registry 中确认无 Reddit connector，故第四节改用社区聚合站与二手综述替代并逐条标注来源性质。Claude Code 版本信息经 changelog 聚合站交叉核对。</p>
+
+<hr>
+
+<h2>今日焦点</h2>
+
+<p><strong>Anthropic 把"怎么用 Claude"这件事，从社区手册变成了官方课程体系。</strong></p>
+
+<p>8 月 20—21 日，<a href="https://academy.claude.com/" target="_blank" rel="noopener">Claude Academy</a> 正式上线：官方免费学习平台，覆盖 <strong>Claude.ai / Cowork / Code / Tag / Platform 全产品线</strong>，26 门课程 + 大量教程，含视频课、测验、可分享的证书徽章，只要一个邮箱就能注册，登录 Claude 账号可保存进度。</p>
+
+<p>这条消息在 X 上是本期最集中的话题。官方账号 <a href="https://x.com/claudeai" target="_blank" rel="noopener">@claudeai</a> 的公告帖（8月21日，0:34 视频）拿到 💬7 🔁200 ❤️1,533 👁15万；日语圈 <a href="https://x.com/hiro44_pino" target="_blank" rel="noopener">@hiro44_pino</a> 的评价是本期二次传播中最高的：💬14 🔁138 ❤️1,049 👁9.9万，他的说法很直白——<strong>"今早 Claude 免费公开了一个不得了的东西。对 Claude 感兴趣但不太懂、就搁置不管的人，已经这样就够了。"</strong></p>
+
+<p>真正值得注意的不是"免费课上线了"，而是<strong>课程的组织方式</strong>。Claude Academy 的第一层不是产品功能，而是 <strong>AI Fluency：4D 框架 —— Delegation（委派）/ Description（描述）/ Discernment（辨别）/ Diligence（勤谨）</strong>。据 <a href="https://explainx.ai/blog/claude-academy-launch-4d-ai-fluency-framework-august-2026" target="_blank" rel="noopener">explainx.ai 的解析</a>，Anthropic 的理由是：<strong>产品功能会随模型迭代快速过时，所以 fluency 课程只讲长期有效的通用原则</strong>。换句话说，官方给出的学习路径是"先学怎么和 AI 协作，再学具体产品按钮在哪"。</p>
+
+<p>中文圈 <a href="https://x.com/yanhua1010" target="_blank" rel="noopener">@yanhua1010</a>（22 小时前）的清单最完整：<strong>全产品教程 + AI Fluency 4D 框架 + 300+ 课程与教程（含 API、MCP、Agents）+ 视频课与测验 + 可分享证书徽章，全部免费</strong>（💬5 🔁4 ❤️20 👁3,210）。日语 newsletter <a href="https://x.com/tetumemo" target="_blank" rel="noopener">@tetumemo</a>（8月21日，💬15 🔁21 ❤️160 👁2.9万）给了最实用的入门建议：<strong>首选"Claude 101"，全 13 节课约 2.5 小时，视频可切换本地字幕，不会写代码也能学——它教的是"首先该委托什么任务"和"AI 的回答能相信到什么程度"。</strong></p>
+
+<p><strong>另一侧，Claude Code 在 8 月 20 日连发 2.1.237 与 2.1.238，其中一条直接影响你每天读多少字。</strong></p>
+
+<p>2.1.237 加了<strong>内置的 "Concise" 输出风格</strong>：Claude 直接给结果，跳过前言和过程叙述，但工作量不打折——在 <code class="inline">/config</code> → Output style 里选。同版还修了走 LLM gateway 或自定义 base URL 时 prompt caching 失效的问题。2.1.238 则是两条给"手指记忆"和"企业部署"的：<code class="inline">keybindingFlavor</code> 设为 <code class="inline">"readline"</code> 后 Ctrl+W 按 Bash 习惯删到上一个空白符（默认 <code class="inline">classic</code> 不变）；插件市场新增 <code class="inline">headersHelper</code>，可在 url marketplace 或 catalog 条目上跑一条命令来生成 HTTP 头（比如短时效 token），用于 catalog 与同源 archive 抓取。</p>
+
+<p><strong>把两侧放在一起看，方向是"降低门槛"而不是"增加功能"</strong>：官方课程解决"不知道该委派什么"，Concise 输出风格解决"读不完 Claude 的话"，headersHelper 解决"企业插件源要鉴权"。今天社区的重心也从"炫技巧"明显偏向了"怎么让非工程师也用起来"——本期 YouTube 榜上排在前面的是《Learn Claude Cowork in One Video》和《Claude Cowork Tutorial: Your First Desktop Task | Lesson 10》这类系统课，而不是单点技巧视频。</p>
+
+<p><strong>顺带一条背景音</strong>：<a href="https://www.bloomberg.com/news/newsletters/2026-08-21/anthropic-expects-to-match-or-top-spacex-s-record-ipo-size" target="_blank" rel="noopener">Bloomberg Tech 8/21</a> 报道 Anthropic 预计其 IPO 规模将<strong>匹敌或超过 SpaceX 的 750 亿美元纪录</strong>，Citigroup 于 8/20 加入 Morgan Stanley、Goldman Sachs、JPMorgan 组成的顶级承销团。X 上 <a href="https://x.com/oran_ge" target="_blank" rel="noopener">@oran_ge</a>（8月19日，💬150 🔁52 ❤️468 👁10万）贴出 TickerTrends 数据：<strong>Claude Code 追踪 ARR 已达 151.2 亿美元，占 Anthropic 总 ARR 的 21.9%</strong>——并附带一句冷水，"cowork 难得不行也没吃下 work 市场太多"。工具生态的商业化速度，正在跑在产品成熟度前面。</p>
+
+<hr>
+
+<h2>一、高级用法精选（按难度分层）</h2>
+
+<h3>Level 1 — 基础配置</h3>
+
+<ul>
+<li><strong>今天最该做的一件事：把 "Concise" 输出风格打开</strong>（2.1.237）。<code class="inline">/config</code> → Output style → Concise。它让 Claude 直接给结果、跳过 preamble 与过程叙述，而工作本身照旧彻底。如果你的会话总在"我先来看看…""好的，现在我要…"上浪费 token，这一条比任何提示词技巧都直接。</li>
+<li><strong>Ctrl+W 终于能按 Bash 习惯用了</strong>（2.1.238）。设置 <code class="inline">keybindingFlavor: "readline"</code>，Ctrl+W 删到上一个空白符；默认 <code class="inline">classic</code> 行为不变。常年在终端里工作的人，这是肌肉记忆层面的修复。</li>
+<li><strong><code class="inline">ANTHROPIC_DEFAULT_MODEL</code> 仍是被低估的一条</strong>（2.1.236 起）。它只设定新会话的<strong>起始</strong>模型，你在会话里 <code class="inline">/model</code> 切换后的选择会跨重启持久化——这跟硬绑定的 <code class="inline">ANTHROPIC_MODEL</code> 完全不同。"默认 Sonnet、需要时手动升 Opus"的成本策略靠它才成立。</li>
+<li><strong>走 gateway 的团队请务必升到 2.1.237</strong>。此前使用 LLM gateway 或自定义 base URL 的会话 <strong>prompt caching 是失效的</strong>——这不是体验问题，是实打实的账单问题。</li>
+</ul>
+
+<h3>Level 2 — Skills 技巧</h3>
+
+<ul>
+<li><strong>先学框架，再学功能——这是官方今天给出的正式立场</strong>。<a href="https://academy.claude.com/fluency" target="_blank" rel="noopener">Claude Academy</a> 的 AI Fluency 课程讲的是 4D：<strong>Delegation（该委派什么）/ Description（怎么描述）/ Discernment（怎么判断结果可信度）/ Diligence（怎么核查）</strong>。Anthropic 自己的说法是：产品功能随模型迭代快速过时，所以 fluency 部分只讲不会过期的原则。写 skill 的人尤其该看这一节——<strong>大多数失败的 skill 不是提示写坏了，而是委派边界划错了</strong>。</li>
+<li><strong>入门路径已经有官方答案了</strong>：Claude 101（13 节，约 2.5 小时）→ Claude Code 101 → Building with the Claude API。这三门都在 <a href="https://anthropic.skilljar.com/claude-code-101" target="_blank" rel="noopener">Anthropic Academy</a> 上免费，X 上 <a href="https://x.com/HGBashar" target="_blank" rel="noopener">@HGBashar</a>（2 小时前）把链接整理成了一张清单（👁47）。</li>
+<li><strong>上传素材要控量也要控质</strong>（社区反复验证的经验）：不要一次灌几百份文件；写好几份高质量 markdown brief，然后所有 prompt 都以 <strong>"Read this & then ask me questions to do [task]"</strong> 开头。前期投入换的是后期不再反复提示。</li>
+<li><strong>区分四种承载方式，这是 2026 年 skill 设计的核心判断</strong>（<a href="https://smartscope.blog/en/generative-ai/claude/claude-code-best-practices-advanced-2026/" target="_blank" rel="noopener">SmartScope 综述</a>）：<strong>必须强制执行的规则 → Hooks 或 permissions；上下文知识 → Skills；委派边界 → Subagents；始终生效的项目指引 → CLAUDE.md（并保持简短）</strong>。把该进 hook 的东西写进 CLAUDE.md，是最常见的失败模式。</li>
+</ul>
+
+<h3>Level 3 — 定时任务</h3>
+
+<ul>
+<li><strong>定时任务现在是真正的服务端 cron</strong>。据<a href="https://support.claude.com/en/articles/13854387-schedule-recurring-tasks-in-claude-cowork" target="_blank" rel="noopener">官方帮助中心</a>，Cowork 的定时任务<strong>服务端运行、无需任何设备在线</strong>。在任意 Cowork 任务里输入 <code class="inline">/schedule</code> 即可创建。此前"电脑得开着"是定时任务最大的实用性折扣，现在这个折扣消失了。</li>
+<li><strong>YouTube 上出现了第一批把定时任务讲全的系统课</strong>。《Learn Claude Cowork in One Video》（7 小时前，1,283 观看）用 9 个章节把链路串起来：整理乱文件夹 → 写第一个 CLAUDE.md → 构建 Live Artifacts → 自动化月度报表 → <strong>设置自动排程</strong> → 接 Claude Code → MCP 与可复用 Skills → n8n。这个顺序值得照着走一遍。</li>
+<li><strong><code class="inline">/goal</code> 的看护节奏是 30 分钟 → 1 小时 → 2 小时递增 check in</strong>（2.1.236）。长跑任务不需要你回来敲一下才动。</li>
+<li><strong>本报告本身就是这条链路的产物</strong>：定时任务 → Chrome 实时采集 → markdown 生成 → <code class="inline">build-trends.py</code> 构建 → git push → GitHub Pages 部署，全程无人工介入。</li>
+</ul>
+
+<h3>Level 4 — Connectors & MCP</h3>
+
+<ul>
+<li><strong><code class="inline">headersHelper</code> 让企业内部插件市场终于能鉴权了</strong>（2.1.238）。在 url marketplace 或 catalog 条目上配置一条命令，它会为 catalog 与同源 archive 抓取生成 HTTP 头——典型用法是<strong>铸造短时效 token</strong>。此前私有插件源只能靠公开 URL 或手动分发，这是补上的关键一块。</li>
+<li><strong>X Ads MCP 已上线，23 个工具</strong>。<a href="https://x.com/Ivan68246027" target="_blank" rel="noopener">@Ivan68246027</a>（2 小时前，💬0 🔁0 ❤️2 👁54）实测：可以把 Grok、Claude Code 或其他 AI agent 直接连到 X Ads 账号，用对话管理投放。这类"广告平台自己出 MCP"的动作值得留意——<strong>渠道方开始把 agent 当成一等公民入口</strong>。</li>
+<li><strong>MCP 是 Reddit 上被引用最多的"杀手功能"</strong>（据 <a href="https://www.morphllm.com/claude-code-reddit" target="_blank" rel="noopener">morphllm 的 Reddit 综述</a>）：把 Claude Code 连到数据库、API、文档和外部工具，是自建工作流的人反复提到的分水岭。</li>
+<li><strong>Zapier MCP 仍是覆盖长尾 SaaS 的最省力方案</strong>。registry 里没有的工具，经 Zapier MCP 中转通常比自建 connector 快一个数量级。</li>
+</ul>
+
+<h3>Level 5 — Hooks 自动化控制</h3>
+
+<ul>
+<li><strong>Hooks 的生命周期事件是 PreToolUse / PostToolUse / SessionStart</strong>，每个都能触发 shell 命令、HTTP 请求、一段提示、甚至一个 subagent（<a href="https://ofox.ai/blog/claude-code-hooks-subagents-skills-complete-guide-2026/" target="_blank" rel="noopener">ofox.ai 完整指南</a>）。</li>
+<li><strong>2026 年最常见的四个 hook 配置</strong>，可以直接照抄：<strong>PreToolUse 拦截仓库外的写入 / PostToolUse 每次编辑后跑 prettier / on-Stop 跑测试套件 / 每条 shell 命令前 redact-secrets</strong>。这四条覆盖了绝大多数"手滑"风险。</li>
+<li><strong>判断标准只有一条：规则必须被强制执行时才用 Hook</strong>。如果只是"希望 Claude 记得"，那是 CLAUDE.md 或 Skill 的事。Hook 的价值在于它不依赖模型的配合。</li>
+<li><strong>权限对话框自 2.1.235 起才可信</strong>。此前在权限确认框的备注输入区按 Shift+Tab 会静默批准该次编辑并授予整个会话的编辑权限。如果你还在旧版本上跑 <code class="inline">auto</code> 模式，这是一条实打实的越权路径。</li>
+</ul>
+
+<h3>Level 6 — 子代理编排</h3>
+
+<ul>
+<li><strong>Subagent 是隔离实例，不是"更长的提示"</strong>：各自独立的 context window、独立的工具权限、独立的模型；主会话只看到每个 subagent 的最终摘要，看不到中间步骤——<strong>这正是它保持主 transcript 干净的机制</strong>（<a href="https://www.tembo.io/blog/claude-code-subagents" target="_blank" rel="noopener">Tembo 实践指南</a>）。</li>
+<li><strong>嵌套已支持，深度上限 5</strong>。据 <a href="https://www.developersdigest.tech/blog/claude-code-agent-teams-subagents-2026" target="_blank" rel="noopener">Developers Digest 的 2026 playbook</a>，Claude Code 现在内置多种 subagent 类型，支持 agent 生成 agent，并可通过 <strong>Dynamic Workflows</strong> 让 lead 一次扇出数十到数百个并行 subagent，配 <strong>Performance Outcomes grader</strong> 把结果打回重做直到达标。</li>
+<li><strong>但请克制</strong>：社区共识是<strong>嵌套两三层覆盖大多数项目，日常代码工作 3—5 个 subagent 是甜点区</strong>。深度和数量都容易滥用，代价是调试成本指数上升。</li>
+<li><strong>跨会话 <code class="inline">SendMessage</code> 的 <code class="inline">notify_when_idle</code> 是编排的轻量替代</strong>（2.1.236）：请求本机另一个 Claude Code 会话在下次空闲时发一条通知，opt-in、一次性、不轮询。不想上 subagent 编排时，这条够用。</li>
+</ul>
+
+<h3>Level 7 — 专家级工作流</h3>
+
+<ul>
+<li><strong>Boris Cherny（Claude Code 作者）的 28 分钟视频是本周社区最集中的技术源头</strong>。<a href="https://x.com/mikenevermiss" target="_blank" rel="noopener">@mikenevermiss</a>（8月20日）和 <a href="https://x.com/AnatoliKopadze" target="_blank" rel="noopener">@AnatoliKopadze</a> 都在推它，主题是<strong>怎么写真正拿到结果的提示，而不是通用提示建议</strong>：CLAUDE.md 该写什么、memory 快捷方式、并行会话、提示模式。日语圈 <a href="https://x.com/ClaudeCode_love" target="_blank" rel="noopener">@ClaudeCode_love</a>（8月19日）提炼的两条最实用——<strong>"CLAUDE.md 里写什么才能不必每次重复说明"</strong>，以及<strong>"该让它记住的写法，和刻意让它忘记的时机"</strong>。</li>
+<li><strong>配套的一手数据点</strong>：<a href="https://x.com/0xCeryn" target="_blank" rel="noopener">@0xCeryn</a>（3 小时前，👁47）截的 25 秒片段里，Cherny 给出的行业尺度是<strong>"前沿模型在一年内把 SWE-bench Verified 从 30% 推到了 80% 以上"</strong>。</li>
+<li><strong>官方刚发过一篇罕见的偏技术实操文，讲怎么把 Session 用到极致</strong>。<a href="https://x.com/criscxuan" target="_blank" rel="noopener">@criscxuan</a>（8月20日，💬1 🔁22 ❤️98 👁1.5万）的解读值得一读：<strong>"专门讲怎么提高 Session 的使用效率，把每个 token 都花在刀刃上……我看的时候直接肾上腺素飙升。"</strong></li>
+<li><strong>成本控制正在成为专家级议题</strong>。<a href="https://x.com/sairahul1" target="_blank" rel="noopener">@sairahul1</a>（14 小时前，💬15 🔁18 ❤️165 👁2.8万）公开了自己的账单复盘：<strong>"我一天花 37 美元跑 Claude Code，一个月超过 1,000 美元。我以为我在为智能付费，其实我在为噪音付费。"</strong> 他归纳的七类浪费——过度搜索代码库、给任务配错模型、CLI 噪音灌进上下文、会话间无记忆、原始 URL 倒进上下文、重复读同一文件、冗长的 agent 输出——每一条都对应一个可修的配置。</li>
+<li><strong>降本的另一条路是换模型而非换用法</strong>。YouTube 上《Stop Paying $200 For Work An $18 Model Can Do Inside Claude Code And Codex》（10 小时前，1 万观看，12 章节）演示把 GLM-5.3 接进 Claude Code 与 Codex，配置只要几行；《This Stealth Model Makes Claude Code Free》（1 小时前）走的是 OpenRouter 免费模型路由。两者都给出了"哪些活能交给便宜模型"的边界测试——<strong>这比盲目省钱有价值得多</strong>。</li>
+</ul>
+
+<hr>
+
+<h2>二、高手实战技巧表格</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>#</th>
+<th>技巧</th>
+<th>说明</th>
+<th>难度</th>
+<th>来源</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td>打开 Concise 输出风格</td>
+<td><code class="inline">/config</code> → Output style → Concise。直接给结果，跳过 preamble 与过程叙述，工作量不减</td>
+<td>⭐</td>
+<td>Claude Code 2.1.237</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code class="inline">keybindingFlavor: "readline"</code></td>
+<td>Ctrl+W 按 Bash 习惯删到上一个空白符</td>
+<td>⭐</td>
+<td>Claude Code 2.1.238</td>
+</tr>
+<tr>
+<td>3</td>
+<td>走 gateway 必升 2.1.237</td>
+<td>此前自定义 base URL 会话的 prompt caching 是失效的，直接影响账单</td>
+<td>⭐</td>
+<td>Claude Code 2.1.237</td>
+</tr>
+<tr>
+<td>4</td>
+<td>请求里同时说明"不要做什么"</td>
+<td>除了"要做什么"也一并给出禁止项，多余的改动显著变少</td>
+<td>⭐</td>
+<td><a href="https://x.com/shinchan_btc" target="_blank" rel="noopener">@shinchan_btc</a>（1 小时前）</td>
+</tr>
+<tr>
+<td>5</td>
+<td>从 Claude 101 起步（13 节 / 2.5 小时）</td>
+<td>官方入门课，教"该委派什么"和"回答能信到什么程度"，不写代码也能学</td>
+<td>⭐</td>
+<td><a href="https://x.com/tetumemo" target="_blank" rel="noopener">@tetumemo</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td>先学 4D 再学功能</td>
+<td>Delegation / Description / Discernment / Diligence——功能会过时，框架不会</td>
+<td>⭐⭐</td>
+<td><a href="https://academy.claude.com/fluency" target="_blank" rel="noopener">Claude Academy</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td>素材"少而精"+ 固定开场句</td>
+<td>几份高质量 markdown brief，所有 prompt 以 "Read this & then ask me questions to do [task]" 开头</td>
+<td>⭐⭐</td>
+<td>社区综述</td>
+</tr>
+<tr>
+<td>8</td>
+<td>四选一承载判断</td>
+<td>强制规则→Hooks/permissions；上下文知识→Skills；委派边界→Subagents；常驻指引→CLAUDE.md（保持简短）</td>
+<td>⭐⭐</td>
+<td><a href="https://smartscope.blog/en/generative-ai/claude/claude-code-best-practices-advanced-2026/" target="_blank" rel="noopener">SmartScope</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td>CLAUDE.md 控制在 200 行内</td>
+<td>用嵌套目录里的分层文件，抓到重复犯错时再迭代加规则</td>
+<td>⭐⭐</td>
+<td><a href="https://www.morphllm.com/claude-code-reddit" target="_blank" rel="noopener">Reddit 综述</a></td>
+</tr>
+<tr>
+<td>10</td>
+<td><code class="inline">/schedule</code> 建服务端定时任务</td>
+<td>服务端运行，无需任何设备在线，产出报告/简报/摘要</td>
+<td>⭐⭐</td>
+<td><a href="https://support.claude.com/en/articles/13854387-schedule-recurring-tasks-in-claude-cowork" target="_blank" rel="noopener">官方帮助中心</a></td>
+</tr>
+<tr>
+<td>11</td>
+<td><code class="inline">ANTHROPIC_DEFAULT_MODEL</code> 做成本策略</td>
+<td>只设新会话起始模型，<code class="inline">/model</code> 的手动切换跨重启持久化</td>
+<td>⭐⭐</td>
+<td>Claude Code 2.1.236</td>
+</tr>
+<tr>
+<td>12</td>
+<td>四个必配 hook</td>
+<td>PreToolUse 拦仓库外写入 / PostToolUse 跑 prettier / on-Stop 跑测试 / 每条 shell 前 redact-secrets</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://ofox.ai/blog/claude-code-hooks-subagents-skills-complete-guide-2026/" target="_blank" rel="noopener">ofox.ai</a></td>
+</tr>
+<tr>
+<td>13</td>
+<td><code class="inline">headersHelper</code> 给私有插件源鉴权</td>
+<td>在 url marketplace 或 catalog 条目上跑命令铸造短时效 token</td>
+<td>⭐⭐⭐</td>
+<td>Claude Code 2.1.238</td>
+</tr>
+<tr>
+<td>14</td>
+<td>用 <code class="inline">!</code> 直接跑 bash</td>
+<td>输入 <code class="inline">!</code> 后接命令，直接在 shell 执行，不经 Claude 解释</td>
+<td>⭐⭐</td>
+<td><a href="https://www.morphllm.com/claude-code-reddit" target="_blank" rel="noopener">Reddit 综述</a></td>
+</tr>
+<tr>
+<td>15</td>
+<td>subagent 数量守在 3—5</td>
+<td>嵌套两三层覆盖多数项目；深度上限 5 但滥用后调试成本指数上升</td>
+<td>⭐⭐⭐⭐</td>
+<td><a href="https://www.tembo.io/blog/claude-code-subagents" target="_blank" rel="noopener">Tembo</a></td>
+</tr>
+<tr>
+<td>16</td>
+<td>Dynamic Workflows + Performance Outcomes</td>
+<td>lead 扇出数十至数百 subagent，grader 按 rubric 把结果打回重做</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td><a href="https://www.developersdigest.tech/blog/claude-code-agent-teams-subagents-2026" target="_blank" rel="noopener">Developers Digest</a></td>
+</tr>
+<tr>
+<td>17</td>
+<td><code class="inline">notify_when_idle</code> 做轻量协作</td>
+<td>跨会话 <code class="inline">SendMessage</code>，对方下次空闲时发通知，opt-in、一次性、不轮询</td>
+<td>⭐⭐⭐</td>
+<td>Claude Code 2.1.236</td>
+</tr>
+<tr>
+<td>18</td>
+<td>按七类浪费逐条排查成本</td>
+<td>过度搜索、模型错配、CLI 噪音、会话无记忆、原始 URL、重复读文件、冗长输出</td>
+<td>⭐⭐⭐⭐</td>
+<td><a href="https://x.com/sairahul1" target="_blank" rel="noopener">@sairahul1</a></td>
+</tr>
+<tr>
+<td>19</td>
+<td>便宜模型接进 Claude Code</td>
+<td>GLM-5.3 或 OpenRouter 免费路由，几行配置；关键是先测出"哪些活能交出去"</td>
+<td>⭐⭐⭐⭐</td>
+<td>YouTube（见第三节）</td>
+</tr>
+<tr>
+<td>20</td>
+<td>读官方 Session 效率文</td>
+<td>官方罕见的偏技术实操文，专讲把每个 token 花在刀刃上</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://x.com/criscxuan" target="_blank" rel="noopener">@criscxuan</a></td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>三、YouTube 教程推荐</h2>
+
+<p>> 以下数据通过 Chrome 浏览器实时采集于 YouTube 搜索页面（2026-08-22，按"最近上传"排序）。缩略图未完全加载，故时长以搜索页可见值为准，缺失处标注为"—"。</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>视频标题</th>
+<th>作者</th>
+<th>观看量</th>
+<th>时长</th>
+<th>特色内容</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Learn+Claude+Cowork+in+One+Video+Automation+Made+Easy" target="_blank" rel="noopener">Learn Claude Cowork in One Video: Automation Made Easy</a></td>
+<td>Learn Skills Daily</td>
+<td>1,283（7 小时前）</td>
+<td>— · 4K</td>
+<td><strong>本期最系统的 Cowork 课</strong>。9 章节：整理乱文件夹 → 第一个 CLAUDE.md → Live Artifacts → 月度报表自动化 → 自动排程 → 接 Claude Code → MCP 与可复用 Skills → n8n</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=The+NEW+Agentic+OS+standard+for+Claude+5+Models+is+here" target="_blank" rel="noopener">The NEW Agentic OS standard for Claude 5 Models is here (Full Breakdown)</a></td>
+<td>Jay E \</td>
+<td>RoboNuggets</td>
+<td>2.7 万（17 小时前）</td>
+<td>19:44</td>
+<td>Claude 5 系模型的 agentic OS 规范全解；含"让 Claude Code 先扫一遍 GitHub 上的 connector 判断是否安全再接入"的实操</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=AI+News+Gemini+Removes+Watermarks+Claude+Cowork+Update+Paul+J+Lipsky" target="_blank" rel="noopener">AI News: Gemini Removes Watermarks, Incredible New ChatGPT Tool, Claude Cowork Update and More</a></td>
+<td>Paul J Lipsky</td>
+<td>2.7 万（11 小时前）</td>
+<td>— · 4K</td>
+<td>8 章节周报，含专门的 Claude Updates 段落；适合一次性补齐跨厂商动态</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Turn+Claude+Into+a+One+Person+Marketing+Team+in+38+Mins+Nate+Herk" target="_blank" rel="noopener">Turn Claude Into a One Person Marketing Team in 38 Mins</a></td>
+<td>Nate Herk \</td>
+<td>AI Automation</td>
+<td>9,572（11 小时前）</td>
+<td>~38 分</td>
+<td>非技术向落地案例；5:45 处专讲"给它一个文件夹去工作"是 Claude Code 与 Claude 之间的关键解锁点</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Stop+Paying+%24200+For+Work+An+%2418+Model+Can+Do+Inside+Claude+Code+And+Codex" target="_blank" rel="noopener">Stop Paying $200 For Work An $18 Model Can Do Inside Claude Code And Codex</a></td>
+<td>AI News & Strategy Daily \</td>
+<td>Nate B Jones</td>
+<td>1 万（10 小时前）</td>
+<td>—</td>
+<td>12 章节。把 GLM-5.3 接进 Claude Code / Codex，配置只要几行；重点是"换模型后你保留了什么、失去了什么"</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=This+Stealth+Model+Makes+Claude+Code+Free+Nate+Herk" target="_blank" rel="noopener">This Stealth Model Makes Claude Code Free. Here's How.</a></td>
+<td>Nate Herk \</td>
+<td>AI Automation</td>
+<td>1,108（1 小时前）</td>
+<td>—</td>
+<td>10 章节：OpenRouter 配置 → 免费模型路由 → 落地页测试 → <strong>免费模型在哪些场景真的能用</strong> → YouTube Analytics 实测 → Skills 与知识工作 → 最终结论</td>
+</tr>
+<tr>
+<td>[Claude Cowork Tutorial: Your First Desktop Task \</td>
+<td>Lesson 10](https://www.youtube.com/results?search_query=Claude+Cowork+Tutorial+Your+First+Desktop+Task+Lesson+10)</td>
+<td>Generative AI for Beginners</td>
+<td>4（2 小时前）</td>
+<td>—</td>
+<td>系列课第 10 讲。3 章节，核心是<strong>"文件夹访问权作为安全边界"</strong>——从"给建议"到"真的动你的文件"这一步的心理与安全准备</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Claude+Cowork+Creates+Word+Excel+PDF+PowerPoint+Files+Live+Demo" target="_blank" rel="noopener">Claude Cowork Creates Word, Excel, PDF & PowerPoint Files For You (Live Demo)</a></td>
+<td>Generative AI for Beginners</td>
+<td>1（2 小时前）</td>
+<td>—</td>
+<td>10 章节，全是干货标题：<strong>每次文档请求都要包含的 3 件事</strong>、<strong>别微观管理：给目标不给公式</strong>、CORE 框架、三个 live demo（网研 Word 报告 / 自动排版 PPT / 高管商业报告）、模板保存与任务排程</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=How+to+Use+Claude+Code+100%25+FREE+%26+PRIVATE+The+Truth+Serop" target="_blank" rel="noopener">How to Use Claude Code 100% FREE & PRIVATE (The Truth)</a></td>
+<td>Serop \</td>
+<td>AI Automation</td>
+<td>107（9 小时前）</td>
+<td>— · 4K</td>
+<td>7 章节：本地模型选型（按硬件匹配）→ 接进 Claude Code。适合有隐私硬约束的场景</td>
+</tr>
+<tr>
+<td>[Anthropic Preps for Blockbuster Public Listing \</td>
+<td>Bloomberg Tech 8/21/2026](https://www.youtube.com/results?search_query=Anthropic+Preps+for+Blockbuster+Public+Listing+Bloomberg+Tech)</td>
+<td>Bloomberg Tech</td>
+<td>1,584（4 小时前）</td>
+<td>— · 字幕</td>
+<td>11 章节。Ed Ludlow 分析 Anthropic IPO 规模预期；理解工具背后商业压力的背景素材</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>四、Reddit 讨论精选</h2>
+
+<p>> ⚠️ <strong>数据来源说明：</strong> Reddit 本期<strong>无法直接采集</strong>——<code class="inline">reddit.com</code> 拒绝 Anthropic 爬虫 UA，WebSearch 对该域返回 400，MCP registry 中确认无 Reddit connector。下表内容来自<strong>引用 r/ClaudeAI 讨论的二手综述文章</strong>，非原帖实测数据，故不提供逐帖链接与互动量。如未来 Reddit MCP connector 可用，应优先切换。</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>讨论要点</th>
+<th>相关子版块</th>
+<th>要点</th>
+</tr></thead><tbody>
+<tr>
+<td>CLAUDE.md 该多长</td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>共识是<strong>控制在 200 行以内</strong>，用嵌套目录里的分层文件而非一个巨型文件；从简单起步，抓到重复犯错时再迭代加规则</td>
+</tr>
+<tr>
+<td>最被认可的强项：跨文件依赖追踪</td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>多个帖子记录了重构时 Claude 在<strong>单次操作内正确更新了 10+ 文件的 import、类型定义和测试</strong>——这是被引用最多的能力</td>
+</tr>
+<tr>
+<td>"工具奖励刻意使用"</td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>投入时间学 CLAUDE.md / subagents / hooks / slash commands 的人报告显著生产力提升；<strong>把它当自动补全用的人会挫败并离开</strong></td>
+</tr>
+<tr>
+<td>MCP 是分水岭功能</td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>连接数据库、API、文档与外部工具；帖子里展示的 MCP 配置正变得越来越精细</td>
+</tr>
+<tr>
+<td><code class="inline">!</code> 直接执行 bash</td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>输入 <code class="inline">!</code> 后接命令即直接在 shell 执行，不经 Claude 解释——高频小技巧</td>
+</tr>
+</tbody></table></div>
+
+<p><em>综述来源：<a href="https://www.morphllm.com/claude-code-reddit" target="_blank" rel="noopener">Claude Code Reddit: What Developers Actually Say (2026)</a></em></p>
+
+<hr>
+
+<h2>五、X 热门帖子</h2>
+
+<p>> 以下数据通过 Chrome 浏览器实时采集于 X 搜索页面（2026-08-22），互动数据为页面实测值。</p>
+
+<h3>Claude Academy / Cowork 热帖</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>作者</th>
+<th>内容摘要</th>
+<th>互动</th>
+<th>亮点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://x.com/claudeai" target="_blank" rel="noopener">@claudeai</a> · 8月21日</td>
+<td>Claude Academy is now live。0:34 视频：无论你还在搞清楚 AI 是什么，还是已经每天在用 Claude，都有一条与你水平相符的路径；课程与教程全部免费开放</td>
+<td>💬7 🔁200 ❤️1,533 👁15万</td>
+<td><strong>本期核心事件</strong>。官方公告</td>
+</tr>
+<tr>
+<td><a href="https://x.com/hiro44_pino" target="_blank" rel="noopener">@hiro44_pino</a> · 8月21日</td>
+<td>日语：今早 Claude 免费公开了一个不得了的东西——"Claude Academy"这个官方学习网站。今早我大致看了一遍，老实说超级棒。<strong>对 Claude 感兴趣但不太懂就搁置不管的人，已经这样就够了</strong></td>
+<td>💬14 🔁138 ❤️1,049 👁9.9万</td>
+<td>本期二次传播互动量最高</td>
+</tr>
+<tr>
+<td><a href="https://x.com/tetumemo" target="_blank" rel="noopener">@tetumemo</a> · 8月21日</td>
+<td>日语：作为非工程师掌握工作中 AI 使用技巧的入口，相当不错。视频可切本地字幕，不会写代码也能学。<strong>特别推荐首选"Claude 101"——全 13 节课约 2.5 小时</strong>，从"首先该委托什么任务""AI 的回答能相信到什么程度"开始入手</td>
+<td>💬15 🔁21 ❤️160 👁2.9万</td>
+<td>最实用的入门路径建议</td>
+</tr>
+<tr>
+<td><a href="https://x.com/yanhua1010" target="_blank" rel="noopener">@yanhua1010</a> · 22 小时前</td>
+<td>中文：基本上从零基础到进阶都覆盖了——Claude ai / Cowork / Code / Tag / Platform 全产品教程、AI Fluency 4D 框架、<strong>300+ 课程与教程（含 API、MCP、Agents）</strong>、视频课 + 测验 + 可分享证书徽章，完全免费，登录 Claude 账号就能保存进度</td>
+<td>💬5 🔁4 ❤️20 👁3,210</td>
+<td>中文圈最完整的清单</td>
+</tr>
+<tr>
+<td><a href="https://x.com/ecommartinez" target="_blank" rel="noopener">@ecommartinez</a> · 8月21日</td>
+<td>西语：Anthropic 刚推出 Claude Academy，根据你是从零开始还是已经日常使用 Claude，提供不同学习路径。<strong>每个课程都附带测验和完成徽章</strong>，全部免费</td>
+<td>—</td>
+<td>印证证书机制</td>
+</tr>
+<tr>
+<td><a href="https://x.com/claudeai" target="_blank" rel="noopener">@claudeai</a> · 8月13日</td>
+<td>Claude in Chrome 会话现在可以延续到桌面、网页和移动端；对话被保存，你的 skills 和 connectors 在浏览器里同样有效。侧边栏现在跑的<strong>就是同一个 Cowork 会话——会话属于你的账号，而不是某一台设备</strong></td>
+<td>💬604 🔁1,156 ❤️1.1万 👁128万</td>
+<td>本期采集到的最高互动量</td>
+</tr>
+<tr>
+<td><a href="https://x.com/RoundtableSpace" target="_blank" rel="noopener">@RoundtableSpace</a> · 20 小时前</td>
+<td>Claude Cowork now runs on Anthropic's cloud。在桌面起一个活，合上笔记本，Claude 继续干；笔记本、手机、浏览器之间随意切换而不丢会话</td>
+<td>—</td>
+<td>云端托管的一手复述</td>
+</tr>
+<tr>
+<td><a href="https://x.com/oran_ge" target="_blank" rel="noopener">@oran_ge</a> · 8月19日</td>
+<td>中文 + TickerTrends 图表：<strong>Claude Code 追踪 ARR 达 151.2 亿美元，占 Anthropic 总 ARR 的 21.9%</strong>。附冷水一句："cowork 难得不行也没吃下 work 市场太多"</td>
+<td>💬150 🔁52 ❤️468 👁10万</td>
+<td>罕见的商业化数据一手图表</td>
+</tr>
+</tbody></table></div>
+
+<h3>Claude Code Tips 热帖</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>作者</th>
+<th>内容摘要</th>
+<th>互动</th>
+<th>亮点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://x.com/AnatoliKopadze" target="_blank" rel="noopener">@AnatoliKopadze</a> · 8月17日</td>
+<td>造出 Claude Code 的工程师刚发了一个 28 分钟视频，讲怎么写真正有效的提示。<strong>"我见过 300 美元的课程，讲不到他前 10 分钟讲的东西。"</strong> 内容含 CLAUDE.md 文件、memory 快捷方式、并行会话、提示模式</td>
+<td>💬27 🔁89 ❤️659 👁53万</td>
+<td>配图列出 <strong>17 个大多数用户从未碰过的隐藏功能</strong>（Projects / Artifacts / Memory / Adaptive Thinking / Chrome / Cowork / Skills / CLAUDE.md / Claude Code / Design / Scheduled Tasks / Prompt Caching…）</td>
+</tr>
+<tr>
+<td><a href="https://x.com/sairahul1" target="_blank" rel="noopener">@sairahul1</a> · 14 小时前</td>
+<td><strong>"我一天花 37 美元跑 Claude Code，一个月超过 1,000 美元。我以为我在为智能付费，其实我在为噪音付费。"</strong> 配图列出七类浪费：过度搜索代码库、给任务配错模型、CLI 噪音灌进上下文、会话间无记忆、原始 URL 倒进上下文、重复读同一文件、冗长的 agent 输出</td>
+<td>💬15 🔁18 ❤️165 👁2.8万</td>
+<td>本期最好的成本复盘框架</td>
+</tr>
+<tr>
+<td><a href="https://x.com/criscxuan" target="_blank" rel="noopener">@criscxuan</a> · 8月20日</td>
+<td>中文长文《Claude Code：如何将 Session 用到极致》。<strong>"前两天 Claude Code 官方发了一篇文章，专门讲怎么提高 Session 的使用效率，把每个 token 都花在刀刃上。这算是 Claude 少见的偏技术实操型文章。我看的时候直接肾上腺素飙升"</strong></td>
+<td>💬1 🔁22 ❤️98 👁1.5万</td>
+<td>指向官方罕见的实操文</td>
+</tr>
+<tr>
+<td><a href="https://x.com/mikenevermiss" target="_blank" rel="noopener">@mikenevermiss</a> · 8月20日</td>
+<td>全大写转推 Boris Cherny 的 27:52 视频：他上传了完整视频讲怎么写真正拿到结果的提示，<strong>不是通用提示建议</strong>。有些 300 美元的课程覆盖不到他前 10 分钟讲的内容</td>
+<td>—</td>
+<td>与 @AnatoliKopadze 交叉印证同一源头</td>
+</tr>
+<tr>
+<td><a href="https://x.com/ClaudeCode_love" target="_blank" rel="noopener">@ClaudeCode_love</a> · 8月19日</td>
+<td>日语：Claude Code 作者本人用 28 分钟把"怎么给 Claude 下指令"全讲了一遍，现在被重新挖出来。提炼两条——<strong>"CLAUDE.md 里写什么才能不必每次重复说明"</strong>、<strong>"该让它记住的写法，和刻意让它忘记的时机"</strong></td>
+<td>—</td>
+<td>最精炼的两条要点提炼</td>
+</tr>
+<tr>
+<td><a href="https://x.com/0xCeryn" target="_blank" rel="noopener">@0xCeryn</a> · 3 小时前</td>
+<td>25 秒片段：Boris Cherny 分享他团队实际在用的四条工作流技巧。片中引用<strong>"前沿模型在一年内把 SWE-bench Verified 从 30% 推到了 80% 以上"</strong></td>
+<td>👁47</td>
+<td>一手行业尺度数据</td>
+</tr>
+<tr>
+<td><a href="https://x.com/shinchan_btc" target="_blank" rel="noopener">@shinchan_btc</a> · 1 小时前</td>
+<td>日语：<strong>给 Claude Code 的请求里，除了"要做什么"，也一并把"不要做什么"说明清楚，多余的改动就变少了</strong></td>
+<td>👁5</td>
+<td>一句话可立即执行的小技巧</td>
+</tr>
+<tr>
+<td><a href="https://x.com/HGBashar" target="_blank" rel="noopener">@HGBashar</a> · 2 小时前</td>
+<td>免费官方课程清单：<strong>Claude 101</strong>（anthropic.skilljar.com/claude-101）、<strong>Claude Code 101</strong>（anthropic.skilljar.com/claude-code-101）、<strong>Building with the Claude API</strong> — 全部免费</td>
+<td>👁47</td>
+<td>与 Claude Academy 上线互为印证</td>
+</tr>
+<tr>
+<td><a href="https://x.com/Ivan68246027" target="_blank" rel="noopener">@Ivan68246027</a> · 2 小时前</td>
+<td>X Ads MCP 已上线，<strong>23 个工具</strong>。可以把 Grok、Claude Code 或其他 AI agent 直接连到 X Ads 账号，用普通对话管理投放</td>
+<td>💬0 🔁0 ❤️2 👁54</td>
+<td>渠道方开始把 agent 当一等公民入口</td>
+</tr>
+<tr>
+<td><a href="https://x.com/hashir" target="_blank" rel="noopener">@hashir</a> · 5 小时前</td>
+<td>下周要去 Yas Island，想快速看清 4 岁孩子能玩哪些项目，于是用 Claude Code vibe code 了一个小应用——含项目图片、对每个项目评论做的深度调研</td>
+<td>—</td>
+<td>非开发场景的实用案例</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>六、跨平台趋势总结</h2>
+
+<p>1. <strong>官方开始接管"怎么用"的叙事。</strong> Claude Academy 上线是本期唯一在四个平台同时出现的事件（X 官方公告 + 日/中/西三语二次传播 + YouTube 系统课 + 新闻综述）。此前"怎么用 Claude Code"的知识几乎全靠社区博客、YouTube 和 Reddit 沉淀；现在官方给出了带证书的正式路径。<strong>社区教程的定位会从"唯一来源"转向"补充与实测"</strong>。</p>
+
+<p>2. <strong>教学顺序被明确翻转：先框架，后功能。</strong> Academy 把 AI Fluency 4D（Delegation / Description / Discernment / Diligence）放在产品课之前，理由是"功能随模型迭代过时，原则不会"。这与社区里"技巧帖半衰期越来越短"的体感完全吻合。</p>
+
+<p>3. <strong>降本从技巧变成了独立议题。</strong> X 上 <a href="https://x.com/sairahul1" target="_blank" rel="noopener">@sairahul1</a> 的七类浪费清单、YouTube 上三个"免费/便宜模型接进 Claude Code"的视频（GLM-5.3、OpenRouter 免费路由、本地模型），加上 2.1.237 修掉 gateway 场景的 prompt caching 失效——四条线索指向同一件事：<strong>用量上来之后，"哪些活值得用贵模型"成了必须回答的问题</strong>。</p>
+
+<p>4. <strong>本期更新的主题是"减噪"而不是"加功能"。</strong> Concise 输出风格（少读字）、<code class="inline">keybindingFlavor</code>（少按键）、<code class="inline">headersHelper</code>（少手动分发 token）——2.1.237/238 三条主要变更都是在削减摩擦。这与上一期（2.1.235/236 收紧"手滑"风险）是同一条脉络的延续。</p>
+
+<p>5. <strong>非工程师内容的密度明显上升。</strong> YouTube 本期出现《Turn Claude Into a One Person Marketing Team》、《Claude Cowork Creates Word/Excel/PDF/PPT》、《Your First Desktop Task》这类完全不假设编程背景的课，其中一门专门讲<strong>"文件夹访问权作为安全边界"</strong>。Cowork 的目标用户画像正在从"会写代码的人的助手"移向"不写代码的人的执行层"。</p>
+
+<p>6. <strong>商业压力开始成为背景音。</strong> Anthropic IPO 规模预期对标 SpaceX 的 750 亿美元纪录（Bloomberg 8/21），Citigroup 8/20 加入顶级承销团；同时 Claude Code 追踪 ARR 已占 Anthropic 总 ARR 的 21.9%。<strong>工具的商业化速度跑在产品成熟度前面</strong>，这解释了为什么免费课程和多端覆盖会在同一周落地。</p>
+
+<hr>
+
+<h2>七、进阶路线图</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>阶段</th>
+<th>目标</th>
+<th>具体动作</th>
+<th>预计投入</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>第 0 周</strong></td>
+<td>打通官方入门</td>
+<td>注册 <a href="https://academy.claude.com/" target="_blank" rel="noopener">Claude Academy</a>（只需邮箱）→ 修完 <strong>AI Fluency: Framework & Foundations</strong>（4D 框架）→ 修完 <strong>Claude 101</strong>（13 节 / 2.5 小时）</td>
+<td>4—5 小时</td>
+</tr>
+<tr>
+<td><strong>第 1 周</strong></td>
+<td>减噪与基础配置</td>
+<td>打开 Concise 输出风格 → 配 <code class="inline">keybindingFlavor</code> → 设 <code class="inline">ANTHROPIC_DEFAULT_MODEL</code> → 写第一个 CLAUDE.md（<strong>200 行以内</strong>，只写"不必每次重复说明"的内容）</td>
+<td>2 小时</td>
+</tr>
+<tr>
+<td><strong>第 2 周</strong></td>
+<td>委派能力</td>
+<td>修 <strong>Claude Code 101</strong> → 在 Cowork 里跑通一个完整交付物（Word 报告或 PPT），照《Claude Cowork Creates Word, Excel, PDF & PowerPoint》里的"每次文档请求必含 3 件事"来写 prompt</td>
+<td>3—4 小时</td>
+</tr>
+<tr>
+<td><strong>第 3 周</strong></td>
+<td>自动化</td>
+<td><code class="inline">/schedule</code> 建第一个服务端定时任务（周报 / 简报） → 用 Live Artifacts 做一个可反复打开的看板</td>
+<td>3 小时</td>
+</tr>
+<tr>
+<td><strong>第 4 周</strong></td>
+<td>强制执行层</td>
+<td>配四个基础 hook：PreToolUse 拦仓库外写入 / PostToolUse 跑格式化 / on-Stop 跑测试 / shell 前 redact-secrets</td>
+<td>3—4 小时</td>
+</tr>
+<tr>
+<td><strong>第 5—6 周</strong></td>
+<td>连接外部世界</td>
+<td>修 <strong>Building with the Claude API</strong> → 接 1—2 个 MCP connector（数据库或 SaaS，长尾走 Zapier MCP）→ 如有私有插件源，配 <code class="inline">headersHelper</code></td>
+<td>5—6 小时</td>
+</tr>
+<tr>
+<td><strong>第 7—8 周</strong></td>
+<td>并行编排</td>
+<td>上 subagents，<strong>数量守在 3—5、嵌套两三层</strong> → 用 <code class="inline">notify_when_idle</code> 做跨会话协作 → 有必要时再碰 Dynamic Workflows</td>
+<td>6—8 小时</td>
+</tr>
+<tr>
+<td><strong>持续</strong></td>
+<td>成本纪律</td>
+<td>每月按七类浪费清单复盘一次账单 → 测出"哪些活能交给便宜模型"的边界 → 按结论调整模型路由</td>
+<td>每月 1—2 小时</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>八、推荐行动</h2>
+
+<p><strong>今天就做（10 分钟内）</strong></p>
+
+<p>1. <strong>打开 Concise 输出风格</strong>：<code class="inline">/config</code> → Output style → Concise。这是 2.1.237 里性价比最高的一条。</p>
+<p>2. <strong>确认版本 ≥ 2.1.237</strong>。如果你走 LLM gateway 或自定义 base URL，此前 prompt caching 是失效的——这是账单问题，不是体验问题。</p>
+<p>3. <strong>注册 <a href="https://academy.claude.com/" target="_blank" rel="noopener">Claude Academy</a></strong>，只需邮箱。先把 <strong>AI Fluency 的 4D 框架</strong>过一遍，再决定学哪门产品课。</p>
+
+<p><strong>这周做（2—4 小时）</strong></p>
+
+<p>4. <strong>修 Claude 101</strong>（13 节 / 约 2.5 小时）。即使你已经熟练，也值得看它怎么定义"该委派什么"和"回答能信到什么程度"——这两个问题决定你的 skill 边界划得对不对。</p>
+<p>5. <strong>把 CLAUDE.md 砍到 200 行以内</strong>，用嵌套分层文件替代巨型单文件。只保留"不写就要每次重复说明"的内容。</p>
+<p>6. <strong>在请求里加上禁止项</strong>。除了"要做什么"，也说清"不要做什么"——<a href="https://x.com/shinchan_btc" target="_blank" rel="noopener">@shinchan_btc</a> 的实测是多余改动明显减少。</p>
+
+<p><strong>这个月做</strong></p>
+
+<p>7. <strong>按七类浪费清单复盘一次账单</strong>（过度搜索代码库、模型错配、CLI 噪音、会话无记忆、原始 URL、重复读文件、冗长输出）。每一条都对应一个可修的配置。</p>
+<p>8. <strong>测出便宜模型的边界</strong>，而不是盲目省钱。照《This Stealth Model Makes Claude Code Free》的"免费模型在哪些场景真的能用"那一章做对照实验。</p>
+<p>9. <strong>配齐四个基础 hook</strong>。规则必须被强制执行时才用 hook——它不依赖模型的配合，这是它相对 CLAUDE.md 的全部价值。</p>
+<p>10. <strong>如果你在推团队采用</strong>：直接把 Claude Academy 的路径当培训材料，比自己写内部文档快得多，而且带证书徽章——这对推动非工程师同事完成学习出人意料地有效。</p>
+
+<hr>
+
+<p><em>本报告由 Claude Cowork 定时任务自动生成：Chrome 实时采集 → markdown 生成 → <code class="inline">build-trends.py</code> 构建 → git push → GitHub Pages 部署，全程无人工介入。</em></p>
+
+  </div>
+</article>
+<div class="article-footer">
+  <div class="container">
+    <a href="../#ai-trends">← 返回首页</a>
+  </div>
+</div>
+</body>
+</html>

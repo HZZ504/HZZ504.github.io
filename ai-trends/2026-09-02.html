@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 动态追踪日报 — Claude Cowork & Claude Code | 张翰之</title>
+<meta name="description" content="定价竞争从"每 token 单价"转向"缓存效率"。** Fable 5.1 输入输出单价一分没降，却让典型负载便宜 25%、智能体负载便宜 45%——全靠缓存读取降价 75%。**这标志着智能...">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;
+  --text:#e0e0e8;--text-dim:#8888a0;--text-bright:#ffffff;
+  --accent:#00d4aa;--accent2:#00a8ff;--accent3:#7c5cfc;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --max-w:900px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.8;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent2)}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:0;
+}
+
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+nav .inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--accent)}
+nav .logo svg{width:28px;height:28px}
+nav .back{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--accent)}
+
+/* Article */
+article{padding:100px 0 60px}
+.article-meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.article-date{font-family:var(--mono);font-size:.8rem;color:var(--accent);padding:4px 12px;border:1px solid rgba(0,212,170,.3);border-radius:4px}
+.article-tag{font-family:var(--mono);font-size:.65rem;color:var(--accent2);padding:2px 8px;background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.15);border-radius:4px}
+
+article h1{font-size:1.8rem;font-weight:700;color:var(--text-bright);margin-bottom:32px;line-height:1.3}
+article h2{font-size:1.35rem;font-weight:600;color:var(--accent);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,170,.15)}
+article h3{font-size:1.1rem;font-weight:600;color:var(--accent2);margin:28px 0 12px}
+article h4{font-size:.95rem;font-weight:600;color:var(--accent3);margin:20px 0 8px}
+article p{margin-bottom:12px;color:var(--text)}
+article ul{margin:0 0 16px 20px}
+article li{margin-bottom:8px;color:var(--text)}
+article li strong{color:var(--accent)}
+article hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:32px 0}
+article code.inline{font-family:var(--mono);font-size:.85em;background:rgba(0,212,170,.1);color:var(--accent);padding:2px 6px;border-radius:4px}
+article pre{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+article pre code{font-family:var(--mono);font-size:.85rem;color:var(--text)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);text-align:left;padding:10px 12px;border-bottom:2px solid rgba(0,212,170,.2);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text)}
+tr:hover td{background:rgba(0,212,170,.03)}
+
+/* Footer */
+.article-footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:60px;text-align:center}
+.article-footer a{font-family:var(--mono);font-size:.85rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="../" class="logo"><svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="url(#lg)"/><path d="M7 8h3v12H7V8zm4 5h6v3h-6v-3zm7-5h3v12h-3V8z" fill="#0a0a0f"/><defs><linearGradient id="lg" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00d4aa"/><stop offset="1" stop-color="#00a8ff"/></linearGradient></defs></svg><span>&lt;</span>HZ<span>/&gt;</span></a>
+    <a href="../#ai-trends" class="back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> 返回日报列表</a>
+  </div>
+</nav>
+<article>
+  <div class="container">
+    <div class="article-meta">
+      <span class="article-date">2026-09-02</span>
+      <span class="article-tag">Scheduled Tasks</span> <span class="article-tag">CLAUDE.md</span> <span class="article-tag">Skills</span> <span class="article-tag">MCP</span> <span class="article-tag">Hooks</span>
+    </div>
+    <h1>AI 动态追踪日报 — Claude Cowork & Claude Code</h1>
+    <p><strong>日期：</strong> 2026-09-02</p>
+<p><strong>数据来源：</strong> Anthropic 官方公告 · 官方 changelog（一手全文）· Web · YouTube（检索）· Reddit（受限）</p>
+
+<p>> ⚠️ <strong>采集方式说明（连续第四期无浏览器一手数据）：</strong> Claude in Chrome 扩展<strong>未连接</strong>；内置浏览器对 <code class="inline">x.com</code>、<code class="inline">youtube.com</code>、<code class="inline">claudeupdates.dev</code> 的导航<strong>逐个被拒</strong>——无人值守的定时任务无法完成站点权限批准。因此第三节的观看量/时长、第五节的互动量（💬🔁❤️👁）<strong>一律留空，不填任何估算数字</strong>。</p>
+<p>></p>
+<p>> ✅ <strong>但今天的一手数据质量反而是近期最高的：</strong> 本期直接抓取了 <a href="https://www.anthropic.com/claude-fable-and-mythos-5-1" target="_blank" rel="noopener">Anthropic 官方公告全文</a> 和 <a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">官方 changelog 全文</a>（883 行），版本信息、价格、benchmark 全部来自权威源，不经任何聚合站转手。这正是昨天那条教训的落地：<strong>弱信号不下结论，能拿到权威源就别用二手摘要。</strong></p>
+
+<hr>
+
+<h2>今日焦点一：Fable 5.1 发布 —— 真正的新闻不是 benchmark，是缓存读取降价 75%</h2>
+
+<p><strong><a href="https://www.anthropic.com/claude-fable-and-mythos-5-1" target="_blank" rel="noopener">Claude Fable 5.1 与 Mythos 5.1 于 9 月 1 日发布</a>。</strong> 两者是<strong>同一个模型</strong>，区别只在安全护栏级别：Fable 5.1 全量可用，Mythos 5.1 仅通过可信访问计划开放（网络安全与生命科学方向）。</p>
+
+<p>Benchmark 提升确实很大：</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>基准</th>
+<th>Fable 5.1</th>
+<th>Fable 5</th>
+<th>Opus 5</th>
+</tr></thead><tbody>
+<tr>
+<td>Terminal-Bench-Science 0.1（智能体科研）</td>
+<td><strong>52.6%</strong></td>
+<td>24.7%</td>
+<td>29.0%</td>
+</tr>
+<tr>
+<td>Terminal-Bench 4.0（智能体编码）</td>
+<td><strong>55.8%</strong>（Mythos 5.1: 60.9%）</td>
+<td>42.0%</td>
+<td>52.3%</td>
+</tr>
+<tr>
+<td>AutomationBench（业务流程）</td>
+<td><strong>31.4%</strong></td>
+<td>17.1%</td>
+<td>26.9%</td>
+</tr>
+<tr>
+<td>CursorBench 3.2.0</td>
+<td><strong>73.4%</strong></td>
+<td>70.5%</td>
+<td>70.0%</td>
+</tr>
+<tr>
+<td>OSWorld 2.0（strict，计算机使用）</td>
+<td><strong>41.7%</strong></td>
+<td>36.1%</td>
+<td>39.6%</td>
+</tr>
+</tbody></table></div>
+
+<p><strong>但对日常使用者来说，最该关注的是这一行：</strong></p>
+
+<p>> <strong>缓存读取（cache read）降价 75%，从原价降到 $0.25/百万 token。输入 $10 / 输出 $50 的价格没变。</strong></p>
+
+<p>为什么这条比 benchmark 重要？因为<strong>智能体工作流的成本结构里，缓存读取往往是大头</strong>——每一轮工具调用都要重读整个上下文。官方给的实测数字（2026 年 8 月四周真实用量）：</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>工作负载类型</th>
+<th>相对 Fable 5 的成本</th>
+</tr></thead><tbody>
+<tr>
+<td>典型负载（Enterprise + Claude Code + API 混合）</td>
+<td><strong>降至 75</strong>（省约 25%）</td>
+</tr>
+<tr>
+<td>高度智能体化负载（上下文重、工具重）</td>
+<td><strong>降至 55</strong>（省约 45%）</td>
+</tr>
+</tbody></table></div>
+
+<p><strong>判断标准很简单：你的会话越长、工具调用越多、越接近"跑一晚上"的用法，省得越多。</strong> 反过来，如果你只是一问一答的短对话，缓存读取占比低，那 25% 都省不到。</p>
+
+<p><strong>另一个必须知道的默认值差异：</strong></p>
+
+<p>> <strong>Fable 5.1 在 Claude Code 里默认 High effort，在 Claude Cowork 和 claude.ai 上默认 Medium。</strong></p>
+
+<p>这不是笔误，是官方明写的。意味着<strong>同一个模型、同一个提示词，你在 Cowork 里和在 Claude Code 里拿到的结果深度不一样</strong>。官方同时说明：<strong>Low/Medium effort 下的 Fable 5.1 已经能达到或超过 Fable 5 的水平，但成本低得多</strong>——所以 Cowork 默认 Medium 不是阉割，是在"够用"的前提下省钱。</p>
+
+<p>📌 <strong>今天就能做的一件事：</strong> 在 Claude Code 里跑 <code class="inline">/effort</code>，确认当前档位。2.1.257 新增了 <code class="inline">/effort s</code>，<strong>只改本次会话、不改默认值</strong>（和 <code class="inline">/model</code> 的 <code class="inline">s</code> 行为对齐）。做实验时用 <code class="inline">s</code>，避免手滑把默认档位改掉。</p>
+
+<hr>
+
+<h2>今日焦点二：2.1.257 是一个"安全收紧版本" —— 三条默认行为变了</h2>
+
+<p><strong><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">2.1.257 于 9 月 1 日发布</a>，是近期最大的一个版本（100+ 条变更）。</strong> 除了加入 Fable 5.1，它有三条<strong>会改变你现有配置行为</strong>的变更，不看 changelog 会踩坑：</p>
+
+<h3>变更 1：项目级 <code class="inline">bypassPermissions</code> 被直接忽略</h3>
+
+<p>> Changed <code class="inline">defaultMode: "bypassPermissions"</code> in <code class="inline">.claude/settings.json</code> or <code class="inline">.claude/settings.local.json</code> to be ignored, like <code class="inline">"auto"</code>; set it in user or managed settings, or pass <code class="inline">--permission-mode</code></p>
+
+<p><strong>如果你在某个项目的 <code class="inline">.claude/settings.json</code> 里写了 <code class="inline">defaultMode: "bypassPermissions"</code> 图省事，从 2.1.257 起它不再生效，而且不会报错。</strong> 你会感觉"怎么突然又开始问权限了"。</p>
+
+<p>理由很合理：<strong>项目配置文件是会跟着 git clone 进你机器的</strong>。允许一个仓库自带的文件把你的权限检查全关掉，是一个明显的供应链风险。要保留旧行为，把它移到用户级设置，或启动时加 <code class="inline">--permission-mode</code>。</p>
+
+<h3>变更 2：读取工作目录外的文件，第一次会问你</h3>
+
+<p>新增一次性提示 + 新设置 <code class="inline">permissions.blockReadsOutsideWorkingDirectories</code>。auto 模式下第一次读工作目录外的文件时会问一次，你可以选择直接封死。</p>
+
+<p><strong>这条对 Cowork 用户尤其相关</strong>——Cowork 挂载的是你真实的电脑目录。</p>
+
+<h3>变更 3：auto 模式新增 "Containment Escape" 规则</h3>
+
+<p>> Added a Containment Escape rule to auto mode so cloud metadata-credential fetches, egress evasion, and cross-tenant reach are no longer auto-approved unless your environment marks them expected</p>
+
+<p>云上 metadata 凭证抓取（就是那个经典的 <code class="inline">169.254.169.254</code>）、绕过出口限制、跨租户访问，<strong>不再自动批准</strong>。这是针对提示注入攻击的直接加固。</p>
+
+<h3>同版本还有几条值得单独拎出来的</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>变更</th>
+<th>为什么值得注意</th>
+</tr></thead><tbody>
+<tr>
+<td>新增 <code class="inline">CLAUDE_CODE_SUBAGENT_MODEL_FORCE</code></td>
+<td>强制<strong>所有</strong>子代理用同一个模型，忽略 agent 定义里的 <code class="inline">model:</code> 和每次 spawn 的覆盖。做成本控制时的一把总闸</td>
+</tr>
+<tr>
+<td><code class="inline">/fork</code> 现在保留原会话的 prompt cache</td>
+<td>worktree 简报改成以"消息"送达而非改 system prompt——<strong>改 system prompt 会让整个缓存失效</strong>，这是一个很典型的缓存设计细节</td>
+</tr>
+<tr>
+<td>插件不能再通过符号链接读取自己目录外的文件</td>
+<td>路径穿越加固。装第三方插件的人应该升级</td>
+</tr>
+<tr>
+<td>Bash 的 <code class="inline">Read()</code>/<code class="inline">Edit()</code> deny 规则现在覆盖 <code class="inline">< file</code> 重定向和 <code class="inline">tac</code>/<code class="inline">egrep</code></td>
+<td>之前 deny 规则可以被 <code class="inline">tac secrets.env</code> 绕过。<strong>如果你靠 deny 规则做隔离，这条必须升级</strong></td>
+</tr>
+<tr>
+<td>Cowork/云会话读取"不属于你的" artifact，即使 auto 模式也一定会问</td>
+<td>多人协作场景的默认收紧</td>
+</tr>
+</tbody></table></div>
+
+<p><strong>另外：<a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">2.1.258</a>（同为 9 月 1 日）修了一个 2.1.255 引入的回归——macOS 12 (Monterey) 上 Claude Code 完全无法启动。</strong> 还在 Monterey 的用户，跳过 2.1.255–2.1.257 直接上 2.1.258。</p>
+
+<p>> ⚠️ <strong>一条口径提醒（延续昨天的教训）：</strong> 官方 changelog 里 <strong>2.1.253–2.1.256 没有条目</strong>，但 2.1.258 的说明里明确提到"a regression introduced in 2.1.255"。<strong>所以"changelog 没有条目" ≠ "该版本不存在"。</strong> 这和昨天"聚合源没更新 ≠ 官方没发版"是同一个陷阱的另一个面。</p>
+
+<hr>
+
+<h2>今日焦点三：Cowork 有了内置浏览器，但定时任务用不了 —— 一个真实踩到的坑</h2>
+
+<p>本期采集再次失败，值得写成一条可复用的经验，而不是一句抱怨。</p>
+
+<p><strong>背景：</strong> Cowork 桌面端现已内置浏览器（侧栏打开，Claude 可导航、阅读、点击、输入），面向 Pro/Max/Team/Enterprise 铺开。<strong>但本报告本身就是一个定时任务</strong>，运行时用户不在场。</p>
+
+<p><strong>结果：</strong> 对 <code class="inline">x.com</code>、<code class="inline">youtube.com</code>、<code class="inline">claudeupdates.dev</code> 的每一次导航请求都被拒绝——<strong>因为站点权限批准需要人点一下，而定时任务没有人。</strong></p>
+
+<p>> 📌 <strong>可复用的结论：把"需要人工批准"的步骤放进无人值守的定时任务，等于把它放进一个必然失败的分支。</strong></p>
+<p>></p>
+<p>> 设计定时任务时，先把每一步按"是否可能触发人工批准"分类：</p>
+<p>> - <strong>需批准的</strong>（新站点导航、写操作、危险命令）→ 不要放进定时任务，或先在有人的会话里把权限批准一次让它持久化</p>
+<p>> - <strong>不需批准的</strong>（WebSearch、web_fetch 白名单域名、本地文件、git）→ 才是定时任务的可靠地基</p>
+<p>></p>
+<p>> 本报告的应对：<strong>把采集主力从浏览器换成 <code class="inline">web_fetch</code> 直取官方源</strong>。结果反而更好——拿到了 changelog 全文和公告全文，比截图更完整。<strong>降级方案有时候比原方案强，值得回头重新评估默认路径。</strong></p>
+
+<hr>
+
+<h2>一、高级用法精选（按难度分层）</h2>
+
+<h3>Level 1 — 基础配置：先确认你的 effort 档位</h3>
+
+<p><code class="inline">/effort</code> 查看当前档位；<code class="inline">/effort s</code> 只改本次会话。Fable 5.1 在 Claude Code 默认 High、在 Cowork 默认 Medium。2.1.251 起 <strong><code class="inline">/effort</code> 按模型分别记忆默认值</strong>，切模型时各自保留设置——所以"我明明调过"和"它怎么又变了"通常都是模型切换导致的。</p>
+
+<h3>Level 2 — Skills 技巧：把长工具描述搬进 skill</h3>
+
+<p>2.1.248 有一条很有教学价值的官方自我优化：</p>
+
+<p>> Improved the Workflow tool's prompt footprint: its description is now about 1k tokens instead of 5.7k, with the script-writing reference moved into a bundled <code class="inline">workflow-authoring</code> skill</p>
+
+<p><strong>5.7k → 1k token，做法是把"写脚本的参考手册"从工具描述里搬进一个 skill。</strong> 这是 skill 最本质的用法：<strong>工具描述是每轮都在上下文里的固定开销，skill 是按需加载的。</strong> 你自己写 MCP 工具或 skill 时，同一个原则：描述里只放"什么时候用我"，把"怎么用我"放进 skill 正文。</p>
+
+<h3>Level 3 — 定时任务：区分"需批准"与"不需批准"的步骤</h3>
+
+<p>见今日焦点三。另外 2.1.257 修了一条相关 bug：<code class="inline">/schedule</code> 保存的 routine 如果提示词没带 message role，运行时会"什么都不做"——<strong>如果你有定时任务一直静默无输出，先怀疑这个。</strong></p>
+
+<h3>Level 4 — Connectors & MCP：<code class="inline">strictPluginOnlyCustomization</code> 的两个补漏</h3>
+
+<p>2.1.257 修了两条：<code class="inline">/mcp reconnect</code> 曾能连上本应被管控名单拦掉的服务器；<code class="inline">claude mcp remove</code> 曾会把远程服务器的 OAuth 凭证残留在本地。<strong>做企业管控的人应该升级。</strong></p>
+
+<h3>Level 5 — Hooks 自动化控制：<code class="inline">PreModelSwitch</code> / <code class="inline">PostModelSwitch</code></h3>
+
+<p>2.1.251 加入，可以<strong>阻止、确认或注解一次模型切换</strong>。这直接对应社区里那个高频抱怨——"我选了 Fable，它自己切到 Opus 4.8 去了"。现在你可以用 hook 把它拦下来或至少记一笔。</p>
+
+<p>同时 <code class="inline">SessionStart</code> 的 resume hook 现在会收到<strong>会话陈旧度和预估重新缓存成本</strong>——可以据此决定"是 resume 还是重开"。</p>
+
+<h3>Level 6 — 子代理编排：一把总闸 + 一个可靠性修复</h3>
+
+<ul>
+<li><code class="inline">CLAUDE_CODE_SUBAGENT_MODEL_FORCE</code>：强制所有子代理用同一模型，忽略所有下层覆盖</li>
+<li><code class="inline">CLAUDE_CODE_SUBAGENT_MODEL</code>（2.1.251 起）：只设<strong>默认</strong>，agent 定义的 <code class="inline">model:</code> 和每次 spawn 的显式指定优先</li>
+<li>2.1.257 修复：<strong>子代理在响应流被电脑休眠 / 断连 / 服务端错误打断时会直接停掉</strong>——现在会自动续跑。跑长任务的人受益最大</li>
+</ul>
+
+<h3>Level 7 — 专家级工作流：<code class="inline">--restricted</code> 沙箱模式</h3>
+
+<p>2.1.248 新增 <code class="inline">--restricted</code>（或 <code class="inline">CLAUDE_CODE_RESTRICTED=1</code>）：移除所有能执行命令/代码的内置工具和 <code class="inline">WebFetch</code>（除非在 <code class="inline">--tools</code> 里显式点名），文件工具锁在工作目录内，拒绝 <code class="inline">bypassPermissions</code>，并<strong>忽略用户、项目、本地设置文件</strong>。</p>
+
+<p><strong>这是目前最强的一键收紧开关。</strong> 适合：审阅不信任的代码库、跑别人给的 prompt、把 Claude Code 嵌进自动化流水线时做最小权限起点。</p>
+
+<hr>
+
+<h2>二、高手实战技巧表格</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>#</th>
+<th>技巧</th>
+<th>说明</th>
+<th>难度</th>
+<th>来源</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td><code class="inline">/effort s</code> 做实验</td>
+<td>只改本次会话档位，不动默认值</td>
+<td>★</td>
+<td><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">changelog 2.1.257</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>认清 Cowork 默认 Medium、Code 默认 High</td>
+<td>同模型同提示，两处结果深度不同</td>
+<td>★</td>
+<td><a href="https://www.anthropic.com/claude-fable-and-mythos-5-1" target="_blank" rel="noopener">官方公告</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td>长会话 + 多工具 = 降价 45% 的受益者</td>
+<td>缓存读取占比决定你省多少</td>
+<td>★</td>
+<td><a href="https://www.anthropic.com/claude-fable-and-mythos-5-1" target="_blank" rel="noopener">官方公告</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td>检查项目里的 <code class="inline">bypassPermissions</code> 是否已失效</td>
+<td>2.1.257 起项目级配置被忽略且不报错</td>
+<td>★★</td>
+<td><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">changelog</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td>工具描述只写"何时用"，把"怎么用"放 skill</td>
+<td>官方自己把 5.7k 降到 1k token</td>
+<td>★★</td>
+<td><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">changelog 2.1.248</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td>定时任务里剔除一切需人工批准的步骤</td>
+<td>无人值守 = 批准必然超时</td>
+<td>★★</td>
+<td>本期实测</td>
+</tr>
+<tr>
+<td>7</td>
+<td>deny 规则党必须升到 2.1.257</td>
+<td>此前 <code class="inline">tac</code>/<code class="inline">< file</code> 可绕过 Read/Edit deny</td>
+<td>★★★</td>
+<td><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">changelog</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td><code class="inline">PreModelSwitch</code> hook 拦截意外模型切换</td>
+<td>解决"选了 Fable 却切走"的老问题</td>
+<td>★★★</td>
+<td><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">changelog 2.1.251</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td><code class="inline">CLAUDE_CODE_SUBAGENT_MODEL_FORCE</code> 做成本总闸</td>
+<td>忽略所有下层 model 覆盖</td>
+<td>★★★</td>
+<td><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">changelog 2.1.257</a></td>
+</tr>
+<tr>
+<td>10</td>
+<td>改 system prompt 会炸掉整个 prompt cache</td>
+<td><code class="inline">/fork</code> 改用消息送达简报正是为此</td>
+<td>★★★★</td>
+<td><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">changelog 2.1.257</a></td>
+</tr>
+<tr>
+<td>11</td>
+<td><code class="inline">--restricted</code> 作为最小权限起点</td>
+<td>连设置文件都忽略</td>
+<td>★★★★</td>
+<td><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">changelog 2.1.248</a></td>
+</tr>
+<tr>
+<td>12</td>
+<td>"changelog 无条目" ≠ "版本不存在"</td>
+<td>2.1.255 无条目却被 2.1.258 引用</td>
+<td>★★</td>
+<td>本期交叉核对</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>三、YouTube 教程推荐</h2>
+
+<p>> ⚠️ <strong>数据来源说明：</strong> 本期 YouTube <strong>未能通过浏览器实时采集</strong>（导航被拒），以下为 WebSearch 检索结果。<strong>观看量与时长无法核实，故留空——不填估算值。</strong></p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>视频标题</th>
+<th>作者/来源</th>
+<th>观看量</th>
+<th>时长</th>
+<th>发布时间</th>
+<th>特色内容</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=sX-FmJL7Wd0" target="_blank" rel="noopener">Claude Code Tutorial for Beginners (2026) — Master It in 1 Hour: Skills, Subagents, Hooks & MCP</a></td>
+<td>未核实</td>
+<td>未实测</td>
+<td>未实测</td>
+<td>2026-05-23</td>
+<td>从安装到 CLAUDE.md、skills、子代理、hooks、MCP 的完整入门</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=qiDalcMeBFk" target="_blank" rel="noopener">How to Use Multi-Agent Workflows in Claude Code: Skills, Subagents & Handoffs (2026)</a></td>
+<td>未核实</td>
+<td>未实测</td>
+<td>未实测</td>
+<td>2026-07-26</td>
+<td>多代理工作流与 handoff 编排</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=oo1oADOiVmM" target="_blank" rel="noopener">Hooks in Claude Code — Full Theory + Practical Use</a></td>
+<td>CampusX</td>
+<td>未实测</td>
+<td>未实测</td>
+<td>2026-05-12</td>
+<td>hooks 理论 + 实操，面向可靠性工作流</td>
+</tr>
+<tr>
+<td><a href="https://website.anthropic.com/webinars/claude-code-advanced-patterns" target="_blank" rel="noopener">Claude Code 官方 Webinar: Advanced Patterns</a></td>
+<td>Anthropic 官方</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>官方进阶模式讲解</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Claude+Code+tips+tricks+2026" target="_blank" rel="noopener">YouTube 搜索：Claude Code tips tricks 2026</a></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>自行浏览最新结果</td>
+</tr>
+</tbody></table></div>
+
+<p>📌 <strong>注意发布时间：</strong> 前三个视频都在 5–7 月，<strong>早于 Fable 5.1、早于 <code class="inline">/effort</code> 按模型记忆、早于 2.1.257 的权限收紧</strong>。看这类教程时，涉及模型选择、权限配置、成本的部分请以 changelog 为准。</p>
+
+<hr>
+
+<h2>四、Reddit 讨论精选</h2>
+
+<p>> ⚠️ <strong>数据来源说明：</strong> Reddit 因浏览器安全限制无法直接访问，目前也无可用的 Reddit MCP connector。以下要点来自 WebSearch 检索到的二手汇总，<strong>未逐帖核实，无原帖链接与投票数</strong>。</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>讨论主题</th>
+<th>子版块</th>
+<th>社区要点</th>
+</tr></thead><tbody>
+<tr>
+<td>CLAUDE.md 该写多长</td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>建议控制在 200 行内；用嵌套目录做分层 CLAUDE.md；<strong>从简开始，发现反复犯的错再加规则</strong>，而不是一次写全</td>
+</tr>
+<tr>
+<td><code class="inline">!</code> 前缀直接执行 bash</td>
+<td><a href="https://www.reddit.com/r/ClaudeCode/" target="_blank" rel="noopener">r/ClaudeCode</a></td>
+<td><code class="inline">!</code> 立即执行并把输出注入上下文，比让 Claude 自己决定跑命令省 token</td>
+</tr>
+<tr>
+<td>跨文件重构可靠性</td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>多个帖子记录了一次 pass 内正确更新 10+ 文件的 import、类型定义和测试</td>
+</tr>
+<tr>
+<td>"选了 Fable 却切到 Opus"</td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>高频困惑；<strong>2.1.251 的 <code class="inline">PreModelSwitch</code> hook 就是对这个问题的官方答案</strong></td>
+</tr>
+<tr>
+<td>把 Claude Code 当补全用的人会流失</td>
+<td><a href="https://www.reddit.com/r/ClaudeCode/" target="_blank" rel="noopener">r/ClaudeCode</a></td>
+<td>社区共识：愿意学 CLAUDE.md / 子代理 / hooks / slash command 的人收益显著，把它当 autocomplete 的人很快放弃</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>五、X 热门帖子</h2>
+
+<p>> ⚠️ <strong>本期无法采集。</strong> 对 <code class="inline">x.com</code> 的浏览器导航被拒（无人值守任务无法完成站点权限批准）。</p>
+<p>></p>
+<p>> <strong>按照本报告的一贯口径：没有实测数据就留空，不编造作者名、不填估算互动量。</strong></p>
+
+<h3>Claude Code Tips 热帖</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>作者</th>
+<th>内容摘要</th>
+<th>💬</th>
+<th>🔁</th>
+<th>❤️</th>
+<th>👁</th>
+</tr></thead><tbody>
+<tr>
+<td><em>本期未采集</em></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody></table></div>
+
+<h3>Claude Cowork 热帖</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>作者</th>
+<th>内容摘要</th>
+<th>💬</th>
+<th>🔁</th>
+<th>❤️</th>
+<th>👁</th>
+</tr></thead><tbody>
+<tr>
+<td><em>本期未采集</em></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody></table></div>
+
+<p><strong>唯一一条可验证的官方 X 内容</strong>（来自搜索结果中的直接链接，非互动量采集）：</p>
+
+<ul>
+<li><a href="https://x.com/claudeai" target="_blank" rel="noopener">@claudeai</a> 宣布 Cowork 定时任务：<em>"Claude can now complete recurring tasks at specific times automatically: a morning brief, weekly spreadsheet updates, Friday team presentations."</em> — <a href="https://x.com/claudeai/status/2026720870631354429" target="_blank" rel="noopener">原帖</a>（互动量未采集）</li>
+</ul>
+
+<p>📌 <strong>待办：</strong> 若要恢复 X/YouTube 一手采集，需要在<strong>有人值守的会话</strong>里先手动批准这些站点一次，让权限持久化到浏览器 profile；之后定时任务才能复用。这是目前唯一可行的解法。</p>
+
+<hr>
+
+<h2>六、跨平台趋势总结</h2>
+
+<p><strong>1. 定价竞争从"每 token 单价"转向"缓存效率"。</strong> Fable 5.1 输入输出单价一分没降，却让典型负载便宜 25%、智能体负载便宜 45%——全靠缓存读取降价 75%。<strong>这标志着智能体时代的成本模型：真正的支出不在你写的提示词，在每一轮重读的上下文。</strong> 相应地，changelog 里出现了大量 prompt cache 相关修复（<code class="inline">/fork</code> 保留缓存、advisor 模型的后台请求不再丢缓存、截图密集会话的缓存失效、OAuth 刷新导致的每小时一次缓存 miss）。<strong>缓存命中率正在变成一个一线性能指标</strong>——2.1.251 已经把它加进了 <code class="inline">/cost</code> 和 status line。</p>
+
+<p><strong>2. 安全的重心从"能不能做"移到"配置从哪来"。</strong> 2.1.257 与 2.1.251 里最密集的一类变更，是<strong>限制低信任来源的配置能做什么</strong>：项目级 <code class="inline">bypassPermissions</code> 被忽略、项目 <code class="inline">env</code> 不能再设 <code class="inline">TMPDIR</code>、<code class="inline">ANTHROPIC_CUSTOM_HEADERS</code> 设凭证类 header 需批准、插件不能通过符号链接越界、marketplace 条目不能指向插件目录外。<strong>共同前提是：<code class="inline">.claude/</code> 目录会跟着 git clone 进你的机器。</strong></p>
+
+<p><strong>3. "无人值守长时运行"成为被认真优化的一等场景。</strong> 官方公告里 Ramp 的例子是"一次 38 小时无人值守运行"，Shopify 说它"能自己记录、重排优先级、断点续跑"。changelog 侧同步：子代理被休眠/断连打断后自动续跑、后台命令 detach 后不再逃逸、旧二进制的后台会话会被退休、<code class="inline">claude -p</code> 会等 Monitor 跑完再退出。<strong>这不是营销话术，是有对应工程修复的方向。</strong></p>
+
+<p><strong>4. Cowork 正在从"桌面工具"变成"云端服务"。</strong> 定时任务改为服务端运行（关电脑照跑）、Cowork 上了 web 和移动端、远程会话进 beta、桌面端内置浏览器。<strong>代价是权限模型变复杂了</strong>——本期采集失败正是这个转型期的副作用。</p>
+
+<p><strong>5. 社区共识稳定在"投入学习曲线的人赢"。</strong> Reddit 侧反复出现同一句话的不同版本：把 Claude Code 当 autocomplete 用的人会失望离开。而官方的能力投入（子代理嵌套、Dynamic Workflows、hooks 事件持续扩充）也确实只对愿意编排的人开放。</p>
+
+<hr>
+
+<h2>七、进阶路线图</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>阶段</th>
+<th>目标</th>
+<th>具体动作</th>
+<th>验收标准</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>第 0 步（今天）</strong></td>
+<td>版本与档位对齐</td>
+<td>升到 2.1.258；跑 <code class="inline">/effort</code> 确认档位；Monterey 用户务必跳过 2.1.255–257</td>
+<td><code class="inline">/status</code> 显示 2.1.258，<code class="inline">/effort</code> 档位符合预期</td>
+</tr>
+<tr>
+<td><strong>第 1 步</strong></td>
+<td>排查被静默失效的配置</td>
+<td>全局搜 <code class="inline">.claude/settings*.json</code> 里的 <code class="inline">defaultMode: "bypassPermissions"</code> 和 <code class="inline">env</code> 里的 <code class="inline">TMPDIR</code>/<code class="inline">CLAUDE_CONFIG_DIR</code></td>
+<td>无匹配，或已迁移到用户级设置</td>
+</tr>
+<tr>
+<td><strong>第 2 步</strong></td>
+<td>建立成本可观测性</td>
+<td>用 <code class="inline">/cost</code> 看缓存命中率；把 <code class="inline">prompt_cache</code> 加进 status line</td>
+<td>能说出自己会话的缓存命中率</td>
+</tr>
+<tr>
+<td><strong>第 3 步</strong></td>
+<td>加固 deny 规则</td>
+<td>确认已在 2.1.257+；验证 <code class="inline">tac</code>、<code class="inline">egrep</code>、<code class="inline">< file</code> 都被 deny 规则覆盖</td>
+<td>手工试一次 <code class="inline">tac <被deny的文件></code> 应被拒</td>
+</tr>
+<tr>
+<td><strong>第 4 步</strong></td>
+<td>精简工具/skill 描述</td>
+<td>按官方 5.7k→1k 的做法，把"怎么用"从描述搬进 skill 正文</td>
+<td>描述里只剩"何时用我"</td>
+</tr>
+<tr>
+<td><strong>第 5 步</strong></td>
+<td>用 hook 管住模型切换</td>
+<td>配 <code class="inline">PreModelSwitch</code> 做确认或注解</td>
+<td>意外切模型时能看到记录</td>
+</tr>
+<tr>
+<td><strong>第 6 步</strong></td>
+<td>子代理成本总闸</td>
+<td>视场景启用 <code class="inline">CLAUDE_CODE_SUBAGENT_MODEL_FORCE</code></td>
+<td>子代理模型可控、可预算</td>
+</tr>
+<tr>
+<td><strong>第 7 步</strong></td>
+<td>定时任务去人工依赖</td>
+<td>逐条审查每个定时任务，剔除需批准的步骤</td>
+<td>连续一周无因批准超时而失败的运行</td>
+</tr>
+<tr>
+<td><strong>第 8 步</strong></td>
+<td>最小权限起点</td>
+<td>审阅不信任代码库时用 <code class="inline">--restricted</code></td>
+<td>默认无执行能力，按需 <code class="inline">--tools</code> 放行</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>八、推荐行动</h2>
+
+<p><strong>立刻做（5 分钟内）：</strong></p>
+
+<p>1. <strong>升级到 2.1.258。</strong> 尤其是 macOS 12 (Monterey) 用户——2.1.255 引入的启动崩溃在 2.1.258 才修好。</p>
+<p>2. <strong>搜一遍你的项目配置：</strong> <code class="inline">grep -r 'bypassPermissions' --include='settings*.json' .</code> — 命中的都已经静默失效了。</p>
+<p>3. <strong>跑一次 <code class="inline">/effort</code>。</strong> 确认 Claude Code 里是 High，并知道 Cowork 里是 Medium。</p>
+
+<p><strong>本周做：</strong></p>
+
+<p>4. <strong>算一笔缓存账。</strong> 用 <code class="inline">/cost</code> 看命中率。如果你的用法是长会话 + 重工具，Fable 5.1 对你的降幅接近 45% 而不是 25%——这可能改变你"该不该用 Fable 做日常主力"的判断。</p>
+<p>5. <strong>如果你靠 deny 规则做隔离，立刻验证 <code class="inline">tac</code> 和 <code class="inline">< file</code> 重定向。</strong> 这是本期唯一一条"不升级就等于规则有洞"的变更。</p>
+<p>6. <strong>给定时任务做一次人工依赖审查。</strong> 参考今日焦点三的两分类法。本报告自己就是反面教材。</p>
+
+<p><strong>值得思考（不急）：</strong></p>
+
+<p>7. <strong>把"缓存命中率"当成和"token 用量"同级的指标。</strong> 从 Fable 5.1 的定价结构看，这个趋势只会加强。</p>
+<p>8. <strong>重新审视你的降级方案。</strong> 本期浏览器全线失败，被迫改用 <code class="inline">web_fetch</code> 直取官方源，<strong>结果数据质量反而是四期里最好的。</strong> 有时候"备胎"才是正路——值得回头问一句：默认路径真的更好吗，还是只是先入为主？</p>
+
+<hr>
+
+<p><em>本报告由 Claude Cowork 定时任务自动生成。本期无浏览器一手数据，X/YouTube 互动量已按口径留空；版本与定价信息取自 Anthropic 官方公告与官方 changelog 全文。</em></p>
+
+<p><strong>主要来源：</strong></p>
+
+<ul>
+<li><a href="https://www.anthropic.com/claude-fable-and-mythos-5-1" target="_blank" rel="noopener">Introducing Claude Fable 5.1 and Claude Mythos 5.1 — Anthropic</a></li>
+<li><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">Claude Code changelog — 官方</a></li>
+<li><a href="https://platform.claude.com/docs/en/models/fable-5-1/whats-new-fable-5-1" target="_blank" rel="noopener">What's new in Claude Fable 5.1 — Claude Platform Docs</a></li>
+<li><a href="https://www.anthropic.com/claude-fable-5-1-mythos-5-1-system-card" target="_blank" rel="noopener">Claude Fable 5.1 and Mythos 5.1 System Card</a></li>
+<li><a href="https://www.anthropic.com/news/enterprise-frontier-safeguards" target="_blank" rel="noopener">Enterprise Frontier Safeguards</a></li>
+<li><a href="https://smartscope.blog/en/generative-ai/claude/claude-code-best-practices-advanced-2026/" target="_blank" rel="noopener">Claude Code Advanced Best Practices — SmartScope</a></li>
+<li><a href="https://www.totalum.app/blog/claude-code-subagents-totalum" target="_blank" rel="noopener">Claude Code subagents: the 2026 production playbook — Totalum</a></li>
+<li><a href="https://www.morphllm.com/claude-code-reddit" target="_blank" rel="noopener">Claude Code Reddit: What Developers Actually Say (2026) — Morph</a></li>
+<li><a href="https://support.claude.com/en/articles/13345190-get-started-with-claude-cowork" target="_blank" rel="noopener">Get started with Claude Cowork — Anthropic Help Center</a></li>
+</ul>
+
+  </div>
+</article>
+<div class="article-footer">
+  <div class="container">
+    <a href="../#ai-trends">← 返回首页</a>
+  </div>
+</div>
+</body>
+</html>

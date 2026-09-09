@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 动态追踪日报 — Claude Cowork & Claude Code | 张翰之</title>
+<meta name="description" content="8 月收官：28 个版本，最后一版只有 4 个 bug fix。 — 2.1.252 是 8 月的第 28 个版本，4 项变更、100% 修复、平均变更量的 0.3 倍。对比 2.1.251 的...">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;
+  --text:#e0e0e8;--text-dim:#8888a0;--text-bright:#ffffff;
+  --accent:#00d4aa;--accent2:#00a8ff;--accent3:#7c5cfc;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --max-w:900px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.8;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent2)}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:0;
+}
+
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+nav .inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--accent)}
+nav .logo svg{width:28px;height:28px}
+nav .back{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--accent)}
+
+/* Article */
+article{padding:100px 0 60px}
+.article-meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.article-date{font-family:var(--mono);font-size:.8rem;color:var(--accent);padding:4px 12px;border:1px solid rgba(0,212,170,.3);border-radius:4px}
+.article-tag{font-family:var(--mono);font-size:.65rem;color:var(--accent2);padding:2px 8px;background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.15);border-radius:4px}
+
+article h1{font-size:1.8rem;font-weight:700;color:var(--text-bright);margin-bottom:32px;line-height:1.3}
+article h2{font-size:1.35rem;font-weight:600;color:var(--accent);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,170,.15)}
+article h3{font-size:1.1rem;font-weight:600;color:var(--accent2);margin:28px 0 12px}
+article h4{font-size:.95rem;font-weight:600;color:var(--accent3);margin:20px 0 8px}
+article p{margin-bottom:12px;color:var(--text)}
+article ul{margin:0 0 16px 20px}
+article li{margin-bottom:8px;color:var(--text)}
+article li strong{color:var(--accent)}
+article hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:32px 0}
+article code.inline{font-family:var(--mono);font-size:.85em;background:rgba(0,212,170,.1);color:var(--accent);padding:2px 6px;border-radius:4px}
+article pre{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+article pre code{font-family:var(--mono);font-size:.85rem;color:var(--text)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);text-align:left;padding:10px 12px;border-bottom:2px solid rgba(0,212,170,.2);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text)}
+tr:hover td{background:rgba(0,212,170,.03)}
+
+/* Footer */
+.article-footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:60px;text-align:center}
+.article-footer a{font-family:var(--mono);font-size:.85rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="../" class="logo"><svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="url(#lg)"/><path d="M7 8h3v12H7V8zm4 5h6v3h-6v-3zm7-5h3v12h-3V8z" fill="#0a0a0f"/><defs><linearGradient id="lg" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00d4aa"/><stop offset="1" stop-color="#00a8ff"/></linearGradient></defs></svg><span>&lt;</span>HZ<span>/&gt;</span></a>
+    <a href="../#ai-trends" class="back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> 返回日报列表</a>
+  </div>
+</nav>
+<article>
+  <div class="container">
+    <div class="article-meta">
+      <span class="article-date">2026-09-01</span>
+      <span class="article-tag">CLAUDE.md</span> <span class="article-tag">Skills</span> <span class="article-tag">Hooks</span> <span class="article-tag">Workflows</span>
+    </div>
+    <h1>AI 动态追踪日报 — Claude Cowork & Claude Code</h1>
+    <p><strong>日期：</strong> 2026-09-01</p>
+<p><strong>数据来源：</strong> 官方文档 · claudeupdates.dev · GitHub Releases · Web · YouTube（检索）· Reddit（受限）</p>
+
+<p>> ⚠️ <strong>本期采集方式说明（连续第三期无一手浏览器数据）：</strong> Claude in Chrome 扩展<strong>仍未连接</strong>；内置浏览器对 <code class="inline">x.com</code>、<code class="inline">youtube.com</code>、<code class="inline">github.com</code> 的导航<strong>逐个被拒</strong>（无人值守的定时任务无法完成站点权限批准）。因此第三节的观看量/时长、第五节的互动量（💬🔁❤️👁）<strong>一律留空或标注"未实测"，不填任何估算数字</strong>。</p>
+<p>></p>
+<p>> ✅ <strong>本期有一条对自己的纠错：</strong> 昨天（8/31）的日报写"最高版本仍是 2.1.251，8/29–8/31 三天无新版本"。<strong>这条当时就是错的</strong>——<code class="inline">v2.1.252</code> 正是在 <strong>8 月 31 日</strong>发布的。错因是只查了 Releasebot 一个聚合源。详见「今日焦点二」。</p>
+
+<hr>
+
+<h2>今日焦点一：2.1.252 —— 4 个修复，其中一个解释了"'always allow' 点了不算数"</h2>
+
+<p><strong><a href="https://www.claudeupdates.dev/version/2.1.252" target="_blank" rel="noopener">v2.1.252</a> 于 8 月 31 日发布，距上一版 3 天，只有 4 项变更，100% 是 bug fix。</strong> 是 8 月的第 28 个、也是最后一个版本。</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>#</th>
+<th>修复内容</th>
+<th>你可能遇到过的症状</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td>Bash 命令在部分 Mac 上报 <code class="inline">task output swap refused (tasks dir moved or linked)</code> 而失败</td>
+<td>明明命令没问题，Bash 工具直接失败</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>在还没有 <code class="inline">.claude/settings.local.json</code> 的项目里，"always allow" 不会保存</strong></td>
+<td>新项目里同一个权限反复问你，点几次都不记</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Claude Desktop / VS Code 托管的 Remote Control 会话，在连接质量差之后，工具跑完仍会僵住数分钟</td>
+<td>远程控制"卡住不动"，但其实工具早已完成</td>
+</tr>
+<tr>
+<td>4</td>
+<td>后台任务失败输出过大（如磁盘满时的 git 报错）会把对话撑爆 API 请求体积上限</td>
+<td>一个后台任务失败，整个会话跟着废掉</td>
+</tr>
+</tbody></table></div>
+
+<p><strong>第 2 条值得单独说。</strong> 这是一个<strong>很容易被误读为"产品设计如此"的 bug</strong>：在一个全新的项目目录里，你点了 "always allow"，下一次同样的操作它又问一遍。绝大多数人的反应不是"这是 bug"，而是"哦，大概权限只在本次会话有效吧"，然后就忍了。</p>
+
+<p>根因是：<strong>该项目还没有 <code class="inline">.claude/settings.local.json</code> 这个文件，写入逻辑没有处理"文件不存在需要先创建"的情况</strong>，于是静默失败。所以症状精确地表现为——<strong>老项目正常，新项目不记</strong>。</p>
+
+<p>> 📌 <strong>自查方法：</strong> 如果你在某个项目里长期觉得"权限提示特别烦"，先看看 <code class="inline">ls -a</code> 有没有 <code class="inline">.claude/settings.local.json</code>。没有的话，这个 bug 大概率就是原因；升级到 2.1.252 即可。</p>
+
+<p><strong>第 4 条是 agent 类工具的一个通用坑。</strong> 后台任务的失败输出被原样塞进主对话，而失败输出恰恰是最容易失控的（磁盘满、依赖爆栈、测试全红）。<strong>"错误信息本身成为故障放大器"</strong>——这个模式在自建 agent 流程里同样值得防一手：把子进程 stderr 截断后再回灌上下文。</p>
+
+<hr>
+
+<h2>今日焦点二：一个聚合源不够 —— 昨天的版本判断为什么错了</h2>
+
+<p>昨天的日报说"Releasebot 上最高版本仍是 2.1.251，8/29–8/31 三天没有新版本收录"，并加了口径提醒说"没有新条目 ≠ 官方没发版"。<strong>提醒是对的，但结论仍然被写成了'版本节奏停了三天'——这是错的。</strong></p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>源</th>
+<th>昨天(8/31)显示的最新版本</th>
+<th>实际</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://releasebot.io/updates/anthropic/claude-code" target="_blank" rel="noopener">Releasebot</a></td>
+<td>2.1.251（页面自称 Last updated: Aug 28）</td>
+<td>滞后</td>
+</tr>
+<tr>
+<td><a href="https://www.claudeupdates.dev/" target="_blank" rel="noopener">claudeupdates.dev</a></td>
+<td><strong>2.1.252（Last Update: Aug 31）</strong></td>
+<td>当日即收录</td>
+</tr>
+<tr>
+<td><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">官方 changelog</a></td>
+<td>权威源</td>
+<td>—</td>
+</tr>
+</tbody></table></div>
+
+<p><strong>教训不是"Releasebot 不好用"，而是一条可复用的核查规则：</strong></p>
+
+<p>> <strong>当唯一的信号是"某个聚合源没有新条目"时，那不是一个可以下结论的信号。</strong> 必须再取一个独立源做交叉，或直接回到 <a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">官方 changelog</a> / <a href="https://github.com/anthropics/claude-code/releases" target="_blank" rel="noopener">GitHub Releases</a>。</p>
+
+<p>这和第五、第三节留空是同一个原则的两面：<strong>没有数据时留空，只有一个弱信号时不下结论。</strong></p>
+
+<p><strong>本日报的采集清单据此调整：版本信息以 claudeupdates.dev + 官方 changelog 双源为准，Releasebot 降级为参考。</strong></p>
+
+<hr>
+
+<h2>一、高级用法精选（按难度分层）</h2>
+
+<h3>Level 1 — 基础配置：<code class="inline">.claude/settings.local.json</code> 与 <code class="inline">CLAUDE.md</code> 的分工</h3>
+
+<p>两个文件经常被混着用，但职责完全不同：</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>文件</th>
+<th>内容</th>
+<th>是否进 git</th>
+</tr></thead><tbody>
+<tr>
+<td><code class="inline">CLAUDE.md</code></td>
+<td>项目约定、代码风格、语气要求、行为护栏（<strong>给模型看的指令</strong>）</td>
+<td>✅ 应该提交，团队共享</td>
+</tr>
+<tr>
+<td><code class="inline">.claude/settings.local.json</code></td>
+<td>权限 allow/deny、本机环境（<strong>给运行时看的配置</strong>）</td>
+<td>❌ 通常 gitignore</td>
+</tr>
+</tbody></table></div>
+
+<p>> ⚠️ <strong>两条安全提醒：</strong></p>
+<p>> 1. <strong>不要把 API key 写进 <code class="inline">CLAUDE.md</code></strong>——它随仓库提交。走环境变量或密钥管理器。</p>
+<p>> 2. <strong>2.1.251 起，项目级 <code class="inline">.claude/settings.json</code> 的 <code class="inline">env</code> 不再能设置 <code class="inline">CLAUDE_CONFIG_DIR</code>、<code class="inline">CLAUDE_CODE_TMPDIR</code>、<code class="inline">TMPDIR</code>/<code class="inline">TMP</code>/<code class="inline">TEMP</code>。</strong> 这几个变量能改变 Claude Code 读写配置和临时文件的位置，让仓库自带的配置去设它们等于让被审对象决定自己被存在哪。要设就在 shell、用户级或托管设置里设。</p>
+
+<h3>Level 2 — 上下文管理：在 60% 就 <code class="inline">/compact</code>，不要等到 95%</h3>
+
+<p>自动压缩（auto-compaction）在约 <strong>95%</strong> 容量触发。它是安全网，不是工作流——<strong>压缩是有损的</strong>，等到 95% 才被动触发，损失的往往正是早期那些"为什么这么设计"的决策记录。</p>
+
+<p>社区的经验值是 <strong>在 60% 主动 <code class="inline">/compact</code></strong>：此时你还清楚哪些该留，压缩后的摘要质量也更高。</p>
+
+<p><strong>"上下文腐烂"（context rot）的三个典型症状</strong>——出现任意一个就该压缩或开新会话：</p>
+
+<p>1. 回答开始变笼统、少了具体文件名和行号；</p>
+<p>2. 模型忘记了会话早期定下的约定；</p>
+<p>3. <strong>它开始建议与自己早前的修改相矛盾的改法</strong>（这条最危险，因为看起来仍然自信）。</p>
+
+<p><strong>三大 token 泄漏源：</strong> 整文件塞入、冗长往返、重复注入同样的背景说明。第三条最隐蔽——<strong>如果你发现自己在同一个会话里第二次解释同一件事，那件事应该进 <code class="inline">CLAUDE.md</code>，不是进对话。</strong></p>
+
+<p>配套动作：写 <code class="inline">.claudeignore</code>，排除 <code class="inline">node_modules/</code>、<code class="inline">dist/</code>、<code class="inline">build/</code>、日志和自动生成文件。</p>
+
+<h3>Level 3 — Skills：加载在主上下文，按需触发</h3>
+
+<p>Skill 是一个目录，含 <code class="inline">SKILL.md</code>（YAML frontmatter + Markdown 正文）加可选脚本和资源。<strong>正文只在被调用时才载入</strong>，所以常驻成本极低。</p>
+
+<p>一句话定位：<strong>Skill 是"给新人写的上手文档"，放在 Claude 能找到的地方。</strong></p>
+
+<h3>Level 4 — Hooks：把"必须遵守"的规则从提示词里搬出来</h3>
+
+<p>Hook 是生命周期事件处理器，在特定事件发生时运行确定性脚本——<code class="inline">PreToolUse</code>（工具执行前）、<code class="inline">SessionStart</code>（会话开始）、<code class="inline">SubagentStop</code>（子代理结束）等。可以<strong>阻断危险操作、注入上下文、记录日志、执行安全策略</strong>。</p>
+
+<p><strong>三选一的判断规则（值得贴在墙上）：</strong></p>
+
+<p>> - 规则<strong>必须被强制执行</strong> → 用 <strong>Hooks 或 permissions</strong></p>
+<p>> - 是<strong>上下文知识</strong> → 用 <strong>Skills</strong></p>
+<p>> - 是<strong>委派边界</strong> → 用 <strong>Subagents</strong></p>
+
+<p><strong>新手起步建议：从 <code class="inline">PostToolUse</code> 跑 <code class="inline">ruff format</code> / lint 开始</strong>，它不阻断、不会误伤，出错也只是没格式化。</p>
+
+<h4>Level 4.5 — <code class="inline">PreModelSwitch</code> / <code class="inline">PostModelSwitch</code>（2.1.251 新增）</h4>
+
+<p>这两个事件让你<strong>阻止、确认或标注一次模型切换</strong>。用途是受控灰度：比如限定某个仓库只能用 Sonnet，或在切到 Opus 前弹一次确认。</p>
+
+<p><strong>三个必须知道的行为细节：</strong></p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>细节</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td>字段不同</td>
+<td>这两个事件收到的是 <strong><code class="inline">from_model</code> / <code class="inline">to_model</code></strong>，<strong>没有</strong>标准的 <code class="inline">model</code> 字段。按老写法读 <code class="inline">model</code> 会拿到 undefined</td>
+</tr>
+<tr>
+<td>退出码 2 = 阻止</td>
+<td><code class="inline">PreModelSwitch</code> 的 hook 用 <strong>exit code 2</strong> 表达"停，别做"</td>
+</tr>
+<tr>
+<td><strong>超时 = 阻止</strong></td>
+<td><code class="inline">PreModelSwitch</code> 的 hook <strong>在超时被取消时，切换会被阻断</strong>。所以 hook 里不要放网络请求等慢操作，否则一次网络抖动就把你锁在当前模型上</td>
+</tr>
+</tbody></table></div>
+
+<p><code class="inline">PostModelSwitch</code> 的典型用法是<strong>跟踪模型在会话中的变化</strong>（比如写进状态栏或审计日志）。</p>
+
+<h3>Level 5 — Subagents：本质是上下文隔离，不是"更多算力"</h3>
+
+<p>子代理是<strong>独立的 Claude 实例</strong>，各有自己的上下文窗口、系统提示、工具清单和权限。<strong>父会话只拿回最终摘要</strong>——那 4000 行堆栈、15 条 grep 结果、所有死胡同，全都留在子代理的记录里，不污染父会话。</p>
+
+<p><strong>内置三种，先用够再自定义：</strong></p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>内置子代理</th>
+<th>特性</th>
+<th>用途</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>Explore</strong></td>
+<td>跑 Haiku，<strong>禁用 Write/Edit</strong>，可传 <code class="inline">quick</code>/<code class="inline">medium</code>/<code class="inline">very thorough</code> 三档彻底度</td>
+<td>快速只读搜索、分析代码库</td>
+</tr>
+<tr>
+<td><strong>Plan</strong></td>
+<td>只读，继承父模型</td>
+<td>plan 模式下收集上下文，避免无限嵌套</td>
+</tr>
+<tr>
+<td><strong>general-purpose</strong></td>
+<td>继承全部工具</td>
+<td>没有专家匹配时的兜底</td>
+</tr>
+</tbody></table></div>
+
+<p><strong>自定义：</strong> <code class="inline">/agents</code> 打开管理界面（Library 标签列出全部内置/用户/项目/插件子代理，Running 标签可停止或打开运行中的）。文件放 <code class="inline">.claude/agents/</code>（项目）或 <code class="inline">~/.claude/agents/</code>（用户）。</p>
+
+<p><strong>优先级从高到低：</strong> 托管设置 → <code class="inline">--agents</code> CLI 参数 → <code class="inline">.claude/agents/</code>（项目）→ <code class="inline">~/.claude/agents/</code>（用户）→ 插件的 <code class="inline">agents/</code> 目录。同名时高优先级胜出。</p>
+
+<p>一个最小可用的 <code class="inline">code-reviewer</code> 定义：</p>
+
+<pre><code>
+---
+name: code-reviewer
+description: Use proactively after a feature branch is staged to review for quality, security, and best practices.
+tools: Read, Glob, Grep
+model: sonnet
+---
+You are a senior code reviewer. When invoked, do the following in order:
+
+1. Identify the files changed on the current branch.
+2. Read each changed file and its tests.
+3. Flag specific issues by file and line: correctness, security, performance, readability.
+4. Suggest concrete fixes, not vague advice.
+
+Output format: a Markdown report grouped by file, with severity tags (BLOCKER, MAJOR, NIT).
+Do not modify files; you are read-only by design.
+</code></pre>
+
+<p><strong>只有 <code class="inline">name</code> 和 <code class="inline">description</code> 是必填。</strong> 正文即系统提示——<strong>当职位描述写，不要当对话写。</strong></p>
+
+<p><strong>让自动委派真正生效的三条：</strong></p>
+
+<p>1. <code class="inline">description</code> 以 "Use this agent when..." 开头，或包含 "use proactively"；</p>
+<p>2. <strong>明确写出输出格式</strong>（父代理收到的就是这个形状）；</p>
+<p>3. <strong>系统提示尽量短</strong>——子代理在"一个任务 + 一个明确的完成定义"下表现最好。</p>
+
+<p><strong>工具限制的两个字段：</strong> <code class="inline">tools</code> 是<strong>白名单</strong>（写了就只能用这些，不写则继承全部）；<code class="inline">disallowedTools</code> 是<strong>黑名单</strong>。两者同时存在时，<strong>先减黑名单，再在剩余池里解析白名单</strong>。</p>
+
+<p>> 💡 <strong>一个 <code class="inline">tools</code> 表达不了、必须用 hook 的场景：</strong> 想要"只读 SQL"的数据库查询校验子代理——它需要 <code class="inline">Bash</code>，但 <code class="inline">tools</code> 字段无法表达"只读"。做法是给它配一个 <code class="inline">PreToolUse</code> hook，拦截 <code class="inline">INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|TRUNCATE</code>。<strong>权限的粒度不够时，用 hook 补。</strong></p>
+
+<h3>Level 6 — 四种调用方式 + 前后台</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>方式</th>
+<th>确定性</th>
+<th>场景</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>自动委派</strong></td>
+<td>看 <code class="inline">description</code> 写得好不好</td>
+<td>日常，写好描述后最省心</td>
+</tr>
+<tr>
+<td><strong>自然语言点名</strong></td>
+<td>高，但仍是提示不是保证</td>
+<td>"用 test-runner 子代理修 <code class="inline">auth/</code> 的失败测试"</td>
+</tr>
+<tr>
+<td><strong><code class="inline">@</code> 提及</strong></td>
+<td><strong>保证执行</strong></td>
+<td><code class="inline">@agent-<name></code>，插件的写作 <code class="inline"><plugin>:<agent></code></td>
+</tr>
+<tr>
+<td><strong><code class="inline">claude --agent <name></code></strong></td>
+<td>整个主线程变成该子代理</td>
+<td>"这整轮 CI 就是一次安全审查"</td>
+</tr>
+</tbody></table></div>
+
+<p><strong>前台 vs 后台：</strong> 前台阻塞主对话、权限提示会透给你；后台并发运行，<strong>启动前一次性询问所需权限，运行中自动拒绝任何未预批准的工具</strong>。<code class="inline">Ctrl+B</code> 把运行中的任务转后台。CI 或锁定工作站可设 <code class="inline">CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1</code> 完全禁用。</p>
+
+<p>> ⚠️ <strong>后台子代理最容易踩的坑：</strong> 它撞上未批准的工具时，<strong>那次调用失败，但子代理会继续跑下去</strong>——于是你得到一份"看起来完成了、实际缺了一块"的结果。<strong>遇到可疑结果，改用前台重跑。</strong></p>
+
+<h3>Level 7 — 专家级：Fork 模式、模型分层、三种编排原语的取舍</h3>
+
+<p><strong>Fork 模式（实验性，需 v2.1.117+，<code class="inline">CLAUDE_CODE_FORK_SUBAGENT=1</code>）：</strong> fork <strong>继承到目前为止的整个对话</strong>，而不是从零开始。好处是<strong>首次请求复用父会话的 prompt cache，比新开子代理更便宜</strong>。限制：<strong>fork 不能再 fork</strong>，建不了深树。</p>
+
+<p><strong><code class="inline">CLAUDE_CODE_SUBAGENT_MODEL</code> 的语义在 2.1.251 变了——这条容易踩：</strong></p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>版本</th>
+<th>行为</th>
+</tr></thead><tbody>
+<tr>
+<td>2.1.251 之前</td>
+<td><strong>覆盖一切</strong>，强制会话内所有子代理用同一模型</td>
+</tr>
+<tr>
+<td><strong>2.1.251 起</strong></td>
+<td>只设<strong>默认值</strong>；agent 定义里的 <code class="inline">model:</code> 和显式的 per-spawn 模型<strong>优先级更高</strong></td>
+</tr>
+</tbody></table></div>
+
+<p>> 如果你靠这个环境变量做成本上限或合规管控，<strong>升级后要重新验证</strong>——它不再是硬约束了。</p>
+
+<p><strong>模型分层的实战配置：</strong> 主会话跑 Opus 做复杂推理，子代理跑 Sonnet 做聚焦任务，是社区讨论最多的多代理模式。</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>子代理</th>
+<th>允许工具</th>
+<th>推荐模型</th>
+<th>用途</th>
+</tr></thead><tbody>
+<tr>
+<td>code-reviewer</td>
+<td>Read, Grep, Glob</td>
+<td>Sonnet</td>
+<td>PR 合并前审查，按文件和严重级出结构化报告</td>
+</tr>
+<tr>
+<td>debugger</td>
+<td>Read, Edit, Bash, Grep, Glob</td>
+<td>Sonnet</td>
+<td>复现失败、跑测试、提定向补丁</td>
+</tr>
+<tr>
+<td>test-writer</td>
+<td>Read, Write, Edit, Bash, Glob, Grep</td>
+<td>Sonnet</td>
+<td>为变更模块生成单测与集成测试</td>
+</tr>
+<tr>
+<td>security-auditor</td>
+<td>Read, Grep, Glob</td>
+<td><strong>Opus</strong></td>
+<td>只读审计漏洞、密钥、不安全模式</td>
+</tr>
+<tr>
+<td>doc-maintainer</td>
+<td>Read, Write, Edit, Glob, Grep, WebFetch, WebSearch</td>
+<td><strong>Haiku</strong></td>
+<td>让 README / API 文档与代码同步</td>
+</tr>
+</tbody></table></div>
+
+<p><strong>为什么这么配：</strong> <code class="inline">debugger</code> 保留 <code class="inline">Bash</code> 才能"复现→打补丁→重测"闭环，<strong>没有 <code class="inline">Bash</code> 它只能猜不能验</strong>；<code class="inline">security-auditor</code> 上 Opus 是因为细微模式识别正是 Opus 拉开差距的地方，而 Read/Grep/Glob 已经够用；<code class="inline">doc-maintainer</code> 用 Haiku 因为它主要是文件操作。</p>
+
+<p><strong>三种原语的完整对照：</strong></p>
+
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th>Subagents</th>
+<th>Skills</th>
+<th>Agent Teams</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>运行位置</strong></td>
+<td>隔离子上下文，摘要回父</td>
+<td>主对话上下文，按需加载</td>
+<td>独立 Claude 实例，完全独立</td>
+</tr>
+<tr>
+<td><strong>通信</strong></td>
+<td>只向父汇报</td>
+<td>内联在父记录中</td>
+<td>队友之间用 <code class="inline">SendMessage</code> 直接对话</td>
+</tr>
+<tr>
+<td><strong>状态</strong></td>
+<td>每次调用全新（除非开 memory）</td>
+<td>用时加载，无状态</td>
+<td>每个会话各自独立</td>
+</tr>
+<tr>
+<td><strong>适合</strong></td>
+<td>中间产物冗长的聚焦任务</td>
+<td>主上下文里的可复用提示与流程</td>
+<td>需要专家之间来回讨论的复杂工作</td>
+</tr>
+<tr>
+<td><strong>Token 成本</strong></td>
+<td>较低（只回摘要）</td>
+<td><strong>最低</strong></td>
+<td><strong>最高</strong>（每个队友是一个完整实例）</td>
+</tr>
+<tr>
+<td><strong>状态</strong></td>
+<td>GA</td>
+<td>GA</td>
+<td><strong>实验性，默认关闭</strong></td>
+</tr>
+</tbody></table></div>
+
+<p>Agent Teams 需 v2.1.32+，<code class="inline">CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1</code>。</p>
+
+<p><strong>取舍口诀：先上子代理；想让指令留在主上下文里就用 Skill；只有当一个专家不够、他们真的需要来回讨论方案时，才上 Agent Teams。</strong></p>
+
+<hr>
+
+<h2>二、高手实战技巧表格</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>#</th>
+<th>技巧</th>
+<th>说明</th>
+<th>难度</th>
+<th>来源</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td>升级到 <a href="https://www.claudeupdates.dev/version/2.1.252" target="_blank" rel="noopener">2.1.252</a></td>
+<td>修好新项目里 "always allow" 不保存</td>
+<td>★</td>
+<td>官方 changelog</td>
+</tr>
+<tr>
+<td>2</td>
+<td>分清 <code class="inline">CLAUDE.md</code> 与 <code class="inline">settings.local.json</code></td>
+<td>一个给模型看，一个给运行时看；前者进 git 后者不进</td>
+<td>★</td>
+<td>官方文档</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code class="inline">!</code> 前缀直接执行 bash</td>
+<td>立即执行并把输出注入上下文，省 token</td>
+<td>★</td>
+<td><a href="https://aicodingdaily.substack.com/p/claude-code-my-favorite-10-tips-and" target="_blank" rel="noopener">社区</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td><code class="inline">/export</code> 导出整段对话</td>
+<td>存文件或剪贴板，便于分享和事后排查</td>
+<td>★</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>在 60% 就 <code class="inline">/compact</code>，别等 95%</strong></td>
+<td>自动压缩是有损安全网，不是工作流</td>
+<td>★★</td>
+<td><a href="https://www.mindstudio.ai/blog/claude-code-compact-command-context-management-2" target="_blank" rel="noopener">社区</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td>写 <code class="inline">.claudeignore</code></td>
+<td>排除 <code class="inline">node_modules/</code>、<code class="inline">dist/</code>、日志、生成物</td>
+<td>★★</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>7</td>
+<td>重复解释第二遍时，写进 <code class="inline">CLAUDE.md</code></td>
+<td>重复注入背景是三大 token 泄漏源里最隐蔽的一个</td>
+<td>★★</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>8</td>
+<td>从 <code class="inline">PostToolUse</code> 跑格式化起步写第一个 hook</td>
+<td>不阻断、不误伤，出错代价最小</td>
+<td>★★</td>
+<td><a href="https://code.claude.com/docs/en/hooks" target="_blank" rel="noopener">Hooks 文档</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td><code class="inline">/cost</code> 看每会话缓存命中率</td>
+<td>2.1.251 新增命中率/未命中/重新缓存 token/冷热</td>
+<td>★★</td>
+<td>官方 changelog</td>
+</tr>
+<tr>
+<td>10</td>
+<td><code class="inline">/usage</code> 设 spend limit 进度条</td>
+<td>配合状态栏 <code class="inline">rate_limits.spend_limit</code> 字段</td>
+<td>★★</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>11</td>
+<td>先用够内置 Explore / Plan 再自定义</td>
+<td>Explore 跑 Haiku 且禁 Write/Edit，天然安全</td>
+<td>★★</td>
+<td><a href="https://www.tembo.io/blog/claude-code-subagents" target="_blank" rel="noopener">Tembo</a></td>
+</tr>
+<tr>
+<td>12</td>
+<td>子代理 <code class="inline">description</code> 写 "use proactively"</td>
+<td>这是自动委派能否触发的关键</td>
+<td>★★★</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>13</td>
+<td>子代理里<strong>明确写死输出格式</strong></td>
+<td>父代理拿到的就是这个形状</td>
+<td>★★★</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>14</td>
+<td><code class="inline">tools</code> 白名单 + <code class="inline">disallowedTools</code> 黑名单</td>
+<td>先减黑名单，再在剩余池解析白名单</td>
+<td>★★★</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>15</td>
+<td><strong><code class="inline">tools</code> 表达不了的约束，用 <code class="inline">PreToolUse</code> hook 补</strong></td>
+<td>如"只读 SQL"：给 Bash 配正则拦截 hook</td>
+<td>★★★★</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>16</td>
+<td><code class="inline">@agent-<name></code> 保证点名执行</td>
+<td>自然语言点名只是提示，<code class="inline">@</code> 才是保证</td>
+<td>★★★</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>17</td>
+<td><code class="inline">claude --agent <name></code> 把整个主线程变成专家</td>
+<td>适合"这整轮 CI 就是一次安全审查"</td>
+<td>★★★</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>18</td>
+<td>后台子代理结果可疑时，前台重跑</td>
+<td>它撞上未批准工具会失败但继续跑完</td>
+<td>★★★</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>19</td>
+<td>Fork 模式复用父会话 prompt cache</td>
+<td><code class="inline">CLAUDE_CODE_FORK_SUBAGENT=1</code>，v2.1.117+；<strong>fork 不能再 fork</strong></td>
+<td>★★★★</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>20</td>
+<td><strong>重新验证 <code class="inline">CLAUDE_CODE_SUBAGENT_MODEL</code></strong></td>
+<td>2.1.251 起它只设默认值，不再覆盖一切</td>
+<td>★★★★</td>
+<td>官方 changelog</td>
+</tr>
+<tr>
+<td>21</td>
+<td><code class="inline">/effort</code> 现在按模型分别记忆默认档位</td>
+<td>2.1.251 起切模型不会串档</td>
+<td>★★</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>22</td>
+<td><code class="inline">PreModelSwitch</code> hook 里<strong>不要放慢操作</strong></td>
+<td>超时 = 阻止切换，网络抖动会把你锁死</td>
+<td>★★★★★</td>
+<td><a href="https://code.claude.com/docs/en/hooks" target="_blank" rel="noopener">Hooks 文档</a></td>
+</tr>
+<tr>
+<td>23</td>
+<td>读 <code class="inline">from_model</code>/<code class="inline">to_model</code>，不是 <code class="inline">model</code></td>
+<td>这两个事件没有标准 <code class="inline">model</code> 字段</td>
+<td>★★★★★</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>24</td>
+<td>主 Opus + 子 Sonnet 的分层</td>
+<td>社区讨论最多的多代理成本模式</td>
+<td>★★★★</td>
+<td><a href="https://dev.to/nunc/claude-code-skills-vs-subagents-when-to-use-what-4d12" target="_blank" rel="noopener">社区</a></td>
+</tr>
+<tr>
+<td>25</td>
+<td>版本信息<strong>双源交叉</strong>再下结论</td>
+<td>单个聚合源"无新条目"不是可下结论的信号</td>
+<td>★★</td>
+<td>本期自我纠错</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>三、YouTube 教程推荐</h2>
+
+<p>> ⚠️ <strong>本期未通过浏览器实时采集。</strong> 下表来自 WebSearch 命中结果，<strong>观看量与时长均为未实测，一律留空</strong>。发布日期取自搜索结果摘要，未逐条打开核实。</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>视频标题</th>
+<th>作者</th>
+<th>观看量</th>
+<th>时长</th>
+<th>发布</th>
+<th>特色内容</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=sX-FmJL7Wd0" target="_blank" rel="noopener">Claude Code Tutorial for Beginners (2026) — Master It in 1 Hour: Skills, Subagents, Hooks & MCP</a></td>
+<td>未实测</td>
+<td>未实测</td>
+<td>未实测</td>
+<td>2026-05-23</td>
+<td>从安装与 <code class="inline">CLAUDE.md</code> 讲起，四大主题一小时打包</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=qiDalcMeBFk" target="_blank" rel="noopener">How to Use Multi-Agent Workflows in Claude Code: Skills, Subagents & Handoffs (2026)</a></td>
+<td>未实测</td>
+<td>未实测</td>
+<td>未实测</td>
+<td>2026-07-26</td>
+<td>多代理工作流与 handoff 设计</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=oo1oADOiVmM" target="_blank" rel="noopener">Hooks in Claude Code — Full Theory + Practical Use</a></td>
+<td>CampusX</td>
+<td>未实测</td>
+<td>未实测</td>
+<td>2026-05-12</td>
+<td>Hooks 理论 + 实操，偏"安全可靠的工作流"视角</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=MbKUeufUZIY" target="_blank" rel="noopener">Claude Code Sub-Agents: Step-by-Step Beginner Tutorial</a></td>
+<td>未实测</td>
+<td>未实测</td>
+<td>未实测</td>
+<td>2026-03-31</td>
+<td>子代理入门：各自的上下文、工具与职责</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=PnPsf-hwGtI" target="_blank" rel="noopener">The ONLY Claude Cowork Tutorial You'll Ever Need in 2026</a></td>
+<td>未实测</td>
+<td>未实测</td>
+<td>未实测</td>
+<td>未实测</td>
+<td>目前检索到的 Cowork 综合教程</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/playlist?list=PL4cUxeGkcC9g4YJeBqChhFJwKQ9TRiivY" target="_blank" rel="noopener">Claude Code Tutorial（播放列表）</a></td>
+<td>未实测</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>系列合集，适合系统过一遍</td>
+</tr>
+</tbody></table></div>
+
+<p><strong>检索入口：</strong> <a href="https://www.youtube.com/results?search_query=Claude+Code+tips+tricks+2026" target="_blank" rel="noopener">YouTube: Claude Code tips tricks 2026</a> · <a href="https://www.youtube.com/results?search_query=Claude+Cowork+tutorial+2026" target="_blank" rel="noopener">YouTube: Claude Cowork tutorial 2026</a></p>
+
+<hr>
+
+<h2>四、Reddit 讨论精选</h2>
+
+<p>> ⚠️ <strong>Reddit 无法直接浏览</strong>（Chrome 扩展未连接、内置浏览器导航被拒），且<strong>已确认目前没有可用的 Reddit MCP connector</strong>。本节通过 WebSearch 采集，<strong>未能定位到可追溯的具体帖子 URL</strong>，因此只列出经二手信源转述、且被多处交叉印证的社区共识，<strong>不伪造帖子标题</strong>。</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>社区共识</th>
+<th>子版块</th>
+<th>要点</th>
+<th>交叉印证</th>
+</tr></thead><tbody>
+<tr>
+<td>Skills 与 Subagents 的分工</td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>"Skill 像菜谱，Subagent 像专门的同事"；Skill 是<strong>规定怎么做</strong>的文件系统文档，Subagent 是<strong>实际执行</strong>的引擎</td>
+<td><a href="https://dev.to/nunc/claude-code-skills-vs-subagents-when-to-use-what-4d12" target="_blank" rel="noopener">dev.to</a> · <a href="https://www.tembo.io/blog/claude-code-subagents" target="_blank" rel="noopener">Tembo</a></td>
+</tr>
+<tr>
+<td>多代理是讨论最热的高级技巧</td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>主会话跑 Opus 做复杂推理，子代理跑 Sonnet 做聚焦任务</td>
+<td><a href="https://dev.to/sandeep_thuthike/claude-skills-vs-sub-agents-architecture-use-cases-and-effective-patterns-2moa" target="_blank" rel="noopener">dev.to</a></td>
+</tr>
+<tr>
+<td>上下文管理是最普遍的痛点</td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td><code class="inline">/compact</code> 时机、<code class="inline">.claudeignore</code>、把 <code class="inline">CLAUDE.md</code> 当版本化的活文档维护</td>
+<td><a href="https://dev.to/_37bbf0c253c0b3edec531e/managing-claude-codes-context-a-practical-handbook-4cl6" target="_blank" rel="noopener">DEV 手册</a></td>
+</tr>
+<tr>
+<td>心智模型转变</td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>从"逐行微管理代码"转向"编排一支遵守你工程规范的专业进程队伍"</td>
+<td><a href="https://www.morphllm.com/claude-code-reddit" target="_blank" rel="noopener">morphllm 汇总</a></td>
+</tr>
+</tbody></table></div>
+
+<p><strong>检索入口：</strong> <a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a> · <a href="https://www.reddit.com/r/ClaudeAI/search/?q=subagents&sort=new" target="_blank" rel="noopener">r/ClaudeAI 搜索 "subagents"</a></p>
+
+<hr>
+
+<h2>五、X 热门帖子</h2>
+
+<p>> ⚠️ <strong>本期内置浏览器对 <code class="inline">x.com</code> 的导航被拒，无一手采集数据。</strong> 下表只列出<strong>通过检索命中、URL 可追溯</strong>的帖子；<strong>互动数据（💬🔁❤️👁）一律标注"未实测"，不填任何估算数字</strong>。</p>
+
+<h3>Claude Code Tips 热帖</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>作者</th>
+<th>内容摘要</th>
+<th>互动</th>
+<th>亮点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://x.com/ClaudeCodeLog" target="_blank" rel="noopener">@ClaudeCodeLog</a></td>
+<td><a href="https://x.com/ClaudeCodeLog/status/2093407919714754822" target="_blank" rel="noopener">2.1.251 CLI changelog</a>：新增 <code class="inline">PreModelSwitch</code>/<code class="inline">PostModelSwitch</code> hook 事件（阻止、确认或标注模型切换）；<code class="inline">SessionStart</code> resume hook 现在会收到会话陈旧度与预估重新缓存成本</td>
+<td>未实测</td>
+<td>官方变更的机器可读镜像，适合做订阅源</td>
+</tr>
+<tr>
+<td><a href="https://x.com/ClaudeCodeLog" target="_blank" rel="noopener">@ClaudeCodeLog</a></td>
+<td><a href="https://x.com/ClaudeCodeLog/status/2093407907446444049" target="_blank" rel="noopener">2.1.251 发布摘要</a>：71 项 CLI 变更；文件 Read/Write/Edit 现在会阻止被调包、逃逸出工作目录的符号链接</td>
+<td>未实测</td>
+<td><strong>符号链接调包是本轮最重要的安全修复</strong></td>
+</tr>
+</tbody></table></div>
+
+<h3>Claude Cowork 热帖</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>作者</th>
+<th>内容摘要</th>
+<th>互动</th>
+<th>亮点</th>
+</tr></thead><tbody>
+<tr>
+<td>—</td>
+<td>本期检索<strong>未命中</strong>可追溯到具体推文 URL 的 Cowork 社区帖</td>
+<td>—</td>
+<td>本节留空，待采集链路恢复后补</td>
+</tr>
+</tbody></table></div>
+
+<p><strong>检索入口（可自行核实实时数据）：</strong> <a href="https://x.com/search?q=Claude%20Code%20tips&f=live" target="_blank" rel="noopener">X: Claude Code tips（最新）</a> · <a href="https://x.com/search?q=Claude%20Cowork&f=live" target="_blank" rel="noopener">X: Claude Cowork（最新）</a></p>
+
+<hr>
+
+<h2>六、跨平台趋势总结</h2>
+
+<p><strong>1. 8 月收官：28 个版本，最后一版只有 4 个 bug fix。</strong></p>
+
+<p>2.1.252 是 8 月的第 28 个版本，4 项变更、100% 修复、平均变更量的 0.3 倍。对比 2.1.251 的 71 项变更（5.5 倍于平均）——<strong>一个大版本之后跟一个小补丁版，是"大改动落地后收尾"的正常形态</strong>，不是节奏放缓。</p>
+
+<p><strong>2. 修复清单正在从"某个功能不对"转向"agent 特有的失效模式"。</strong></p>
+
+<p>看 2.1.252 这 4 条的性质：</p>
+
+<ul>
+<li><strong>"always allow" 不保存</strong>——状态持久化在边界条件（文件不存在）下静默失败；</li>
+<li><strong>Remote Control 工具跑完仍僵住</strong>——分布式会话的状态同步；</li>
+<li><strong>后台任务的巨大失败输出撑爆请求</strong>——错误信息成了故障放大器。</li>
+</ul>
+
+<p><strong>这三条没有一条是"某个功能算错了"，全都是"长时间运行、多进程、跨机器的 agent 会话"这个新形态特有的失效模式。</strong> 传统 CLI 工具不会有这些 bug，因为它们不长期持有状态、不跨机器、不把子进程输出回灌给一个有 token 上限的模型。</p>
+
+<p><strong>3. 权限模型的粒度不够时，社区的统一答案是"用 hook 补"。</strong></p>
+
+<p>"只读 SQL 的校验子代理"是一个很好的样本：<code class="inline">tools: Bash</code> 太宽，不给 <code class="inline">Bash</code> 又验不了。<strong>答案不是等官方把权限字段做得更细，而是承认"声明式权限"和"确定性脚本"是两层，各干各的。</strong> 这和 2.1.251 那批"托管设置改动需要批准"的变更是同一个思路——<strong>权限不是一个字段，是一套分层的闸门。</strong></p>
+
+<p><strong>4. 编排原语已经分化完成，剩下的是选型问题。</strong></p>
+
+<p>Subagents（GA）/ Skills（GA）/ Agent Teams（实验性）三者的边界现在很清楚：<strong>隔离上下文 / 内联指令 / 独立实例互相对话</strong>，成本从低到高。加上 fork 模式（复用 prompt cache）这个中间档，<strong>选型的维度已经不是"能不能做"，而是"这个任务的中间产物有多脏、要不要来回讨论、预算多少"</strong>。</p>
+
+<p><strong>5. 采集链路连续三期失效——这不是数据问题，是流程问题。</strong></p>
+
+<p>见第八节。<strong>在修好之前，本日报"未实测"的标注量只会增加，不会减少。</strong></p>
+
+<hr>
+
+<h2>七、进阶路线图</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>阶段</th>
+<th>目标</th>
+<th>关键动作</th>
+<th>验收标准</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>第 1 周</strong></td>
+<td>让配置各归其位</td>
+<td>分清 <code class="inline">CLAUDE.md</code>（进 git，不放密钥）与 <code class="inline">.claude/settings.local.json</code>；升到 2.1.252</td>
+<td>新项目里 "always allow" 点一次就记住</td>
+</tr>
+<tr>
+<td><strong>第 2 周</strong></td>
+<td>让上下文可控</td>
+<td>60% 主动 <code class="inline">/compact</code>；写 <code class="inline">.claudeignore</code>；重复解释的内容搬进 <code class="inline">CLAUDE.md</code></td>
+<td>单会话不再触发自动压缩</td>
+</tr>
+<tr>
+<td><strong>第 3 周</strong></td>
+<td>让成本可见</td>
+<td><code class="inline">/cost</code> 看缓存命中率；<code class="inline">/usage</code> 设 spend limit；<code class="inline">/effort</code> 按模型配档</td>
+<td>能说出自己命中率低的原因</td>
+</tr>
+<tr>
+<td><strong>第 4 周</strong></td>
+<td>让规则被强制</td>
+<td>写第一个 hook，从 <code class="inline">PostToolUse</code> 跑 lint 起步</td>
+<td>hook 稳定触发且不误拦</td>
+</tr>
+<tr>
+<td><strong>第 5 周</strong></td>
+<td>让噪音被隔离</td>
+<td>先用内置 Explore/Plan；再写第一个自定义子代理（建议 code-reviewer）</td>
+<td>父会话不再被 grep 结果和堆栈淹没</td>
+</tr>
+<tr>
+<td><strong>第 6 周</strong></td>
+<td>让工具被收窄</td>
+<td><code class="inline">tools</code> 白名单 + <code class="inline">disallowedTools</code>；<code class="inline">tools</code> 表达不了的用 <code class="inline">PreToolUse</code> hook 补</td>
+<td>每个子代理都只拿到它需要的工具</td>
+</tr>
+<tr>
+<td><strong>第 7–8 周</strong></td>
+<td>让模型分层</td>
+<td>主 Opus + 子 Sonnet；security-auditor 上 Opus，doc-maintainer 上 Haiku</td>
+<td>成本下降但审查质量不降</td>
+</tr>
+<tr>
+<td><strong>第 9 周+</strong></td>
+<td>让编排成体系</td>
+<td>fork 模式复用缓存；<code class="inline">PreModelSwitch</code> 做受控灰度；评估 Agent Teams</td>
+<td>安全边界与职责边界对齐</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>八、推荐行动</h2>
+
+<p><strong>立刻做（今天）</strong></p>
+
+<p>1. <strong>升级到 <a href="https://www.claudeupdates.dev/version/2.1.252" target="_blank" rel="noopener">2.1.252</a>。</strong> 如果你有项目长期"权限提示特别烦"，先 <code class="inline">ls -a</code> 看有没有 <code class="inline">.claude/settings.local.json</code>——<strong>没有的话这就是原因</strong>，升级即修好。</p>
+<p>2. <strong>如果你在 2.1.251 之后写过或依赖 <code class="inline">CLAUDE_CODE_SUBAGENT_MODEL</code> 做成本上限，重新验证一遍。</strong> 它已经从"覆盖一切"降级为"只设默认值"，agent 定义里的 <code class="inline">model:</code> 会盖过它。<strong>原来是硬约束，现在不是了。</strong></p>
+
+<p><strong>本周做</strong></p>
+
+<p>3. <strong>把 <code class="inline">/compact</code> 的时机从"等它自动触发"改成"60% 主动做"。</strong> 这是投入产出比最高的一条上下文纪律。</p>
+<p>4. <strong>写第一个子代理，选 code-reviewer。</strong> 只读、<code class="inline">tools: Read, Glob, Grep</code>、跑 Sonnet——是最安全的第一步。<strong>记得 <code class="inline">description</code> 里写 "use proactively"，并在正文里写死输出格式。</strong></p>
+<p>5. <strong>检查你有没有在项目级 <code class="inline">.claude/settings.json</code> 的 <code class="inline">env</code> 里设过 <code class="inline">TMPDIR</code> / <code class="inline">CLAUDE_CONFIG_DIR</code>。</strong> 2.1.251 起这些会被忽略，如果你的流程依赖它们，现在是静默失效状态。</p>
+
+<p><strong>本月做</strong></p>
+
+<p>6. <strong>给需要 <code class="inline">Bash</code> 但应该只读的子代理配 <code class="inline">PreToolUse</code> 拦截 hook。</strong> 数据库校验、生产环境查询都属于这一类。<strong>权限字段做不到的，hook 能做到。</strong></p>
+<p>7. <strong>如果要用 <code class="inline">PreModelSwitch</code>：读 <code class="inline">from_model</code>/<code class="inline">to_model</code> 而不是 <code class="inline">model</code>，并且 hook 里绝对不要放网络请求。</strong> 超时 = 阻止切换，一次抖动就把你锁在当前模型上。</p>
+<p>8. <strong>想试 fork 模式的话（<code class="inline">CLAUDE_CODE_FORK_SUBAGENT=1</code>，v2.1.117+），先想清楚它不能再 fork。</strong> 建不了深树，只适合"一层扇出"。</p>
+
+<p><strong>流程修复（连续第三期，优先级已高于内容本身）</strong></p>
+
+<p>9. <strong>一手采集链路已连续三期失效，且本期还因单源判断产生了一次事实性错误。两个问题必须分开修：</strong></p>
+
+<p>   <strong>(a) 采集失效 —— 结构性冲突，三选一：</strong></p>
+<ul>
+<li>改到<strong>有人值守的时段</strong>运行，或在定时任务前手工预批准 <code class="inline">x.com</code> / <code class="inline">youtube.com</code> 站点权限（若权限可持久化）；</li>
+<li><strong>保持 Chrome 扩展常连</strong>（本机已连续三期显示未连接）；</li>
+<li><strong>接受现状</strong>，把日报定位正式改为"官方源 + 多源交叉核对"，删掉第三、五节里注定填不上的观看量/互动量列。</li>
+</ul>
+
+<p>   <strong>(b) 单源判断 —— 已修，成本极低：</strong> 版本信息改为 <strong><a href="https://www.claudeupdates.dev/" target="_blank" rel="noopener">claudeupdates.dev</a> + <a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">官方 changelog</a> 双源交叉</strong>，Releasebot 降级为参考。<strong>昨天那条错误如果多查一个源就不会发生。</strong></p>
+
+<hr>
+
+<p><em>本期共核查外部链接 25+ 条；<strong>主动纠正上期事实性错误 1 处</strong>（8/31 误判"三天无新版本"，实际 2.1.252 当日发布）；因无法追溯原帖而留空 1 节（Cowork X 热帖）、降级处理 1 节（Reddit：只列可交叉印证的共识，不伪造帖子标题）；YouTube 观看量与时长因浏览器不可用全部标注"未实测"。</em></p>
+
+  </div>
+</article>
+<div class="article-footer">
+  <div class="container">
+    <a href="../#ai-trends">← 返回首页</a>
+  </div>
+</div>
+</body>
+</html>

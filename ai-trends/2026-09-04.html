@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 动态追踪日报 — Claude Cowork & Claude Code | 张翰之</title>
+<meta name="description" content="「社区猜测 → 官方确认」的闭环第一次在本报告内完成。 — 9/2 社区说「指向密集的缓存活动」，9/3 官方 changelog 写「工具结果之后的上下文每轮未缓存重发」。**这两句话说的是同...">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;
+  --text:#e0e0e8;--text-dim:#8888a0;--text-bright:#ffffff;
+  --accent:#00d4aa;--accent2:#00a8ff;--accent3:#7c5cfc;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --max-w:900px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.8;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent2)}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:0;
+}
+
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+nav .inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--accent)}
+nav .logo svg{width:28px;height:28px}
+nav .back{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--accent)}
+
+/* Article */
+article{padding:100px 0 60px}
+.article-meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.article-date{font-family:var(--mono);font-size:.8rem;color:var(--accent);padding:4px 12px;border:1px solid rgba(0,212,170,.3);border-radius:4px}
+.article-tag{font-family:var(--mono);font-size:.65rem;color:var(--accent2);padding:2px 8px;background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.15);border-radius:4px}
+
+article h1{font-size:1.8rem;font-weight:700;color:var(--text-bright);margin-bottom:32px;line-height:1.3}
+article h2{font-size:1.35rem;font-weight:600;color:var(--accent);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,170,.15)}
+article h3{font-size:1.1rem;font-weight:600;color:var(--accent2);margin:28px 0 12px}
+article h4{font-size:.95rem;font-weight:600;color:var(--accent3);margin:20px 0 8px}
+article p{margin-bottom:12px;color:var(--text)}
+article ul{margin:0 0 16px 20px}
+article li{margin-bottom:8px;color:var(--text)}
+article li strong{color:var(--accent)}
+article hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:32px 0}
+article code.inline{font-family:var(--mono);font-size:.85em;background:rgba(0,212,170,.1);color:var(--accent);padding:2px 6px;border-radius:4px}
+article pre{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+article pre code{font-family:var(--mono);font-size:.85rem;color:var(--text)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);text-align:left;padding:10px 12px;border-bottom:2px solid rgba(0,212,170,.2);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text)}
+tr:hover td{background:rgba(0,212,170,.03)}
+
+/* Footer */
+.article-footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:60px;text-align:center}
+.article-footer a{font-family:var(--mono);font-size:.85rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="../" class="logo"><svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="url(#lg)"/><path d="M7 8h3v12H7V8zm4 5h6v3h-6v-3zm7-5h3v12h-3V8z" fill="#0a0a0f"/><defs><linearGradient id="lg" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00d4aa"/><stop offset="1" stop-color="#00a8ff"/></linearGradient></defs></svg><span>&lt;</span>HZ<span>/&gt;</span></a>
+    <a href="../#ai-trends" class="back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> 返回日报列表</a>
+  </div>
+</nav>
+<article>
+  <div class="container">
+    <div class="article-meta">
+      <span class="article-date">2026-09-04</span>
+      <span class="article-tag">CLAUDE.md</span> <span class="article-tag">Skills</span> <span class="article-tag">Scheduled Tasks</span> <span class="article-tag">MCP</span> <span class="article-tag">Hooks</span>
+    </div>
+    <h1>AI 动态追踪日报 — Claude Cowork & Claude Code</h1>
+    <p><strong>日期：</strong> 2026-09-04</p>
+<p><strong>数据来源：</strong> Claude Code 官方 changelog（一手全文）· Claude Platform 官方文档（一手全文）· Web · X（趋势话题，无互动量）· Reddit（受限）</p>
+
+<p>> ⚠️ <strong>采集方式说明（连续第六期无浏览器一手数据）：</strong> Claude in Chrome 扩展 <code class="inline">list_connected_browsers</code> 返回<strong>空数组</strong>（未连接）；内置浏览器对 <code class="inline">x.com</code>、<code class="inline">youtube.com</code>、<code class="inline">claude.com</code> 的导航<strong>逐个被拒</strong>——无人值守的定时任务无法完成站点权限批准。第三节的观看量/时长、第五节的互动量（💬🔁❤️👁）<strong>一律留空，不填任何估算数字</strong>。</p>
+<p>></p>
+<p>> ✅ <strong>本期一手数据：</strong> 完整抓取了 <a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">Claude Code 官方 changelog</a>（123KB 全文）与 <a href="https://platform.claude.com/docs/en/build-with-claude/cache-diagnostics" target="_blank" rel="noopener">Cache diagnostics 官方文档</a> 全文。<strong>发现两个此前从未在本报告中出现过的版本：2.1.259（9/2）和 2.1.260（9/3）。</strong> 其中一条修复，直接给前两天悬而未决的「Fable 5.1 烧配额」事件<strong>结了案</strong>。</p>
+
+<hr>
+
+<h2>今日焦点一：「Fable 5.1 52 分钟烧光配额」结案 —— 官方 changelog 承认了那个缓存 bug</h2>
+
+<p>回顾一下这个故事的三天：</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>日期</th>
+<th>事件</th>
+</tr></thead><tbody>
+<tr>
+<td>9/1</td>
+<td>Fable 5.1 发布（<code class="inline">claude-fable-5-1</code>），1M 上下文，缓存读取 $0.25/Mtok，官方口径「典型负载省 25%、智能体负载省 45%」</td>
+</tr>
+<tr>
+<td>9/2</td>
+<td>X 出现<a href="https://x.com/i/trending/2095065746803966148" target="_blank" rel="noopener">趋势话题</a>：有人<strong>一条提示词跑完 20x Max 的 5 小时配额（52 分钟）</strong>，另一些人<strong>4 分钟触顶</strong>；社区猜测「<strong>指向密集的缓存活动</strong>」</td>
+</tr>
+<tr>
+<td>9/3</td>
+<td>本报告写「降价与烧额度不矛盾，是计费口径不同」——<strong>这个解释只对了一半</strong></td>
+</tr>
+<tr>
+<td><strong>9/4（今天）</strong></td>
+<td><strong>2.1.260 changelog 直接写明这是 bug</strong></td>
+</tr>
+</tbody></table></div>
+
+<p>原文一句话，值得逐字读：</p>
+
+<p>> "Fixed prompt caching on Claude Fable 5.1 <strong>not covering the context attached after tool results</strong>, so it was <strong>re-sent as uncached input on every tool-call turn</strong>."</p>
+<p>> —— <a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">Claude Code changelog 2.1.260</a></p>
+
+<p><strong>翻译成人话：</strong> 你每调用一次工具，工具结果之后挂上去的那部分上下文<strong>全部按未缓存输入重新计费</strong>。Claude Code 是一个每轮都在调工具的智能体——读文件、跑 bash、grep、编辑——所以这个 bug 的放大倍数<strong>正好等于你这一轮的工具调用密度</strong>。</p>
+
+<p>这就解释了为什么「52 分钟烧光」和「省 45%」能同时是真的：</p>
+
+<ul>
+<li><strong>省 45%</strong> 是缓存正常工作时的账</li>
+<li><strong>52 分钟烧光</strong> 是缓存<strong>根本没工作</strong>时的账</li>
+<li>而智能体负载恰恰是<strong>两种情况下差距最大</strong>的那一类负载</li>
+</ul>
+
+<p>同一版还配了第二条相关修复：</p>
+
+<p>> "Improved <code class="inline">/effort</code> on Claude Fable 5.1 so <strong>changing effort mid-session no longer invalidates the prompt cache</strong>."</p>
+
+<p><strong>注意这条的讽刺意味：</strong> 9/2 社区给出的应对办法是「<strong>调低 effort 档位</strong>」。而在 2.1.260 之前，<strong>每调一次 effort 就砸掉一次缓存</strong>——也就是说，社区自救的动作本身，在当时又给账单加了一刀。</p>
+
+<p>📌 <strong>今天就能做的一件事：</strong> 如果你在用 Fable 5.1 并且觉得额度掉得离谱，<strong>先 <code class="inline">claude --version</code></strong>。低于 <code class="inline">2.1.260</code> 的，升级；升级前不要靠反复切 effort 来省钱。</p>
+
+<hr>
+
+<h2>今日焦点二：<code class="inline">/cost</code> 现在会告诉你「缓存为什么没命中」—— CLI 和 API 两条线终于对上了</h2>
+
+<p>2.1.260 加的这条，是过去半年 Claude Code 在可观测性上最实用的一次改动：</p>
+
+<p>> "Added <strong>a likely cause for prompt-cache misses</strong> (e.g. tool definitions or system prompt changed, idle past the TTL) to <code class="inline">/cost</code> and the status line's <strong><code class="inline">prompt_cache</code></strong> field."</p>
+
+<p>以前缓存没命中，你唯一的信号是 <code class="inline">cache_read_input_tokens</code> 变成 0，<strong>没有任何线索</strong>告诉你是哪一段变了。现在 <code class="inline">/cost</code> 直接给原因。</p>
+
+<p>而这不是孤立的一条 —— 它和 API 侧的 <a href="https://platform.claude.com/docs/en/build-with-claude/cache-diagnostics" target="_blank" rel="noopener">Cache diagnostics（beta）</a> 是同一套诊断逻辑的两个出口。官方文档对问题的描述几乎是同一句话：</p>
+
+<p>> "A reordered tool, a timestamp interpolated into your system prompt, or an edit to an earlier message can <strong>silently invalidate the cache</strong>. Without cache diagnostics, the only signal is <code class="inline">usage.cache_read_input_tokens</code> dropping to zero, <strong>with no indication of what changed</strong>."</p>
+
+<h3><code class="inline">cache_miss_reason</code> 全表（官方口径，值得存起来）</h3>
+
+<p>> "The response reports <strong>the earliest divergence only</strong>, so fix it first; later ones may be hidden behind it."</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>类型</th>
+<th>含义</th>
+<th>怎么改</th>
+</tr></thead><tbody>
+<tr>
+<td><code class="inline">model_changed</code></td>
+<td>换了模型（路由/AB/降级触发）。<strong>缓存是按模型分的</strong></td>
+<td>一段缓存会话里模型保持不变</td>
+</tr>
+<tr>
+<td><code class="inline">system_changed</code></td>
+<td>system 变了，通常是<strong>把时间戳/请求 ID 插进了系统提示词</strong></td>
+<td>系统提示词做成逐字节稳定的常量，动态数据挪到断点后的第一条 user 消息</td>
+</tr>
+<tr>
+<td><code class="inline">tools_changed</code></td>
+<td>tools 数组增删、<strong>重排</strong>，或 schema JSON 序列化不确定</td>
+<td>每轮发同样的工具、同样的顺序、<strong>排序过的 key</strong></td>
+</tr>
+<tr>
+<td><code class="inline">messages_changed</code></td>
+<td>前三者都没变，但<strong>历史被改写/截断/重排</strong>了，而不是追加</td>
+<td>把历史当成 append-only，assistant content 和 tool_result <strong>原样回传</strong></td>
+</tr>
+<tr>
+<td><code class="inline">previous_message_not_found</code></td>
+<td>找不到上一条的指纹。<strong>这不代表你的请求变了</strong></td>
+<td>每轮都带 beta header，相邻轮次别隔太久</td>
+</tr>
+<tr>
+<td><code class="inline">unavailable</code></td>
+<td>另一个「影响提示词的参数」变了：<code class="inline">tool_choice</code>、<code class="inline">thinking</code>、<code class="inline">context_management</code>、<code class="inline">output_config</code>、<code class="inline">output_format</code>、或<strong>活跃的 beta header 集合</strong></td>
+<td>这些参数在一段缓存会话的生命周期内保持不变</td>
+</tr>
+</tbody></table></div>
+
+<p><strong>最容易被忽略的是最后一行。</strong> 很多人排查半天 system 和 tools，其实是 <code class="inline">thinking</code> 配置或者 beta header 集合变了。</p>
+
+<h3>诊断结果 × 实际命中率的四象限</h3>
+
+<p>官方给的这张交叉表比单看任何一个指标都准：</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>diagnostics</th>
+<th>缓存读取 token</th>
+<th>结论</th>
+</tr></thead><tbody>
+<tr>
+<td><code class="inline">null</code></td>
+<td>高</td>
+<td>✅ 正常，前缀稳定且命中</td>
+</tr>
+<tr>
+<td><code class="inline">null</code></td>
+<td>低/零</td>
+<td>请求没变，是<strong>缓存条目过期了</strong> → 缩短轮次间隔，或用 <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching#1-hour-cache-duration" target="_blank" rel="noopener">1 小时 TTL</a></td>
+</tr>
+<tr>
+<td><code class="inline">*_changed</code></td>
+<td>低/零</td>
+<td>❌ <strong>你的 bug</strong>，按 type 修</td>
+</tr>
+<tr>
+<td><code class="inline">*_changed</code></td>
+<td>高</td>
+<td>罕见：变化发生在靠后位置，但更早的 <code class="inline">cache_control</code> 断点仍命中。值得修，影响小</td>
+</tr>
+</tbody></table></div>
+
+<p>📌 <strong>对应到 Claude Code 用户：</strong> 你不需要写 API 代码就能用上——<code class="inline">/cost</code> 和状态栏 <code class="inline">prompt_cache</code> 字段现在就是这套诊断的 CLI 版本。<strong>把 <code class="inline">prompt_cache</code> 加进你的 statusline。</strong></p>
+
+<hr>
+
+<h2>今日焦点三：两个真实的权限绕过修复 —— 如果你依赖「只读目录」，请立刻升级</h2>
+
+<p>2.1.260 里有两条修复不是体验问题，是<strong>安全边界失效</strong>：</p>
+
+<p>> "Fixed <code class="inline">Edit</code>/<code class="inline">Write</code>/<code class="inline">Read</code> permission rules <strong>whose path contains parentheses</strong> being dropped as invalid or ignored by the Bash sandbox, <strong>which left "read-only" folders writable</strong>."</p>
+
+<p>> "Fixed Bash permission checks <strong>auto-approving zsh commands that hide a command substitution in a <code class="inline">REPORTTIME</code>, <code class="inline">REPORTMEMORY</code> or <code class="inline">DIRSTACKSIZE</code> assignment</strong>; these now prompt for approval."</p>
+
+<p>第一条影响面很实际：macOS 上带括号的路径极其常见（<code class="inline">~/Library/Application Support/…</code>、<code class="inline">项目 (备份)/</code>、<code class="inline">Photos (2026)/</code>）。<strong>你以为设了 <code class="inline">Read(./data (raw)/</strong>)</code> 的只读保护，实际上这条规则被整个丢掉了。**</p>
+
+<p>还有一条相关的：</p>
+
+<p>> "Fixed <strong>one file permission rule with an uncompilable pattern</strong> (e.g. an unclosed <code class="inline">[</code>) making <strong>every file edit fail</strong> with <code class="inline">Invalid regular expression</code>."</p>
+
+<p>一条写错的规则会<strong>让整个权限系统失效</strong>——一个方向是全部报错，另一个方向是静默放行。两种都很糟。</p>
+
+<p>以及一条<strong>回滚</strong>，说明官方也在这块反复权衡：</p>
+
+<p>> "<strong>Reverted</strong> the 2.1.259 change applying <code class="inline">Read()</code> deny rules to Bash arguments; it denied <code class="inline">npm run build</code> under a <code class="inline">Read(./<strong>/build/</strong>)</code> rule in every mode and made <code class="inline">cd … && grep</code> prompt even in auto mode."</p>
+
+<p>📌 <strong>今天就能做的一件事：</strong> 打开你的 <code class="inline">settings.json</code>，检查所有 <code class="inline">Read()</code> / <code class="inline">Edit()</code> / <code class="inline">Write()</code> 规则里<strong>有没有括号或方括号</strong>。有的话，升级到 2.1.260 之后<strong>重新验证一遍</strong>这些规则是否真的生效。2.1.260 还改进了报错：像 <code class="inline">Edit(C:\dir\(name)\**)</code> 这种 <code class="inline">\(</code> 被当成转义括号而非路径分隔符的写法，现在会提示你换一种无歧义的写法。</p>
+
+<hr>
+
+<h2>今日焦点四：<code class="inline">--permission-prompts none</code> —— 这份报告自己就是它的用例</h2>
+
+<p>2.1.259 加了一个专为无人值守场景设计的开关：</p>
+
+<p>> "Added <code class="inline">--permission-prompts none</code> for unattended headless hosts: <strong>anything that would prompt is denied automatically</strong> while the active permission mode (including auto mode) keeps deciding."</p>
+
+<p><strong>为什么这条对本报告特别有意义：</strong> 你正在读的这份日报连续六期无法采集 X / YouTube 一手数据，原因就是——定时任务在无人值守时跑，浏览器站点权限需要人点「批准」，<strong>没人在，于是卡住</strong>。<code class="inline">--permission-prompts none</code> 把这个含糊状态变成了确定行为：<strong>该问的一律判定为拒绝，不挂起、不假装成功。</strong></p>
+
+<p>这是一个值得记住的工程原则：<strong>无人值守环境下，「等待批准」是最差的语义</strong>。要么预授权，要么明确拒绝并让任务如实报告「这块没拿到」——像本报告第三、五节留空互动量那样。</p>
+
+<hr>
+
+<h2>一、高级用法精选（按难度分层）</h2>
+
+<h3>Level 1 — 基础配置</h3>
+<ul>
+<li><strong><code class="inline">claude --version</code> 应该是你今天的第一条命令。</strong> 低于 <code class="inline">2.1.260</code> 且在用 Fable 5.1，你正在为一个已修复的缓存 bug 付钱</li>
+<li><strong>原生安装包瘦身</strong>：2.1.259 用 zstd 压缩，Linux x64 的安装/自动更新下载从 <strong>约 340MB 降到约 75MB</strong></li>
+<li><strong><code class="inline">/diff</code> 新面板</strong>（2.1.260）：全屏模式下在对话<strong>旁边</strong>开一栏，Claude 编辑时实时显示未提交改动。用 <code class="inline">/diff</code> 切换</li>
+<li><strong><code class="inline">ctrl+l</code> / <code class="inline">cmd+k</code></strong>（2.1.260）：全屏模式下现在像终端 <code class="inline">clear</code> 一样清空 transcript 视图，往上滚仍能看到历史</li>
+<li><strong><code class="inline">timeFormat</code> / <code class="inline">timeZone</code></strong>（2.1.257）：12 小时 / 24 小时 / 24 小时 UTC / 自定义 strftime</li>
+</ul>
+
+<h3>Level 2 — Skills 技巧</h3>
+<ul>
+<li><strong><a href="https://claude.com/blog/the-anatomy-of-effective-commerce-agents" target="_blank" rel="noopener">9/2 官方三分之一定律</a></strong>（昨日焦点，今天仍是最高杠杆的一条）：<strong>≥1/3 的会话会用到 → 放系统提示词；<1/3 → 放 skill。</strong> 安全/法务/品牌约束<strong>无论比例多低都常驻</strong></li>
+<li><strong>skill 加载要花一个模型轮次</strong>（"Loading a skill costs a model turn"）。如果这个 skill 是从已知信号可预测的，<strong>直接在提示词里注入内容，跳过那一轮</strong></li>
+<li><strong><code class="inline">skillOverrides</code> 别名修复</strong>（2.1.260）：以别名为 key 的托管覆盖（如用 <code class="inline">checkup</code> 指 <code class="inline">/doctor</code>）此前不生效；<code class="inline">Skill(name)</code> 拒绝规则现在也覆盖 <code class="inline"><dir>:name</code> 形式的嵌套 skill</li>
+<li><strong>frontmatter <code class="inline">model:</code> 修复</strong>（2.1.259）：自定义命令和 skill 的 <code class="inline">model:</code> 在交互式会话中此前被忽略</li>
+</ul>
+
+<h3>Level 3 — 定时任务</h3>
+<ul>
+<li><strong><code class="inline">--permission-prompts none</code></strong>（2.1.259）：无人值守 headless 的正确姿势，见今日焦点四</li>
+<li><strong><code class="inline">/schedule</code> 空跑修复</strong>（2.1.257）：保存时缺少 message role 的定时任务会「跑起来但什么都不做」</li>
+<li><strong>暂停会话的审批修复</strong>（2.1.259）：远程和定时会话在<strong>暂停期间</strong>被批准 connector 工具权限后，此前会卡住不动</li>
+<li><strong><code class="inline">claude -p</code> 提前退出修复</strong>（2.1.257）：<code class="inline">-p</code> 此前在最终结果后约 5 秒退出，会掐死模型刚布置的 Monitor；现在会等它触发或超时</li>
+</ul>
+
+<h3>Level 4 — Connectors & MCP</h3>
+<ul>
+<li><strong><code class="inline">managedMcpServers</code></strong>（2.1.259，企业级）：组织可以给<strong>每个用户</strong>下发 HTTP/SSE MCP 服务器，条目格式与 <code class="inline">.mcp.json</code> 相同；<strong>指定本地命令的条目会被跳过</strong></li>
+<li><strong><code class="inline">allowedMcpServers</code> 语义变更</strong>（2.1.259）：现在<strong>只管用户自己添加的服务器</strong>。升级后，你的允许列表原本过滤掉的 <code class="inline">managed-mcp.json</code> 服务器<strong>会重新加载</strong>——要挡住请改用 <code class="inline">deniedMcpServers</code>。⚠️ 这是一条会在升级时静默改变行为的变更</li>
+<li><strong>MCP 启动错误可见性</strong>（2.1.259）：在列举工具时断开的 MCP 服务器，此前显示为「已连接但零工具」，现在如实报错</li>
+</ul>
+
+<h3>Level 5 — Hooks 自动化控制</h3>
+<ul>
+<li><strong>托管 CLAUDE.md 不再触发安全审批弹窗</strong>（2.1.260）——但 <strong>hooks、shell 命令、sandbox、不安全的 <code class="inline">env</code> 设置仍然需要审批</strong>。这条边界划得很清楚：<strong>注入知识 vs 注入执行能力</strong></li>
+<li><strong>符号链接逃逸修复</strong>（2.1.257）：插件此前能通过 command / agent / skill / hooks 组件路径上的符号链接<strong>读到自己目录之外的文件</strong>，现在直接拒绝</li>
+<li><strong>Stop hook 的隐藏代价修复</strong>（2.1.259）：阻断型 Stop hook 会让被阻断那一轮<strong>丢失模型的推理内容</strong>，并在部分模型上<strong>丢失缓存命中</strong></li>
+<li><strong><code class="inline">permissions.ask</code> 绕过修复</strong>（2.1.257）：匹配命令跑在<strong>复合命令或子 shell 里</strong>时，auto 模式下会跳过确认提示</li>
+</ul>
+
+<h3>Level 6 — 子代理编排</h3>
+<ul>
+<li><strong>后台命令 1 小时上限被移除</strong>（2.1.260）：子代理启动的后台命令现在<strong>跑到退出或被停止为止</strong>，与主会话一致</li>
+<li><strong>嵌套后台子代理结果落盘</strong>（2.1.259）：结果保存进<strong>父子代理</strong>的 transcript，恢复的子代理能保留它们</li>
+<li><strong>SendMessage 唤醒修复</strong>（2.1.260）：通过 SendMessage 恢复另一个 agent 的子代理，此前<strong>永远不会被那个 agent 的完成唤醒</strong>（通知错发到主对话）</li>
+<li><strong>子代理断流自动续跑</strong>（2.1.257）：因电脑休眠、断连或服务端错误被截断时自动继续，不再以残缺响应收尾</li>
+<li><strong><code class="inline">CLAUDE_CODE_SUBAGENT_MODEL_FORCE</code></strong>（2.1.257）：强制所有子代理用同一模型，<strong>忽略每次 spawn 和 agent 定义里的模型覆盖</strong></li>
+<li><strong>agent teams transcript 修复</strong>（2.1.260）：长时间 API 重试等待期间，重试提示会挤掉真实消息导致 transcript 变空</li>
+<li>⚠️ <strong>但记住 9/2 官方那条相反的结论：</strong> 子代理是<strong>上下文隔离工具</strong>，不是任务拆分工具。"Every handoff to a subagent is a <strong>state-lossy operation</strong>."</li>
+</ul>
+
+<h3>Level 7 — 专家级工作流</h3>
+<ul>
+<li><strong>1M 上下文自动压缩</strong>（2.1.260）：Opus 和 Fable 会话现在<strong>在逼近 1M 上限前压缩</strong>；超大上下文的恢复性压缩不再在 10 分钟超时</li>
+<li><strong>Containment Escape 规则</strong>（2.1.257）：auto 模式下，<strong>云元数据凭据获取、出网规避、跨租户访问</strong>不再自动批准，除非你的环境标记为预期行为。背景见 <a href="https://www.anthropic.com/engineering/claude-code-auto-mode" target="_blank" rel="noopener">How we built Claude Code auto mode</a></li>
+<li><strong><code class="inline">blockReadsOutsideWorkingDirectories</code></strong>（2.1.257 引入 / 2.1.260 修复）：首次读取工作目录外文件时一次性询问。2.1.260 修了 macOS 上它<strong>把用户 git config 对沙箱 git 藏起来</strong>、以及<strong>藏掉 worktree 隔离子代理自己的 checkout</strong> 的问题</li>
+<li><strong><code class="inline">/ultrareview</code> 等待上限</strong>从 30 分钟提到 <strong>45 分钟</strong>（2.1.260）</li>
+<li><strong>Workflow 结构化输出</strong>（2.1.260）：<code class="inline">agent({schema})</code> 会<strong>提前拒绝</strong>永远无法满足的 JSON Schema；重试上限错误现在带上最后一次校验失败详情</li>
+<li><strong><code class="inline">/rewind</code> 两处修复</strong>（2.1.260）：检查点备份文件缺失时此前<strong>谎报成功</strong>；rewind 之后残留的文件读取追踪会导致「File unchanged since last read」空存根和整文件重新注入</li>
+</ul>
+
+<hr>
+
+<h2>二、高手实战技巧表格</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>#</th>
+<th>技巧</th>
+<th>说明</th>
+<th>难度</th>
+<th>来源</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td>先查版本再查账单</td>
+<td>Fable 5.1 的缓存 bug 在 2.1.260 才修；此前每轮工具调用后的上下文都按未缓存重发</td>
+<td>★☆☆☆☆</td>
+<td><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">changelog 2.1.260</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>别靠切 effort 省钱</td>
+<td>2.1.260 之前，<strong>每次切 effort 都砸掉缓存</strong>；社区的自救动作当时反而加剧了问题</td>
+<td>★☆☆☆☆</td>
+<td><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">changelog 2.1.260</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td>statusline 加 <code class="inline">prompt_cache</code></td>
+<td>新字段直接给出缓存未命中的<strong>可能原因</strong>，不用再猜</td>
+<td>★★☆☆☆</td>
+<td><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">changelog 2.1.260</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td>系统提示词做成字节常量</td>
+<td>插时间戳/请求 ID = <code class="inline">system_changed</code>，动态数据挪到断点后第一条 user 消息</td>
+<td>★★☆☆☆</td>
+<td><a href="https://platform.claude.com/docs/en/build-with-claude/cache-diagnostics" target="_blank" rel="noopener">Cache diagnostics</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td>工具列表固定顺序 + 排序 key</td>
+<td><strong>重排也算变</strong>；schema JSON 非确定性序列化同样触发 <code class="inline">tools_changed</code></td>
+<td>★★★☆☆</td>
+<td><a href="https://platform.claude.com/docs/en/build-with-claude/cache-diagnostics" target="_blank" rel="noopener">Cache diagnostics</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td>历史当 append-only</td>
+<td>assistant content 和 tool_result <strong>原样回传</strong>，重新序列化会触发 <code class="inline">messages_changed</code></td>
+<td>★★★☆☆</td>
+<td><a href="https://platform.claude.com/docs/en/build-with-claude/cache-diagnostics" target="_blank" rel="noopener">Cache diagnostics</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td>排查缓存先看 <code class="inline">unavailable</code></td>
+<td><code class="inline">thinking</code> / <code class="inline">context_management</code> / beta header 集合变了也会失效，最容易漏</td>
+<td>★★★★☆</td>
+<td><a href="https://platform.claude.com/docs/en/build-with-claude/cache-diagnostics" target="_blank" rel="noopener">Cache diagnostics</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td>审计带括号的权限路径</td>
+<td>括号路径规则此前被整条丢弃，「只读」目录实际可写</td>
+<td>★★☆☆☆</td>
+<td><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">changelog 2.1.260</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td>一条坏规则会拖垮全部</td>
+<td>未闭合的 <code class="inline">[</code> 会让<strong>每一次文件编辑</strong>都报 <code class="inline">Invalid regular expression</code></td>
+<td>★★☆☆☆</td>
+<td><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">changelog 2.1.260</a></td>
+</tr>
+<tr>
+<td>10</td>
+<td>无人值守用 <code class="inline">--permission-prompts none</code></td>
+<td>该问的一律拒绝，不挂起；比「等批准」的语义确定得多</td>
+<td>★★★☆☆</td>
+<td><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">changelog 2.1.259</a></td>
+</tr>
+<tr>
+<td>11</td>
+<td>升级后重查 MCP 允许列表</td>
+<td><code class="inline">allowedMcpServers</code> 现在只管用户添加的服务器，托管服务器会重新加载</td>
+<td>★★★☆☆</td>
+<td><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">changelog 2.1.259</a></td>
+</tr>
+<tr>
+<td>12</td>
+<td><code class="inline">/diff</code> 边写边看</td>
+<td>全屏模式旁栏实时显示未提交改动，替代来回切 terminal 跑 <code class="inline">git diff</code></td>
+<td>★☆☆☆☆</td>
+<td><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">changelog 2.1.260</a></td>
+</tr>
+<tr>
+<td>13</td>
+<td>三分之一定律分层</td>
+<td>≥1/3 流量进系统提示词，其余进 skill；安全约束无条件常驻</td>
+<td>★★★☆☆</td>
+<td><a href="https://claude.com/blog/the-anatomy-of-effective-commerce-agents" target="_blank" rel="noopener">Anthropic 工程博客</a></td>
+</tr>
+<tr>
+<td>14</td>
+<td>子代理只用于上下文隔离</td>
+<td>官方：每次交接都是<strong>有状态损失的操作</strong>，别按领域拆 owner 子代理</td>
+<td>★★★★☆</td>
+<td><a href="https://claude.com/blog/the-anatomy-of-effective-commerce-agents" target="_blank" rel="noopener">Anthropic 工程博客</a></td>
+</tr>
+<tr>
+<td>15</td>
+<td>长时后台任务交给子代理</td>
+<td>1 小时上限已移除，子代理的后台命令跑到退出为止</td>
+<td>★★★★☆</td>
+<td><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">changelog 2.1.260</a></td>
+</tr>
+<tr>
+<td>16</td>
+<td>强制统一子代理模型</td>
+<td><code class="inline">CLAUDE_CODE_SUBAGENT_MODEL_FORCE</code> 忽略所有 per-spawn 覆盖，成本可控</td>
+<td>★★★★☆</td>
+<td><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">changelog 2.1.257</a></td>
+</tr>
+<tr>
+<td>17</td>
+<td>规则用 Hooks，知识用 Skills</td>
+<td>必须强制执行 → Hooks/权限；上下文知识 → Skills；委托边界 → 子代理</td>
+<td>★★★★☆</td>
+<td><a href="https://smartscope.blog/en/generative-ai/claude/claude-code-best-practices-advanced-2026/" target="_blank" rel="noopener">SmartScope</a></td>
+</tr>
+<tr>
+<td>18</td>
+<td>并行 agent 配 git worktree</td>
+<td>社区共识的稳定组合：精简 CLAUDE.md + plan mode + worktree 并行 + hooks 护栏</td>
+<td>★★★★★</td>
+<td><a href="https://dev.to/galian/claude-code-workflow-best-practices-that-ship-code-na" target="_blank" rel="noopener">DEV Community</a></td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>三、YouTube 教程推荐</h2>
+
+<p>> 以下为 <strong>WebSearch 检索到的真实视频链接与标题</strong>。⚠️ 由于内置浏览器对 <code class="inline">youtube.com</code> 的导航被拒、Chrome 扩展未连接，<strong>观看量、时长、发布时间无法核实，一律留空，不填估算值</strong>。</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>视频标题</th>
+<th>作者/来源</th>
+<th>观看量</th>
+<th>时长</th>
+<th>特色内容</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=OVm2AGTxYuE" target="_blank" rel="noopener">The Ultimate Claude Code Tutorial (Beginner to Pro)</a></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>检索结果标注「2 周前」发布，附社区指南与免费提示词库</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=8MKnL1Da7aI" target="_blank" rel="noopener">Best CLAUDE CODE Tips & Tricks (2026)</a></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>10 条省时技巧合集（检索标注 2026-05-25）</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=T5jylUte3J8" target="_blank" rel="noopener">10 Claude Code Tips That Will Change How You Code (2026)</a></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>覆盖 CLAUDE.md 项目记忆、并行 agent（检索标注 2026-04-02）</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=9pniXngp8kk" target="_blank" rel="noopener">FULL Claude Code Tutorial For Beginners in 2026! (FULL COURSE)</a></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>完整入门课程</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=bqJzIWAEn40" target="_blank" rel="noopener">Full Claude Code Tutorial for Non-Technical Beginners in 2026</a></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>面向非技术用户的分步教程，适合 Cowork 用户</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=NBQePr-XjrU" target="_blank" rel="noopener"><strong>UPDATED 2026</strong> Claude Code Tutorial #1 - Intro & Setup</a></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>安装配置起步（检索标注 2025-12-12，内容可能已过时）</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/playlist?list=PL4HikwTaYE0ETMaJqnNvm_2I3NEbexMDZ" target="_blank" rel="noopener">Claude Code Tutorial for Beginners (2026) — 播放列表</a></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>系列播放列表，适合系统性学习</td>
+</tr>
+</tbody></table></div>
+
+<p>⚠️ <strong>时效性提醒：</strong> 上表多数视频发布于 2026 年 4–5 月或更早，<strong>早于 Fable 5.1、agent teams、Workflow 工具、auto mode Containment Escape 等本期涉及的全部特性</strong>。视频适合建立基础心智模型，<strong>具体命令和参数请以 <a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">官方 changelog</a> 为准</strong>。</p>
+
+<hr>
+
+<h2>四、Reddit 讨论精选</h2>
+
+<p>> ⚠️ Reddit 因浏览器安全限制无法直接访问，且<strong>目前无可用的 Reddit MCP connector</strong>（此前已通过 <code class="inline">search_mcp_registry</code> 确认）。以下为 WebSearch 检索到的社区讨论<strong>要点转述</strong>，非原帖直引；<strong>未能取得可验证的原帖 URL 的条目，链接指向子版块而非具体帖子</strong>。</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>帖子主题</th>
+<th>子版块</th>
+<th>要点</th>
+</tr></thead><tbody>
+<tr>
+<td>Fable 5.1 额度消耗异常报告集中出现</td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>有用户报告「2 个简单任务就打满 Max 5 小时额度」；另有报告「一天跑穿 28 个 Max 20x 账号做项目审计」。<strong>社区当时猜测是缓存 bug —— 9/3 的 2.1.260 changelog 证实了这个猜测</strong></td>
+</tr>
+<tr>
+<td>effort 降档作为临时对策的讨论</td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>主流建议是调低 effort 档位。<strong>今日新增认知：在 2.1.260 之前这个动作本身会砸掉缓存</strong>，属于负优化</td>
+</tr>
+<tr>
+<td>无人值守 / CI 场景的权限处理</td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>长期痛点：自动化流水线里没人点批准。<code class="inline">--dangerously-skip-permissions</code> 被广泛滥用。2.1.259 的 <code class="inline">--permission-prompts none</code> 提供了更安全的第三条路</td>
+</tr>
+<tr>
+<td>子代理数量的经验值</td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>社区经验：日常代码工作 <strong>3–5 个是甜点区</strong>；嵌套深度 2026 年上限为 5 层。但注意这与 Anthropic 官方「少拆子代理」的立场存在张力</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>五、X 热门帖子</h2>
+
+<p>> ⚠️ <strong>本节无一手数据。</strong> 内置浏览器对 <code class="inline">x.com</code> 导航被拒，Chrome 扩展 <code class="inline">list_connected_browsers</code> 返回空数组。<strong>互动量（💬 🔁 ❤️ 👁）一律留空——不填任何估算数字。</strong> 以下仅列出通过 WebSearch 可验证存在的 X 趋势话题。</p>
+
+<h3>Claude Code Tips 热帖</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>作者</th>
+<th>内容摘要</th>
+<th>互动</th>
+<th>亮点</th>
+</tr></thead><tbody>
+<tr>
+<td>—</td>
+<td>本期未能采集到可验证的具体推文</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody></table></div>
+
+<h3>Claude Cowork 热帖</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>作者</th>
+<th>内容摘要</th>
+<th>互动</th>
+<th>亮点</th>
+</tr></thead><tbody>
+<tr>
+<td>—</td>
+<td>本期未能采集到可验证的具体推文</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody></table></div>
+
+<h3>可验证的 X 趋势话题</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>话题</th>
+<th>链接</th>
+<th>状态</th>
+</tr></thead><tbody>
+<tr>
+<td>Claude Fable 5.1 Hits Usage Limits in Minutes for Developers</td>
+<td><a href="https://x.com/i/trending/2095065746803966148" target="_blank" rel="noopener">x.com 趋势页</a></td>
+<td>9/2 起持续；<strong>今日已由官方 changelog 给出技术解释</strong></td>
+</tr>
+</tbody></table></div>
+
+<p>📌 <strong>要恢复本节的一手数据，需要：</strong> 用户在场时手动批准内置浏览器对 <code class="inline">x.com</code> 的访问一次，或连接 Claude in Chrome 扩展。<strong>在此之前本节将继续留空而非编造。</strong></p>
+
+<hr>
+
+<h2>六、跨平台趋势总结</h2>
+
+<p><strong>1. 「社区猜测 → 官方确认」的闭环第一次在本报告内完成。</strong></p>
+<p>9/2 社区说「指向密集的缓存活动」，9/3 官方 changelog 写「工具结果之后的上下文每轮未缓存重发」。<strong>这两句话说的是同一件事。</strong> 值得记住的方法论：当大量用户同时报告同一个反常的成本模式时，<strong>优先假设是 bug 而不是计费口径</strong>——本报告 9/3 那期就把它归因成了口径差异，只对了一半。</p>
+
+<p><strong>2. 可观测性正在从「黑盒」走向「给原因」。</strong></p>
+<p><code class="inline">/cost</code> 的缓存未命中原因、状态栏 <code class="inline">prompt_cache</code> 字段、<code class="inline">/cost</code> 之外 API 侧的 cache-diagnosis beta、<code class="inline">/doctor</code> 的陈旧 sandbox mask 警告、模型切换被拒时<strong>指名原因</strong>——这一批改动的共同点是：<strong>不再只告诉你失败了，而是告诉你为什么。</strong> 这是工具从「能用」走向「可运维」的标志。</p>
+
+<p><strong>3. 权限系统进入「修补真实漏洞」阶段。</strong></p>
+<p>括号路径规则被丢弃、zsh 变量赋值藏命令替换、复合命令绕过 <code class="inline">permissions.ask</code>、插件符号链接逃逸、坏正则让全部编辑失败——这些不是新功能，是<strong>已经在生产里失效过的边界</strong>。同时 2.1.260 还回滚了 2.1.259 的一条过严改动。<strong>权限设计正在真实的攻防和误伤之间来回校准。</strong></p>
+
+<p><strong>4. 企业化信号密集。</strong></p>
+<p><code class="inline">managedMcpServers</code>、<code class="inline">orgPluginSettings</code>、<code class="inline">allowManagedPermissionRulesOnly</code>、托管 CLAUDE.md 免审批、托管设置解析失败<strong>拒绝启动</strong>、Claude in Chrome 跟随组织管理员开关、Bedrock/Vertex/Foundry 凭据串号修复——<strong>Claude Code 正在被当成受管终端软件来做</strong>。</p>
+
+<p><strong>5. 无人值守是一等公民了。</strong></p>
+<p><code class="inline">--permission-prompts none</code>、后台命令 1 小时上限移除、<code class="inline">claude -p</code> 等待 Monitor、定时任务空跑修复、暂停会话审批修复、self-hosted runner 不再误杀等待用户的会话——<strong>「没有人在终端前」这个场景，正在从边缘用法变成被正式设计的运行模式。</strong></p>
+
+<hr>
+
+<h2>七、进阶路线图</h2>
+
+<pre><code>
+第 1 天  →  claude --version；低于 2.1.260 立即升级
+            打开 /diff 面板试一次全屏编辑
+
+第 2 天  →  把 prompt_cache 加进 statusline
+            跑一次 /cost，读懂缓存未命中的原因
+
+第 3 天  →  审计 settings.json：所有含括号/方括号的权限路径
+            升级后逐条验证「只读」目录是否真的只读
+
+第 4 天  →  按三分之一定律重排 CLAUDE.md 与 skills
+            安全类约束无条件搬进常驻层
+
+第 5 天  →  给定时任务加 --permission-prompts none
+            确认失败时任务如实报告，而不是挂起
+
+第 6 天  →  检查 allowedMcpServers（语义已变）
+            用 deniedMcpServers 挡住不想要的托管服务器
+
+第 7 天  →  按「委托 vs 交接」重审你的子代理拓扑
+            砍掉按领域拆分的 owner 子代理，只保留上下文隔离型
+
+第 2 周  →  Hooks 护栏 + git worktree 并行 + plan mode
+            为长时任务启用子代理后台命令（1 小时上限已移除）
+
+第 3 周  →  Workflow agent({schema}) 结构化输出
+            1M 上下文会话的自动压缩策略调优
+
+第 4 周  →  企业侧：managedMcpServers / 托管权限规则 / OTEL
+            把「无人值守」当成一等运行模式来设计
+</code></pre>
+
+<hr>
+
+<h2>八、推荐行动</h2>
+
+<p><strong>🔴 今天就做（5 分钟内）</strong></p>
+
+<p>1. <strong><code class="inline">claude --version</code></strong> —— 低于 <code class="inline">2.1.260</code> 且在用 Fable 5.1 的，<strong>你正在为一个已修复的 bug 付钱</strong>。升级。</p>
+<p>2. <strong>停止用「切 effort」当省钱手段</strong> —— 在 2.1.260 之前这个动作会砸掉缓存，是负优化。</p>
+<p>3. <strong><code class="inline">grep -n "[()\[]" ~/.claude/settings.json</code></strong> —— 找出所有含括号的权限路径规则，升级后逐条验证是否真的生效。</p>
+
+<p><strong>🟡 本周做</strong></p>
+
+<p>4. <strong>把 <code class="inline">prompt_cache</code> 加进 statusline</strong>，然后跑一次 <code class="inline">/cost</code>。花十分钟读懂它给出的原因——这是本次更新里投入产出比最高的一件事。</p>
+<p>5. <strong>给所有定时任务加 <code class="inline">--permission-prompts none</code>。</strong> 让「拿不到就明说」成为默认行为。</p>
+<p>6. <strong>检查 <code class="inline">allowedMcpServers</code>。</strong> 它的语义在 2.1.259 变了，升级后托管服务器会重新加载——如果你原本靠它挡住某个服务器，现在需要改用 <code class="inline">deniedMcpServers</code>。</p>
+<p>7. <strong>试用 <code class="inline">/diff</code> 面板。</strong> 全屏模式下边看边审，比来回切终端跑 <code class="inline">git diff</code> 效率高一档。</p>
+
+<p><strong>🟢 本月做</strong></p>
+
+<p>8. <strong>按三分之一定律重排 <code class="inline">CLAUDE.md</code> 与 skills</strong>（≥1/3 流量常驻，安全约束无条件常驻）。</p>
+<p>9. <strong>按「委托 vs 交接」重审子代理拓扑</strong> —— 官方立场是子代理用于上下文隔离，不是任务拆分。砍掉按模块配 owner 的设计。</p>
+<p>10. <strong>给长时任务启用子代理后台命令</strong> —— 1 小时上限已移除，这解锁了此前做不了的一类工作流。</p>
+
+<hr>
+
+<h2>元数据</h2>
+
+<ul>
+<li><strong>生成时间：</strong> 2026-09-04 08:00 (CST)</li>
+<li><strong>一手来源（全文抓取）：</strong></li>
+<li><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">Claude Code changelog</a> —— 123KB，覆盖 2.1.257 / 2.1.258 / 2.1.259 / 2.1.260</li>
+<li><a href="https://platform.claude.com/docs/en/build-with-claude/cache-diagnostics" target="_blank" rel="noopener">Cache diagnostics — Claude Platform Docs</a> —— 全文</li>
+<li><strong>二手来源：</strong> WebSearch（Reddit 转述、YouTube 检索、社区文章）</li>
+<li><strong>本期新覆盖版本：</strong> <code class="inline">2.1.259</code>（9/2）、<code class="inline">2.1.260</code>（9/3）—— 此前各期均未涉及</li>
+<li><strong>数据完整性声明：</strong> 第三节观看量/时长、第五节 X 互动量因浏览器权限限制<strong>无法采集，一律留空</strong>。本报告不填写任何未经验证的数字。</li>
+</ul>
+
+<hr>
+
+<p><em>本报告由 Claude Cowork 定时任务自动生成。数据采集受无人值守环境的浏览器权限限制，缺失部分已如实标注。</em></p>
+
+  </div>
+</article>
+<div class="article-footer">
+  <div class="container">
+    <a href="../#ai-trends">← 返回首页</a>
+  </div>
+</div>
+</body>
+</html>

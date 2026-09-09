@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 动态追踪日报 — Claude Cowork & Claude Code | 张翰之</title>
+<meta name="description" content="一次安全修复，暴露了 agent 时代的新攻击面。 — 2.1.251 修了一个值得单独讲的漏洞：**文件工具（Read / Write / Edit）此前会跟随一个在权限检查通过之后、被调包进...">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;
+  --text:#e0e0e8;--text-dim:#8888a0;--text-bright:#ffffff;
+  --accent:#00d4aa;--accent2:#00a8ff;--accent3:#7c5cfc;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --max-w:900px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.8;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent2)}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:0;
+}
+
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+nav .inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--accent)}
+nav .logo svg{width:28px;height:28px}
+nav .back{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--accent)}
+
+/* Article */
+article{padding:100px 0 60px}
+.article-meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.article-date{font-family:var(--mono);font-size:.8rem;color:var(--accent);padding:4px 12px;border:1px solid rgba(0,212,170,.3);border-radius:4px}
+.article-tag{font-family:var(--mono);font-size:.65rem;color:var(--accent2);padding:2px 8px;background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.15);border-radius:4px}
+
+article h1{font-size:1.8rem;font-weight:700;color:var(--text-bright);margin-bottom:32px;line-height:1.3}
+article h2{font-size:1.35rem;font-weight:600;color:var(--accent);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,170,.15)}
+article h3{font-size:1.1rem;font-weight:600;color:var(--accent2);margin:28px 0 12px}
+article h4{font-size:.95rem;font-weight:600;color:var(--accent3);margin:20px 0 8px}
+article p{margin-bottom:12px;color:var(--text)}
+article ul{margin:0 0 16px 20px}
+article li{margin-bottom:8px;color:var(--text)}
+article li strong{color:var(--accent)}
+article hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:32px 0}
+article code.inline{font-family:var(--mono);font-size:.85em;background:rgba(0,212,170,.1);color:var(--accent);padding:2px 6px;border-radius:4px}
+article pre{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+article pre code{font-family:var(--mono);font-size:.85rem;color:var(--text)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);text-align:left;padding:10px 12px;border-bottom:2px solid rgba(0,212,170,.2);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text)}
+tr:hover td{background:rgba(0,212,170,.03)}
+
+/* Footer */
+.article-footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:60px;text-align:center}
+.article-footer a{font-family:var(--mono);font-size:.85rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="../" class="logo"><svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="url(#lg)"/><path d="M7 8h3v12H7V8zm4 5h6v3h-6v-3zm7-5h3v12h-3V8z" fill="#0a0a0f"/><defs><linearGradient id="lg" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00d4aa"/><stop offset="1" stop-color="#00a8ff"/></linearGradient></defs></svg><span>&lt;</span>HZ<span>/&gt;</span></a>
+    <a href="../#ai-trends" class="back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> 返回日报列表</a>
+  </div>
+</nav>
+<article>
+  <div class="container">
+    <div class="article-meta">
+      <span class="article-date">2026-08-31</span>
+      <span class="article-tag">CLAUDE.md</span> <span class="article-tag">Scheduled Tasks</span> <span class="article-tag">Hooks</span> <span class="article-tag">Sub-Agents</span>
+    </div>
+    <h1>AI 动态追踪日报 — Claude Cowork & Claude Code</h1>
+    <p><strong>日期：</strong> 2026-08-31</p>
+<p><strong>数据来源：</strong> 官方文档 · GitHub Releases · Releasebot · Web · YouTube（检索）· Reddit（受限）</p>
+
+<p>> ⚠️ <strong>本期采集方式说明（连续第二期无一手浏览器数据）：</strong> 本次定时运行中，内置浏览器对 <code class="inline">x.com</code>、<code class="inline">youtube.com</code>、<code class="inline">claude.com</code> 三个域名的导航<strong>全部被拒</strong>（定时任务无人在场批准站点权限），Claude in Chrome 扩展<strong>仍未连接</strong>。因此<strong>本期同样没有任何一手浏览器采集数据</strong>——第三节的观看量/时长、第五节的互动量（💬🔁❤️👁）<strong>一律留空或标注"未实测"，不填任何估算数字</strong>。其余章节基于官方文档、GitHub Release 与 Releasebot，已交叉核对。</p>
+<p>></p>
+<p>> ✅ <strong>本期新增一条纠错：</strong> 检索过程中发现一条<strong>广泛流传但已失效</strong>的说法——"Sonnet 5 优惠价 8 月 31 日到期、9 月 1 日涨到 \$3/\$15"。该涨价<strong>已于 8 月 10 日被官方取消</strong>。今天正是那个"原定到期日"，这条过时信息大概率会在今明两天集中冒头。详见「今日焦点」。</p>
+
+<hr>
+
+<h2>今日焦点：今天不涨价 —— 一条正在被误传的"到期日"</h2>
+
+<p><strong>结论先行：Claude Sonnet 5 的 \$2 / \$10（每百万 input / output token）不是优惠价，是永久价。今天（8/31）不是最后一天，明天（9/1）不涨到 \$3 / \$15。</strong></p>
+
+<p>时间线值得完整摆一遍，因为混淆正是从中间那一步产生的：</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>时间</th>
+<th>发生了什么</th>
+</tr></thead><tbody>
+<tr>
+<td>2026 年 6 月</td>
+<td><a href="https://www.anthropic.com/news/claude-sonnet-5" target="_blank" rel="noopener">Sonnet 5 发布</a>，定价 <strong>\$2 / \$10</strong>，官方明确写"<strong>through August 31</strong>"（截至 8 月 31 日）</td>
+</tr>
+<tr>
+<td>6 月–8 月初</td>
+<td>大量二手文章据此推导出"9/1 起标准价 <strong>\$3 / \$15</strong>"，等于<strong>涨价 50%</strong>——这个推导在当时是对的</td>
+</tr>
+<tr>
+<td><strong>8 月 10 日</strong></td>
+<td>官方 <a href="https://x.com/claudeai/status/2086891169217122586" target="_blank" rel="noopener">@claudeai 发推</a>：<strong>"We're making Claude Sonnet 5's introductory pricing permanent."</strong> 涨价计划<strong>作废</strong></td>
+</tr>
+<tr>
+<td><strong>8 月 31 日（今天）</strong></td>
+<td>原定到期日抵达。<strong>但价格不变。</strong></td>
+</tr>
+</tbody></table></div>
+
+<p>官方原话（<a href="https://x.com/claudeai/status/2086891169217122586" target="_blank" rel="noopener">X</a>）：</p>
+
+<p>> 我们要把 Claude Sonnet 5 的入门定价变成永久定价。我们在 6 月以每百万输入 token \$2、输出 token \$10 发布 Sonnet 5，有效期至 8 月 31 日，而这个价格将保持不变。</p>
+
+<p><strong>为什么这条值得单独拎出来讲：</strong></p>
+
+<p>1. <strong>今天是误传的高发日。</strong> 6 月到 8 月初写的那批"9/1 涨价"文章，标题里带着一个具体日期，今天正好到期——搜索引擎和聚合站会把它们重新推到前排。<strong>有些仍在流通的信源（包括本次检索命中的一条）到今天还在按旧口径描述。</strong></p>
+<p>2. <strong>对做预算的人是实质影响。</strong> 如果你在 8 月按"9 月起成本 +50%"做过测算、或据此准备降级到更便宜的模型 / 迁移到别家，<strong>那份测算的前提已经不成立</strong>，值得回去改。</p>
+<p>3. <strong>这是一个可复用的核查习惯：带日期的价格承诺，要查有没有后续覆盖。</strong> 官方的原始公告（6 月）和最新状态（8 月）是两个不同的页面，前者不会自动更新。<strong>以 <a href="https://platform.claude.com/docs/en/about-claude/pricing" target="_blank" rel="noopener">platform.claude.com 的 Pricing 页</a> 为准，而不是任何一篇带日期的博客。</strong></p>
+
+<p>> 📌 <strong>核查方式说明：</strong> 本条经三处交叉核对——官方 X 账号原文、官方定价文档、以及第三方报道（<a href="https://explainx.ai/blog/anthropic-sonnet-5-permanent-pricing-august-2026" target="_blank" rel="noopener">explainx.ai</a> 明确写为"Locked at \$2/\$10"）。同时本次检索也命中了仍持旧口径的信源（<a href="https://datafloq.com/anthropic-confirms-claude-sonnet-5-prices-rise-50-on-september-1/" target="_blank" rel="noopener">datafloq</a> 标题仍为"Prices Rise 50% on September 1"），故在此标注冲突。</p>
+
+<hr>
+
+<h2>第二焦点：版本节奏停了三天，正好用来消化 8/28 那两个大版本</h2>
+
+<p><strong>Releasebot 上 Claude Code 的最高版本仍是 <a href="https://github.com/anthropics/claude-code/releases/tag/v2.1.251" target="_blank" rel="noopener">2.1.251</a>，首次收录于 8 月 28 日；8/29、8/30、8/31 三天没有新版本收录</strong>（Releasebot 页面自称 "Last updated: Aug 28, 2026"）。</p>
+
+<p>> ⚠️ <strong>口径提醒：</strong> Releasebot 的版本列表<strong>有跳号</strong>（2.1.249、2.1.250、2.1.244、2.1.240–242 均未被单独收录）。所以"没有新条目"≠"官方没发版"，只能说明<strong>没有被这个聚合源索引到</strong>。要确认官方发版情况，应以 <a href="https://github.com/anthropics/claude-code/releases" target="_blank" rel="noopener">anthropics/claude-code releases</a> 与 <a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">官方 changelog</a> 为准。</p>
+
+<p>节奏空窗期正好适合把 8/28 的两个版本真正用起来。下面把<strong>上期只列了清单、没讲怎么配</strong>的三件事补成可操作的配置。</p>
+
+<hr>
+
+<h2>一、高级用法精选（按难度分层）</h2>
+
+<h3>Level 1 — 基础配置：<code class="inline">CLAUDE.md</code> 是每次会话的第一份输入</h3>
+
+<p><code class="inline">CLAUDE.md</code> 在每次会话开始时被读取，是你的常驻指令文件。适合放：项目结构约定、文件路径、代码风格、语气要求、行为护栏。</p>
+
+<p>> ⚠️ <strong>一条安全提醒（与本项目 CLAUDE.md 相关）：</strong> 网上不少教程建议把 <strong>API key 写进 <code class="inline">CLAUDE.md</code></strong>。<strong>不要这么做。</strong> 该文件通常随仓库提交，密钥应走环境变量或密钥管理器。这是流传较广的一条坏建议。</p>
+
+<h3>Level 2 — 输出控制：Concise 输出风格 + <code class="inline">/design</code></h3>
+
+<p>8 月的 Claude Code 加了 <strong>Concise 输出风格</strong>（结论先行，不铺垫）与 <strong><code class="inline">/design</code> skill</strong>（把一个想法或一张截图变成可编辑界面）。对话冗长是最常见的 token 浪费源，Concise 是最低成本的一刀。</p>
+
+<h3>Level 3 — 权限即句子：auto 模式成为默认</h3>
+
+<p>允许 / 拒绝规则现在可以<strong>用自然语言句子写</strong>，auto 模式成为新默认。这降低了 <code class="inline">settings.json</code> 里手写 glob 的门槛。</p>
+
+<h3>Level 4 — <code class="inline">--restricted</code>：可以放进定时任务的"只读 Claude"</h3>
+
+<p>来自 <strong>2.1.248</strong>。一个 flag（等价环境变量 <code class="inline">CLAUDE_CODE_RESTRICTED=1</code>）一次性做四件事：</p>
+
+<ul>
+<li>移掉所有能执行命令或代码的内置工具，以及 <code class="inline">WebFetch</code>（除非在 <code class="inline">--tools</code> 里显式点名）</li>
+<li>文件工具锁死在工作目录内</li>
+<li>拒绝 <code class="inline">bypassPermissions</code></li>
+<li><strong>忽略 user / project / local 三层设置文件</strong></li>
+</ul>
+
+<p>最后一条是精髓：<strong>受限模式不信任仓库里的配置</strong>。处理一个不完全信任的代码库时，对方 <code class="inline">.claude/settings.json</code> 里写什么都不算数。</p>
+
+<pre><code>
+# 审阅一个来路不明的仓库：只读，不执行，不读它的配置
+claude --restricted -p "总结这个仓库的架构，列出所有网络请求发起点"
+</code></pre>
+
+<h3>Level 5 — Hooks：<code class="inline">PreModelSwitch</code> / <code class="inline">PostModelSwitch</code></h3>
+
+<p>来自 <strong>2.1.251</strong>。新增两个生命周期事件，可以<strong>阻止、确认或标注一次模型切换</strong>——为受控灰度（controlled rollout）而设计。</p>
+
+<p>配置结构是一棵树：顶层 <code class="inline">hooks</code> 键把<strong>事件名</strong>映射到<strong>匹配器数组</strong>，每个匹配器把一个 matcher 字符串配上一组 handler。团队共享的项目应放在 <code class="inline">.claude/settings.json</code>，让 hook 规则随仓库走、和代码一起过 review。</p>
+
+<pre><code>
+// .claude/settings.json —— 结构示意，字段以官方 hooks 文档为准
+{
+  "hooks": {
+    "PreModelSwitch": [
+      {
+        "matcher": "*",
+        "hooks": [
+          { "type": "command", "command": ".claude/hooks/confirm-model-switch.sh" }
+        ]
+      }
+    ]
+  }
+}
+</code></pre>
+
+<p>> ⚠️ <strong>一个容易踩的坑：<code class="inline">PreModelSwitch</code> 上，hook 因超时被取消 = 阻止这次切换。</strong> 超时的默认行为是"拦"而不是"放"。写脚本时要保证它能快速返回，否则你会得到一个莫名其妙切不动模型的 Claude。</p>
+
+<p>同版本还给 <strong><code class="inline">SessionStart</code> 的 resume hook</strong> 加了两个入参：<strong>会话陈旧度（staleness）</strong> 与 <strong>预估重新缓存成本（re-cache cost）</strong>。这让"要不要恢复这个旧会话"从拍脑袋变成可判断——旧到一定程度、重建缓存贵到一定程度，就该开新会话。</p>
+
+<p>完整的 30 个生命周期事件见 <a href="https://code.claude.com/docs/en/hooks" target="_blank" rel="noopener">官方 hooks 文档</a>。</p>
+
+<h3>Level 6 — 子代理编排 + 跨会话通信</h3>
+
+<p><strong>跨会话消息（cross-session messaging）</strong> 落地于 <strong>2.1.248</strong>：一个会话用 <code class="inline">ListAgents</code> 发现你的其他会话，用 <code class="inline">SendMessage</code> 投递一段短文本；接收方在两次工具调用之间读取，空闲时则直接开新一轮。</p>
+
+<ul>
+<li><strong>平台限制：macOS 与 Linux（含 WSL 2）可用，原生 Windows 不可用。</strong> v2.1.224 及以后默认开启，无需配置。</li>
+<li><strong>权限握手有对称规则：</strong> 每个会话用 <code class="inline">crossSessionInbound</code> 设置检查入站消息（accept / hold / refuse）。<strong>一个绕过权限提示的会话，会把来自"会提示"会话的每条消息扣下等你批准；反过来，一个"会提示"的接收方也会扣下来自"绕过"发送方的消息。</strong> 设计意图是不让权限级别通过消息通道被隐式提升。</li>
+<li><strong>⚠️ 一个非直觉的关闭条件：</strong> <code class="inline">CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC</code>、<code class="inline">DISABLE_TELEMETRY</code>、<code class="inline">DO_NOT_TRACK</code>、<code class="inline">DISABLE_GROWTHBOOK</code> 中<strong>任意一个</strong>都会关掉该特性的判定，从而<strong>禁用跨会话消息</strong>。如果你在企业环境里设过这些变量，功能不生效不是 bug。</li>
+</ul>
+
+<p><strong>组合出的模式：<code class="inline">--restricted</code> 的多个 worker + 一个有权限的 foreman。</strong> 受限 worker 负责读和分析（碰不到执行工具、读不到仓库配置），foreman 汇总后执行写操作。安全边界和职责边界第一次对齐了。</p>
+
+<h3>Level 7 — 成本可观测：把缓存命中率变成运维指标</h3>
+
+<p><strong>2.1.251</strong> 给 <code class="inline">/cost</code> 加了<strong>每会话的 prompt-cache 行</strong>：命中率、miss 数、重新缓存的 token 数、warm / cold 状态，并配了同构的 <code class="inline">prompt_cache</code> 对象供状态栏脚本读取。<code class="inline">/usage</code> 则加了 <strong>Spend limit 进度条</strong>，以及给网关后开发者用的 <code class="inline">rate_limits.spend_limit</code> 状态栏字段。</p>
+
+<p>这是把"我这个月为什么花这么多"从月末对账<strong>前移到了实时状态栏</strong>。缓存命中率低通常意味着你在频繁改动 prompt 的前缀部分——那是可以重构的。</p>
+
+<p><strong>后台会话管理也补齐了：</strong> CLI help 现在包含 <code class="inline">attach</code>、<code class="inline">logs</code>、<code class="inline">stop</code>、<code class="inline">respawn</code>、<code class="inline">rm</code>；对一个正在运行的后台会话执行 <code class="inline">--resume</code>，提示里会<strong>直接给出 <code class="inline">claude attach <id></code> 的完整命令</strong>，不用再去别处查 id。</p>
+
+<hr>
+
+<h2>二、高手实战技巧表格</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>#</th>
+<th>技巧</th>
+<th>说明</th>
+<th>难度</th>
+<th>来源</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td><code class="inline">!</code> 直通 shell</td>
+<td>输入 <code class="inline">!</code> 后接命令，直接在 shell 执行，Claude 不解释</td>
+<td>★☆☆</td>
+<td><a href="https://aicodingdaily.substack.com/p/claude-code-my-favorite-10-tips-and" target="_blank" rel="noopener">AI Coding Daily</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code class="inline">/export</code> 存档会话</td>
+<td>把整段对话导出到文件或剪贴板</td>
+<td>★☆☆</td>
+<td><a href="https://aicodingdaily.substack.com/p/claude-code-my-favorite-10-tips-and" target="_blank" rel="noopener">AI Coding Daily</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Concise 输出风格</td>
+<td>结论先行，砍掉铺垫，最低成本的省 token 手段</td>
+<td>★☆☆</td>
+<td><a href="https://origami.sa/en/blog/claude-code-august-2026/" target="_blank" rel="noopener">origami.sa</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td>权限写成句子</td>
+<td>auto 模式下用自然语言写 allow / deny，替代手写 glob</td>
+<td>★★☆</td>
+<td><a href="https://origami.sa/en/blog/claude-code-august-2026/" target="_blank" rel="noopener">origami.sa</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td><code class="inline">/design</code> 从截图生界面</td>
+<td>一个想法或一张截图 → 可编辑界面</td>
+<td>★★☆</td>
+<td><a href="https://origami.sa/en/blog/claude-code-august-2026/" target="_blank" rel="noopener">origami.sa</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td><code class="inline">--restricted</code> 审阅陌生仓库</td>
+<td>只读 + 无执行 + 忽略仓库配置，安全消费第三方代码</td>
+<td>★★★</td>
+<td><a href="https://releasebot.io/updates/anthropic/claude-code" target="_blank" rel="noopener">Releasebot 2.1.248</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td><code class="inline">/cost</code> 看缓存命中率</td>
+<td>命中率 / miss / 重新缓存 token / warm-cold，实时成本归因</td>
+<td>★★★</td>
+<td><a href="https://github.com/anthropics/claude-code/releases/tag/v2.1.251" target="_blank" rel="noopener">v2.1.251</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td><code class="inline">claude attach <id></code> 接管后台会话</td>
+<td><code class="inline">--resume</code> 提示里直接给全命令，配合 <code class="inline">logs</code> / <code class="inline">stop</code> / <code class="inline">respawn</code> / <code class="inline">rm</code></td>
+<td>★★★</td>
+<td><a href="https://github.com/anthropics/claude-code/releases/tag/v2.1.251" target="_blank" rel="noopener">v2.1.251</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td><code class="inline">SessionStart</code> resume 拿陈旧度与重缓存成本</td>
+<td>用数据决定"恢复旧会话还是开新的"</td>
+<td>★★★★</td>
+<td><a href="https://github.com/anthropics/claude-code/releases/tag/v2.1.251" target="_blank" rel="noopener">v2.1.251</a></td>
+</tr>
+<tr>
+<td>10</td>
+<td><code class="inline">PreModelSwitch</code> 卡模型切换</td>
+<td>受控灰度；注意超时=阻止</td>
+<td>★★★★</td>
+<td><a href="https://code.claude.com/docs/en/hooks" target="_blank" rel="noopener">hooks 文档</a></td>
+</tr>
+<tr>
+<td>11</td>
+<td><code class="inline">ListAgents</code> + <code class="inline">SendMessage</code> 跨会话协作</td>
+<td>受限 worker + 有权限 foreman 的编排模式</td>
+<td>★★★★★</td>
+<td><a href="https://code.claude.com/docs/en/cross-session-messaging" target="_blank" rel="noopener">跨会话消息文档</a></td>
+</tr>
+<tr>
+<td>12</td>
+<td>Skills 优于 Projects</td>
+<td>Skill 按上下文触发，只在相关时激活，不占常驻预算</td>
+<td>★★★</td>
+<td><a href="https://www.nocode.mba/articles/claude-cowork-tips" target="_blank" rel="noopener">No Code MBA</a></td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>三、YouTube 教程推荐</h2>
+
+<p>> ⚠️ <strong>本期未做浏览器实时采集</strong>（内置浏览器对 <code class="inline">youtube.com</code> 导航被拒，Chrome 扩展未连接）。下表由 <strong>WebSearch 检索</strong>得到，<strong>观看量、时长、章节信息一律未实测，留空</strong>。发布时间仅在检索结果明确给出时才填写。</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>视频标题</th>
+<th>作者</th>
+<th>观看量</th>
+<th>时长</th>
+<th>特色内容</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=qiDalcMeBFk" target="_blank" rel="noopener">How to Use Multi-Agent Workflows in Claude Code: Skills, Subagents & Handoffs (2026)</a></td>
+<td>未实测</td>
+<td>未实测</td>
+<td>未实测</td>
+<td>多代理编排三件套：Skills / Subagents / Handoffs；检索结果标注发布于 2026-07-26</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=6rdQXdEy-8U" target="_blank" rel="noopener">Claude Code Advanced Workflow Tutorial (Slash Commands, Subagents & Hooks)</a></td>
+<td>未实测</td>
+<td>未实测</td>
+<td>未实测</td>
+<td>斜杠命令 + 子代理 + hooks；检索结果标注发布于 2026-01-08，<strong>内容早于 8 月的 hooks 新事件，参考时注意版本差</strong></td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=PnPsf-hwGtI" target="_blank" rel="noopener">The ONLY Claude Cowork Tutorial You'll Ever Need in 2026</a></td>
+<td>未实测</td>
+<td>未实测</td>
+<td>未实测</td>
+<td>Cowork 入门通盘教程</td>
+</tr>
+</tbody></table></div>
+
+<p><strong>检索入口（可自行核实实时数据）：</strong></p>
+
+<ul>
+<li><a href="https://www.youtube.com/results?search_query=Claude+Code+tips+tricks+2026" target="_blank" rel="noopener">YouTube 搜索：Claude Code tips tricks 2026</a></li>
+<li><a href="https://www.youtube.com/results?search_query=Claude+Cowork+tutorial+2026" target="_blank" rel="noopener">YouTube 搜索：Claude Cowork tutorial 2026</a></li>
+</ul>
+
+<hr>
+
+<h2>四、Reddit 讨论精选</h2>
+
+<p>> ⚠️ Reddit 因浏览器安全限制无法直接访问，且目前无可用的 Reddit MCP connector。本期 WebSearch <strong>未命中任何 2026 年 8 月的 <a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a> 具体帖子</strong>——检索返回的均为 Substack / DEV / 博客等二手汇编，而非 Reddit 原帖。</p>
+<p>></p>
+<p>> <strong>因此本节本期为空，不填充任何无法追溯到原帖的"讨论摘要"。</strong> 这比编造一个看似合理的帖子列表更诚实。</p>
+
+<p><strong>替代信源（本期实际参考的社区向汇编）：</strong></p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>来源</th>
+<th>类型</th>
+<th>要点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://karozieminski.substack.com/p/claude-cowork-guide-plugins-memory-sub-agents-tips" target="_blank" rel="noopener">Claude Cowork Guide for Power Users: 50+ Tested Tips</a></td>
+<td>Substack 长文</td>
+<td>插件 / Skills / 子代理 / 记忆，作者标注为"实测"</td>
+</tr>
+<tr>
+<td><a href="https://smartscope.blog/en/generative-ai/claude/claude-code-best-practices-advanced-2026/" target="_blank" rel="noopener">Claude Code Advanced Best Practices: 11 Practical Techniques</a></td>
+<td>技术博客</td>
+<td>hooks / 子代理 / 上下文管理三块</td>
+</tr>
+<tr>
+<td><a href="https://www.totalum.app/blog/claude-code-subagents-totalum" target="_blank" rel="noopener">Claude Code subagents: the 2026 production playbook</a></td>
+<td>技术博客</td>
+<td>子代理的生产环境用法与示例</td>
+</tr>
+<tr>
+<td><a href="https://hidekazu-konishi.com/entry/claude_code_hooks_complete_guide.html" target="_blank" rel="noopener">Claude Code Hooks Complete Guide</a></td>
+<td>技术博客</td>
+<td>逐个 hook 事件讲触发点与回传通道，附可复制示例</td>
+</tr>
+</tbody></table></div>
+
+<p><strong>待恢复的检索入口：</strong></p>
+
+<ul>
+<li><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a> · <a href="https://www.reddit.com/r/ClaudeCode/" target="_blank" rel="noopener">r/ClaudeCode</a></li>
+</ul>
+
+<hr>
+
+<h2>五、X 热门帖子</h2>
+
+<p>> ⚠️ <strong>本期未做浏览器实时采集</strong>（内置浏览器对 <code class="inline">x.com</code> 导航被拒，Chrome 扩展未连接）。<strong>互动数据（💬 🔁 ❤️ 👁）一律未实测，留空，不填任何估算值。</strong> 下表仅收录通过 WebSearch 明确命中、可追溯到具体推文 URL 的条目。</p>
+
+<h3>Claude 官方 / 变更日志</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>作者</th>
+<th>内容摘要</th>
+<th>互动</th>
+<th>亮点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://x.com/claudeai" target="_blank" rel="noopener">@claudeai</a></td>
+<td><a href="https://x.com/claudeai/status/2086891169217122586" target="_blank" rel="noopener">宣布 Sonnet 5 入门定价永久化</a>：\$2 / \$10 保持不变，取消 9/1 涨到 \$3 / \$15 的计划</td>
+<td>未实测</td>
+<td><strong>本期最重要的一条</strong>，直接作废了 6–8 月大量二手文章的结论</td>
+</tr>
+<tr>
+<td><a href="https://x.com/ClaudeCodeLog" target="_blank" rel="noopener">@ClaudeCodeLog</a></td>
+<td><a href="https://x.com/ClaudeCodeLog/status/2093407907446444049" target="_blank" rel="noopener">2.1.251 亮点串</a>：71 项 CLI 变更，<code class="inline">PreModelSwitch</code> / <code class="inline">PostModelSwitch</code> 用于受控灰度；文件工具阻止工作目录外的符号链接调包</td>
+<td>未实测</td>
+<td>唯一持续追踪 changelog 的第三方账号，适合订阅</td>
+</tr>
+<tr>
+<td><a href="https://x.com/ClaudeCodeLog" target="_blank" rel="noopener">@ClaudeCodeLog</a></td>
+<td><a href="https://x.com/ClaudeCodeLog/status/2093407919714754822" target="_blank" rel="noopener">2.1.251 详版</a>：新增前台子代理工具调用向 Remote Control 客户端的<strong>实时流式传输</strong>（后台子代理为默认，仍只显示状态）</td>
+<td>未实测</td>
+<td>前台/后台子代理的可观测性差异，是编排设计时的关键取舍</td>
+</tr>
+</tbody></table></div>
+
+<h3>Claude Cowork 热帖</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>作者</th>
+<th>内容摘要</th>
+<th>互动</th>
+<th>亮点</th>
+</tr></thead><tbody>
+<tr>
+<td>—</td>
+<td>本期 WebSearch <strong>未命中</strong>可追溯到具体推文 URL 的 Cowork 社区帖</td>
+<td>—</td>
+<td>本节留空，待浏览器恢复后补采</td>
+</tr>
+</tbody></table></div>
+
+<p><strong>检索入口（可自行核实实时数据）：</strong></p>
+
+<ul>
+<li><a href="https://x.com/search?q=Claude%20Code%20tips&f=live" target="_blank" rel="noopener">X 搜索：Claude Code tips（最新）</a></li>
+<li><a href="https://x.com/search?q=Claude%20Cowork&f=live" target="_blank" rel="noopener">X 搜索：Claude Cowork（最新）</a></li>
+</ul>
+
+<hr>
+
+<h2>六、跨平台趋势总结</h2>
+
+<p><strong>1. 一次安全修复，暴露了 agent 时代的新攻击面。</strong></p>
+
+<p>2.1.251 修了一个值得单独讲的漏洞：<strong>文件工具（Read / Write / Edit）此前会跟随一个在权限检查通过之后、被调包进工作目录的符号链接</strong>，从而在批准范围之外读写文件。这是经典的 <strong>TOCTOU（检查时/使用时）</strong> 竞态，只不过受害者从操作系统换成了 AI agent。</p>
+
+<p>它的含义超出这一个 bug：<strong>当 agent 的权限模型建立在"路径"之上，而路径可以在检查后被替换，那么权限检查就是可绕过的。</strong> 这也解释了 <code class="inline">--restricted</code> 为什么要"忽略仓库里的配置文件"——同一个防御思路：<strong>不信任被审对象提供的任何元数据。</strong></p>
+
+<p><strong>2. 三条产品线在同一个方向上收敛：把控制权做成可配置的边界。</strong></p>
+
+<ul>
+<li><code class="inline">--restricted</code>：<strong>信任边界</strong>（这个 Claude 能碰什么）</li>
+<li><code class="inline">crossSessionInbound</code> 的对称握手：<strong>通信边界</strong>（哪个 Claude 能指挥哪个）</li>
+<li><code class="inline">PreModelSwitch</code>：<strong>变更边界</strong>（什么时候允许换模型）</li>
+</ul>
+
+<p>8 月上半月的主题是"往外接"（内置浏览器、Claudeforce、MHS 硬件标准），下半月的主题明确转向"给接口装闸门"。<strong>这是一个功能铺开之后的正常回摆，也是企业采购真正会问的那几个问题。</strong></p>
+
+<p><strong>3. 成本可观测性正在从"月末对账"变成"实时指标"。</strong></p>
+
+<p><code class="inline">/cost</code> 的缓存命中率、<code class="inline">/usage</code> 的 spend limit 进度条、状态栏可读的 <code class="inline">prompt_cache</code> 与 <code class="inline">rate_limits.spend_limit</code> 字段——这套东西的受众不是个人用户，是<strong>要给团队做成本归因的人</strong>。当 token 消耗能被拆到会话粒度并暴露给脚本，它才第一次成为可以进 dashboard 的运维指标。</p>
+
+<p><strong>4. 内置浏览器的推广节奏，本机就是一个反例样本。</strong></p>
+
+<p>官方说 Pro / Max / Team 在一周内陆续到达。<strong>但本机连续两期定时任务中，内置浏览器对目标站点的导航均被拒绝</strong>——原因是无人值守的定时任务无法完成站点权限批准。这不是功能缺陷，是<strong>"默认开启的交互式浏览器"与"无人在场的定时任务"之间的结构性冲突</strong>。见第八节。</p>
+
+<hr>
+
+<h2>七、进阶路线图</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>阶段</th>
+<th>目标</th>
+<th>关键动作</th>
+<th>验收标准</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>第 1 周</strong></td>
+<td>让输出可控</td>
+<td>写好 <code class="inline">CLAUDE.md</code>（<strong>不放密钥</strong>）；打开 Concise；熟悉 <code class="inline">!</code> 与 <code class="inline">/export</code></td>
+<td>单次任务的往返轮数下降</td>
+</tr>
+<tr>
+<td><strong>第 2 周</strong></td>
+<td>让成本可见</td>
+<td>用 <code class="inline">/cost</code> 看缓存命中率；<code class="inline">/usage</code> 设 spend limit；状态栏接 <code class="inline">prompt_cache</code></td>
+<td>能说出自己命中率低的原因</td>
+</tr>
+<tr>
+<td><strong>第 3 周</strong></td>
+<td>让权限成型</td>
+<td>用句子写 allow / deny；对陌生仓库一律 <code class="inline">--restricted</code></td>
+<td>不再靠 <code class="inline">bypassPermissions</code> 过日子</td>
+</tr>
+<tr>
+<td><strong>第 4 周</strong></td>
+<td>让流程自动</td>
+<td>上第一个 hook（建议从 <code class="inline">PostToolUse</code> 跑格式化/lint 起步）</td>
+<td>hook 能稳定触发且不误拦</td>
+</tr>
+<tr>
+<td><strong>第 5–6 周</strong></td>
+<td>让任务并行</td>
+<td>后台会话 + <code class="inline">attach</code> / <code class="inline">logs</code> / <code class="inline">stop</code>；跨会话消息试通</td>
+<td>能同时推进两条任务线</td>
+</tr>
+<tr>
+<td><strong>第 7 周+</strong></td>
+<td>让编排成体系</td>
+<td>受限 worker + 有权限 foreman；<code class="inline">PreModelSwitch</code> 做受控灰度</td>
+<td>安全边界与职责边界对齐</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>八、推荐行动</h2>
+
+<p><strong>立刻做（今天）</strong></p>
+
+<p>1. <strong>如果你在 8 月做过"9 月起 API 成本 +50%"的测算——回去改掉。</strong> Sonnet 5 的 \$2 / \$10 已永久化，涨价取消。以 <a href="https://platform.claude.com/docs/en/about-claude/pricing" target="_blank" rel="noopener">官方 Pricing 页</a> 为准，别信任何一篇带"9 月 1 日"的旧博客。</p>
+<p>2. <strong>升级到 2.1.251。</strong> 它含一个<strong>符号链接调包</strong>的安全修复——文件工具此前可能在批准范围外读写。这条不是可选项。</p>
+
+<p><strong>本周做</strong></p>
+
+<p>3. <strong>给"审阅陌生代码"这件事定一条规矩：一律 <code class="inline">--restricted</code>。</strong> 它忽略仓库自带配置，这正是审阅不可信代码时你需要的。</p>
+<p>4. <strong>跑一次 <code class="inline">/cost</code> 看缓存命中率。</strong> 如果命中率低，检查是不是在频繁改动 prompt 前缀——那是可重构的。</p>
+<p>5. <strong>写第一个 hook。</strong> 从 <code class="inline">PostToolUse</code> 跑 <code class="inline">ruff format</code> 起步，比直接上 <code class="inline">PreModelSwitch</code> 稳妥。<strong>记住 <code class="inline">PreModelSwitch</code> 超时 = 阻止切换。</strong></p>
+
+<p><strong>本月做</strong></p>
+
+<p>6. <strong>试通跨会话消息。</strong> macOS / Linux 可用。<strong>先确认你没设 <code class="inline">DISABLE_TELEMETRY</code> / <code class="inline">DO_NOT_TRACK</code> 等变量</strong>——它们会静默禁用该特性。</p>
+<p>7. <strong>把"受限 worker + 有权限 foreman"跑一遍。</strong> 这是目前编排范式里安全性最清晰的一种。</p>
+
+<p><strong>运维教训（连续第二期，需要动手修）</strong></p>
+
+<p>8. <strong>本日报的一手采集链路已连续两期失效，不能再当偶发处理。</strong> 根因是<strong>结构性的</strong>：内置浏览器"默认开启、按站点交互式批准"的设计，与"无人值守定时任务"天然冲突——没人在场点批准，导航就被拒。三条可行路径：</p>
+<ul>
+<li><strong>改跑有人值守的时段</strong>，或在定时任务前手工预批准 <code class="inline">x.com</code> / <code class="inline">youtube.com</code> 的站点权限（若权限可持久化）；</li>
+<li><strong>保持 Chrome 扩展常连</strong>（本机连续两期显示未连接），走 Claude in Chrome 通道；</li>
+<li><strong>接受现状，把日报定位从"一手互动数据"改为"官方源 + 交叉核对"</strong>，并把第三、五节的表格结构相应简化。</li>
+</ul>
+
+<p>   <strong>在修好之前，第三 / 五节的"未实测"标注必须保留——不填估算数字是这份日报唯一的可信度来源。</strong></p>
+
+<hr>
+
+<p><em>本期共核查外部链接 20+ 条；标注数据冲突 1 处（Sonnet 5 定价）；因无法追溯原帖而主动留空 2 节（Reddit 讨论、Cowork X 热帖）。</em></p>
+
+  </div>
+</article>
+<div class="article-footer">
+  <div class="container">
+    <a href="../#ai-trends">← 返回首页</a>
+  </div>
+</div>
+</body>
+</html>

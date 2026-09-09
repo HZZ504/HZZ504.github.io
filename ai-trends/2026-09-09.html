@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 动态追踪日报 — Claude Cowork & Claude Code | 张翰之</title>
+<meta name="description" content="25×**（1 小时缓存则 2×）重写缓存
+- **`defer_loading`** —— 罕用工具照常声明但标记延迟加载，它们不进缓存前缀，Claude 用工具搜索找到时才追加
+- **中途...">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;
+  --text:#e0e0e8;--text-dim:#8888a0;--text-bright:#ffffff;
+  --accent:#00d4aa;--accent2:#00a8ff;--accent3:#7c5cfc;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --max-w:900px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.8;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent2)}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:0;
+}
+
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+nav .inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--accent)}
+nav .logo svg{width:28px;height:28px}
+nav .back{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--accent)}
+
+/* Article */
+article{padding:100px 0 60px}
+.article-meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.article-date{font-family:var(--mono);font-size:.8rem;color:var(--accent);padding:4px 12px;border:1px solid rgba(0,212,170,.3);border-radius:4px}
+.article-tag{font-family:var(--mono);font-size:.65rem;color:var(--accent2);padding:2px 8px;background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.15);border-radius:4px}
+
+article h1{font-size:1.8rem;font-weight:700;color:var(--text-bright);margin-bottom:32px;line-height:1.3}
+article h2{font-size:1.35rem;font-weight:600;color:var(--accent);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,170,.15)}
+article h3{font-size:1.1rem;font-weight:600;color:var(--accent2);margin:28px 0 12px}
+article h4{font-size:.95rem;font-weight:600;color:var(--accent3);margin:20px 0 8px}
+article p{margin-bottom:12px;color:var(--text)}
+article ul{margin:0 0 16px 20px}
+article li{margin-bottom:8px;color:var(--text)}
+article li strong{color:var(--accent)}
+article hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:32px 0}
+article code.inline{font-family:var(--mono);font-size:.85em;background:rgba(0,212,170,.1);color:var(--accent);padding:2px 6px;border-radius:4px}
+article pre{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+article pre code{font-family:var(--mono);font-size:.85rem;color:var(--text)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);text-align:left;padding:10px 12px;border-bottom:2px solid rgba(0,212,170,.2);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text)}
+tr:hover td{background:rgba(0,212,170,.03)}
+
+/* Footer */
+.article-footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:60px;text-align:center}
+.article-footer a{font-family:var(--mono);font-size:.85rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="../" class="logo"><svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="url(#lg)"/><path d="M7 8h3v12H7V8zm4 5h6v3h-6v-3zm7-5h3v12h-3V8z" fill="#0a0a0f"/><defs><linearGradient id="lg" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00d4aa"/><stop offset="1" stop-color="#00a8ff"/></linearGradient></defs></svg><span>&lt;</span>HZ<span>/&gt;</span></a>
+    <a href="../#ai-trends" class="back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> 返回日报列表</a>
+  </div>
+</nav>
+<article>
+  <div class="container">
+    <div class="article-meta">
+      <span class="article-date">2026-09-09</span>
+      <span class="article-tag">Sub-Agents</span> <span class="article-tag">CLAUDE.md</span> <span class="article-tag">Skills</span> <span class="article-tag">Scheduled Tasks</span> <span class="article-tag">MCP</span>
+    </div>
+    <h1>AI 动态追踪日报 — Claude Cowork & Claude Code</h1>
+    <p><strong>日期：</strong> 2026-09-09</p>
+<p><strong>数据来源：</strong> X（Chrome 浏览器一手采集，含真实互动量）· YouTube（Chrome 浏览器一手采集，含真实观看量/时长）· Claude Code 官方 changelog（全文）· Claude 官方博客（全文）· Reddit（WebSearch 回退）</p>
+
+<p>> ✅ <strong>采集方式说明（连续六期断档后首次恢复一手浏览器数据）：</strong> Chrome 扩展本期<strong>连接正常</strong>，X 与 YouTube 均完成实时浏览。第三节的观看量/时长、第五节的互动量（💬🔁❤️👁）<strong>全部为截图读数，非估算</strong>。</p>
+<p>></p>
+<p>> ✅ <strong>本期一手文档：</strong> 完整抓取了 <a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">Claude Code changelog</a>（123KB）与 <a href="https://claude.com/blog/reducing-cost-and-improving-performance-with-claude-platform" target="_blank" rel="noopener">Reducing cost and improving performance with Claude Platform</a>（官方博客，9/8 发布）全文。<strong>新覆盖四个版本：2.1.261（9/4）、2.1.263（9/6）、2.1.265（9/8）、2.1.266（9/8）。</strong></p>
+
+<hr>
+
+<h2>今日焦点一：<code class="inline">/skill-doctor</code> —— Claude Code 出了一条命令，专门告诉你哪些技能在白吃上下文</h2>
+
+<p>2.1.261（9/4）加了这么一行：</p>
+
+<p>> "Added <code class="inline">/skill-doctor</code> to show which loaded skills go unused and what they cost in context, so you can prune them."</p>
+<p>> —— <a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">Claude Code changelog 2.1.261</a></p>
+
+<p>这条 changelog 一句话带过，但它解决的是一个<strong>大多数人根本没意识到自己在付的账</strong>。</p>
+
+<p>机制是这样的：技能清单（skill listing）<strong>每一轮都会进上下文</strong>，无论 Claude 用不用它。清单预算默认是模型上下文窗口的 <strong>1%</strong>。所以一个装了却从不触发的技能，你<strong>每一轮都在为它付钱，一分钱回报都没有</strong>。</p>
+
+<p>用法：</p>
+<ul>
+<li>交互模式：会话内敲 <code class="inline">/skill-doctor</code>，报告在 <code class="inline">/plugin</code> 管理器的 <strong>Stats 标签</strong>里打开</li>
+<li>Headless：<code class="inline">claude -p</code> 下直接打印纯文本，可以塞进 CI</li>
+</ul>
+
+<p>报告内容是三列：每个技能加载了没有、触发了几次、每轮吃掉多少上下文 token。</p>
+
+<p><strong>跨平台印证：</strong> 同一天 YouTube 上出现了标题就叫 <a href="https://www.youtube.com/results?search_query=Claude+Code+Find+Unused+Skills+Before+Cleanup" target="_blank" rel="noopener">「Claude Code: Find Unused Skills Before Cleanup」</a> 的 Short（82 次观看，标记「最新」）。一条 changelog 里的小命令，48 小时内就长出了教程内容——这是判断一个功能会不会留下来的可靠信号。</p>
+
+<hr>
+
+<h2>今日焦点二：官方昨天（9/8）发了一篇降本长文，配了三条 <code class="inline">/claude-api</code> 命令 —— 附全部 benchmark 数字</h2>
+
+<p><a href="https://claude.com/blog/reducing-cost-and-improving-performance-with-claude-platform" target="_blank" rel="noopener">Reducing cost and improving performance with Claude Platform</a>，作者 Lance Martin，9 月 8 日发布。核心主张一句话：<strong>降本和降质不是同一件事</strong>，多数应用能在不牺牲效果的前提下砍掉一半以上开销。</p>
+
+<p>三个杠杆，配三条命令。</p>
+
+<h3>杠杆一：提示词反模式 → <code class="inline">/claude-api prompt-audit</code></h3>
+
+<p>官方点名了六类「给旧模型打补丁、到前沿模型上反而拖后腿」的写法：</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>反模式</th>
+<th>具体写法</th>
+<th>在前沿模型上的后果</th>
+</tr></thead><tbody>
+<tr>
+<td>验证仪式</td>
+<td>"double-check your work"、"verify twice before responding"</td>
+<td>被<strong>字面执行</strong>，每次退款都重复查一遍订单</td>
+</tr>
+<tr>
+<td>强调助推器</td>
+<td>"Be maximally thorough"、"CRITICAL: YOU MUST ALWAYS…"</td>
+<td>变成几十次不必要的知识库检索</td>
+</tr>
+<tr>
+<td>强制流程 / 草稿纸脚手架</td>
+<td>"think step by step in a scratchpad"、固定六步流程</td>
+<td>叠在原生推理之上，纯浪费 token</td>
+</tr>
+<tr>
+<td>陈旧示例</td>
+<td>针对旧模型失败模式调的 few-shot</td>
+<td>教会新模型在简单请求上模仿长推理链</td>
+</tr>
+<tr>
+<td>矛盾规则</td>
+<td>"always refund within policy" vs "never refund without escalation"</td>
+<td>指令遵循变强后，矛盾被更严格地执行，效果反降</td>
+</tr>
+<tr>
+<td>过期配置</td>
+<td>手动 thinking budget 等旧世代设置</td>
+<td>直接被 Platform <strong>拒绝请求</strong></td>
+</tr>
+</tbody></table></div>
+
+<p>官方实测：Opus 4.8 → Opus 5 迁移，每次只植入一种反模式共六份提示词，跑 <code class="inline">/claude-api prompt-audit</code> 后平均<strong>成本降 14.6%、准确率升 5.3%</strong>。</p>
+
+<p>准确率为什么会<em>升</em>？三个具体原因值得记：过期的 thinking 设置让 API <strong>直接拒绝了每一个路由请求</strong>；矛盾的退款规则让 Opus 5 <strong>扣下了四笔本该退的款</strong>；手动草稿纸和 Opus 5 的内置思考撞车，<strong>三张工单里它把工具调用写进了推理，然后从没执行</strong>。</p>
+
+<h3>杠杆二：缓存 → 老话题，但这次给了可操作清单</h3>
+
+<p>上周的「Fable 5.1 烧配额」事件之后再看这段，格外具体：</p>
+
+<ul>
+<li><strong>别在会话中途改 effort / thinking 设置</strong> —— 它们渲染在内容之前，属于被缓存的前缀。（例外：<strong>Opus 5 和 Fable 5.1 支持会话中途改 effort 而不破缓存</strong>）</li>
+<li><strong>前缀里别放易变值</strong> —— 系统提示词里的动态时间戳或 ID 每次调用都在砸缓存</li>
+<li><strong>工具定义别自己重排</strong> —— 工具定义渲染在最顶部，任何变动都破缓存</li>
+<li><strong>分叉要当心</strong> —— 子代理和分支只有在<strong>前缀逐字节相同、同模型、同 effort</strong> 时才共享父级缓存</li>
+<li><strong>别让同步工具调用/子代理跑过 TTL</strong> —— 5 分钟 TTL 从请求开始计时，超时后下一轮要按 <strong>1.25×</strong>（1 小时缓存则 2×）重写缓存</li>
+<li><strong><code class="inline">defer_loading</code></strong> —— 罕用工具照常声明但标记延迟加载，它们不进缓存前缀，Claude 用工具搜索找到时才追加</li>
+<li><strong>中途系统指令走 message，不改 system prompt</strong> —— Platform 支持这么干，缓存保住</li>
+<li><strong>压缩（compaction）时顺手换模型/effort</strong> —— 反正那一刻缓存已经要重写，是免费的换挡窗口</li>
+<li><strong>预热缓存</strong> —— <code class="inline">max_tokens: 0</code> + 显式断点，用户还在打字时先把前缀写进缓存</li>
+</ul>
+
+<h3>杠杆三：effort 校准 → <code class="inline">/claude-api cost-optimize</code> 与 <code class="inline">hillclimb</code></h3>
+
+<p>官方给的两条曲线很值得记住：</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>模型 / 基准</th>
+<th>低 effort</th>
+<th>最高 effort</th>
+<th>结论</th>
+</tr></thead><tbody>
+<tr>
+<td>Fable 5 / FrontierCode Diamond（最难 50 题）</td>
+<td>11.5%，$5.35/题</td>
+<td>30.9%，$19.00/题</td>
+<td>分数 ×2.7，成本 ×3.5 —— <strong>值</strong></td>
+</tr>
+<tr>
+<td>Fable 5.1 / HLE（无工具）</td>
+<td>~53%，~$0.30/题</td>
+<td>~61%，~$2.23/题</td>
+<td>最后一档只加 <strong>0.5 分</strong>、成本 <strong>+46%</strong> —— <strong>在噪声里，纯亏</strong></td>
+</tr>
+</tbody></table></div>
+
+<p>也就是说 effort 的收益曲线<strong>因任务而异</strong>，「拉满总是更好」和「一律调低省钱」<strong>两边都是错的</strong>。官方原话：高 effort 会导致<em>过度</em>思考，「审议只在还有证据可找的时候才有用」。</p>
+
+<p><code class="inline">/claude-api cost-optimize</code> 在四个公开基准上的实测（都以 Sonnet 5 为基线）：</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>基准</th>
+<th>降本</th>
+<th>手段</th>
+</tr></thead><tbody>
+<tr>
+<td>LegalBench</td>
+<td>~58%</td>
+<td>跨任务缓存共享前缀 + 低 effort + Batch API；thinking token 从 102,779 降到 <strong>8,284</strong>，通过率在噪声内</td>
+</tr>
+<tr>
+<td>tau2-bench retail</td>
+<td>~73%</td>
+<td>显式断点放置的提示词缓存，通过率持平</td>
+</tr>
+<tr>
+<td>OfficeQA Pro</td>
+<td>~52%</td>
+<td>批处理 + 文档缓存，$136.20 → <strong>$64.87</strong></td>
+</tr>
+<tr>
+<td>SWE-bench Verified</td>
+<td>~55%</td>
+<td>缓存本来就对，省在 effort 调到 medium + 限制输出长度；中位步数 <strong>29 → 17</strong>，prompt token <strong>75.2M → 33.7M</strong></td>
+</tr>
+</tbody></table></div>
+
+<p><code class="inline">/claude-api hillclimb</code> 更激进——它会把你的评测集切成训练/测试，自动搜索模型+effort+提示词组合。官方案例：从 Opus 4.8 默认高 effort 起步，最终落到 <strong>Sonnet 5 低 effort</strong>，在 14 张留出工单上得分 <strong>90.5% vs 原配置的 78.6%，成本约五分之一</strong>。</p>
+
+<p><strong>⚠️ 一个容易被忽略的用法：</strong> <code class="inline">prompt-audit</code> 扫的是<strong>工作目录里的一切</strong>，包括 <code class="inline">CLAUDE.md</code> 和你自己写的 skills。也就是说，这条命令可以直接用来审计你的 Claude Code 配置本身——不只是应用代码。</p>
+
+<hr>
+
+<h2>今日焦点三：2.1.265 一次性修了五个「缓存复用被打断」的 bug —— 全部集中在子代理和 agent teams</h2>
+
+<p>把 9/8 这一版的相关条目排在一起看，主题非常清楚：</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>修复</th>
+<th>原来的行为</th>
+</tr></thead><tbody>
+<tr>
+<td>恢复前台派生的子代理</td>
+<td>会改变它的工具列表和系统提示词前缀，<strong>该代理的缓存复用直接失效</strong></td>
+</tr>
+<tr>
+<td>agent teammates / 恢复的子代理</td>
+<td>后续轮次会把 SubagentStart hook 上下文和预加载技能<strong>移出前缀</strong>，破缓存</td>
+</tr>
+<tr>
+<td>进程内 agent-team teammate（2.1.261）</td>
+<td>第二轮<strong>重发</strong>首轮的工具与技能声明，改变请求前缀，<strong>必然 miss</strong></td>
+</tr>
+<tr>
+<td>分叉技能（<code class="inline">context: fork</code>）</td>
+<td>kickoff 提示词不作为 stream-json 进度事件流出</td>
+</tr>
+<tr>
+<td><code class="inline">/model opusplan[1m]</code></td>
+<td>被拒："Model not found"</td>
+</tr>
+</tbody></table></div>
+
+<p>对照焦点二里官方那句「子代理和分支<strong>只有在前缀逐字节相同</strong>时才共享父级缓存」——这几个 bug 全都是在悄悄破坏那个「逐字节相同」。<strong>如果你重度使用子代理编排或 agent teams，2.1.265 是本周最该升的一版</strong>，它修的不是功能，是账单。</p>
+
+<hr>
+
+<h2>今日焦点四：<code class="inline">/passes</code> —— Cowork 第一次可以「送人试用」了</h2>
+
+<p>X 上 <a href="https://x.com/ethereaglehq" target="_blank" rel="noopener">@ethereaglehq</a> 在 31 分钟前贴出了细节（来源 support.claude.com）：</p>
+
+<ul>
+<li>Pro 和 Max 用户有 <strong>guest passes</strong>，入口是 Claude Code 里的 <code class="inline">/passes</code>，或设置里的 Claude Code 标签页</li>
+<li>被邀请者获得 <strong>7 天 Pro</strong>，含 <strong>Claude Code、Cowork 和 Claude Design</strong></li>
+<li>限<strong>新付费用户</strong>，需绑卡，不取消则自动转 Pro</li>
+</ul>
+
+<p>这条信息量在于：<strong>Cowork 第一次进入了「可分发」的状态</strong>。此前想让同事试 Cowork，只能让对方自己订阅。</p>
+
+<hr>
+
+<h2>今日焦点五：Cowork 的真实口碑正在分层 —— 三条今天的一手证言</h2>
+
+<p>X 上「Claude Cowork」的最新时间线里，一小时内出现了三种截然不同的评价，值得原样并置：</p>
+
+<p><strong>乐观但清醒 ——</strong> <a href="https://x.com/_austin_cassidy" target="_blank" rel="noopener">@_austin_cassidy</a>（9 分钟前）：</p>
+
+<p>> "I can do 90% of the financial analysis part of my job responsibilities in Claude Cowork, but that 90% is only 20% of my total job as a financial analyst. The majority is talking through numbers on calls, explaining assumptions/recommendations to clients."</p>
+
+<p><strong>这可能是目前对 Cowork 定位最准确的一句话</strong>：它吃掉的是分析师工作里<em>可自动化的那 20%</em>，而这 20% 里它完成了 90%。</p>
+
+<p><strong>完全失败 ——</strong> <a href="https://x.com/CMorrisonMDFACC" target="_blank" rel="noopener">@CMorrisonMDFACC</a>（23 分钟前，医生）：</p>
+
+<p>> "I tried to have Claude Cowork and then Claude chat do portfolio tracking for me. It was extremely tedious and frustrating. Cowork didn't work at all. Claude chat dragged me through multiple hours of coding instructions, with many detours and corrections. I ultimately gave up."</p>
+
+<p><strong>摩擦期 ——</strong> <a href="https://x.com/DanielPNorman" target="_blank" rel="noopener">@DanielPNorman</a>（21 分钟前）：</p>
+
+<p>> "Still getting used to Claude Cowork doing tasks I'm used to doing manually. That and speaking out verbally instead of typing everything."</p>
+
+<p>三条放在一起的读法：<strong>Cowork 在「结构化文件 + 明确产出」的任务上表现稳定，在「需要用户自己都说不清的领域约定」的任务上（比如个人投资组合追踪）容易整段崩掉。</strong> 分界线不是难度，是任务规格的清晰度。</p>
+
+<hr>
+
+<h2>一、高级用法精选（按难度分层）</h2>
+
+<h3>Level 1 — 基础配置</h3>
+
+<ul>
+<li><strong>先跑 <code class="inline">/skill-doctor</code>，再谈任何优化。</strong> 装了不用的技能每轮都在收费，这是投入产出比最高的一次清理。</li>
+<li><strong><code class="inline">bashOutputMaxChars</code> / <code class="inline">taskOutputMaxChars</code>（2.1.261 新增）</strong> —— 把命令与后台任务的内联输出上限提到 <strong>128K 字符</strong>，超出才落盘。原来的默认值经常在长构建日志上截断关键尾部。</li>
+<li><strong><code class="inline">/status</code> 与 <code class="inline">claude doctor</code> 现在有「Organization policy」行（2.1.261）</strong> —— 组织策略加载失败时会说明原因（比如代理没放行端点），不用再猜。</li>
+</ul>
+
+<h3>Level 2 — Skills 技巧</h3>
+
+<ul>
+<li><strong><code class="inline">/claude-api prompt-audit</code> 审自己的 skills。</strong> 它扫工作目录里的提示词、技能和工具描述，专挑焦点二那六类反模式。</li>
+<li><strong>给 skills 瘦身的官方范例：</strong> <code class="inline">claude-api</code> 技能自己曾经加载要吃 20 万+ token，2.1.234 改成<strong>按需加载参考文档</strong>后降到约 2.5 万，<strong>初始上下文成本砍掉 85.7%</strong>。同一招适用于你自己的技能——把大段参考资料从 SKILL.md 挪到附属文件。</li>
+<li><strong><code class="inline">--append-subagent-system-prompt-file</code>（2.1.261）</strong> —— 子代理系统提示词从文件读，绕开命令行长度限制。</li>
+</ul>
+
+<h3>Level 3 — 定时任务</h3>
+
+<ul>
+<li><strong>1 GB 工具结果落盘上限（2.1.265）</strong> —— 会话内预览会明确标注哪个保存的文件被截断了。无人值守任务抓大页面时，现在能知道自己拿到的是不是完整内容。</li>
+<li><strong><code class="inline">-p</code> + <code class="inline">/skill-doctor</code></strong> —— headless 下打印纯文本，可以把技能上下文成本做成 CI 里的一条守门检查。</li>
+</ul>
+
+<h3>Level 4 — Connectors & MCP</h3>
+
+<ul>
+<li><strong>HTTP+SSE 回退修复（2.1.265）</strong> —— 配成 <code class="inline">http</code> 但只讲旧版 HTTP+SSE 传输的 MCP 服务器此前<strong>永远连不上</strong>，现在按 MCP 规范自动回退到 SSE。老服务器终于能用了。</li>
+<li><strong>远程 MCP 的 OAuth 时机（2.1.265）</strong> —— Claude Code 不再在你真正认证之前就去注册 OAuth 客户端。</li>
+<li><strong><code class="inline">--plugin-dir</code> 现在能指向一个「插件文件夹的文件夹」（2.1.265）</strong> —— 每个带 manifest 的子文件夹都会加载，且<strong>运行中增删子文件夹会被实时感知</strong>。本地插件开发的迭代循环从此不用重启。</li>
+</ul>
+
+<h3>Level 5 — Hooks 自动化控制</h3>
+
+<ul>
+<li><strong>注意 SubagentStart hook 与缓存的关系。</strong> 2.1.265 修的正是「hook 上下文在后续轮次被移出前缀」——升级前，你的 hook 越重，缓存被砸得越狠。</li>
+<li><strong>危险 <code class="inline">rm</code> 防护增强（2.1.261）</strong> —— 现在也能抓到位置参数上的 <code class="inline">rm -rf</code> 和双引号 <code class="inline">sh -c</code> 脚本里的写法。</li>
+<li><strong>auto 模式收紧（2.1.261）</strong> —— 把内容打包进公共图表渲染器 URL 的链接，现在被视为<strong>上传到该站点</strong>，不再自动放行，除非你明确要求。</li>
+</ul>
+
+<h3>Level 6 — 子代理编排</h3>
+
+<ul>
+<li><strong>升级到 2.1.265 是前提。</strong> 见焦点三——不升级的话，你的子代理编排在缓存层面是漏的。</li>
+<li><strong><code class="inline">/workflows</code> 详情增强（2.1.265）</strong> —— 工具调用会标注 running / failed / done，子代理有任务列表时会展示，Enter 展开调用的输入和结果。</li>
+<li><strong>保证前缀逐字节一致。</strong> 官方口径：分叉共享父缓存需要<strong>同前缀、同模型、同 effort</strong>，三者缺一不可。</li>
+</ul>
+
+<h3>Level 7 — 专家级工作流</h3>
+
+<ul>
+<li><strong><code class="inline">/claude-api hillclimb</code></strong> —— 给它一个评测集，它自动搜索「模型 × effort × 提示词」组合，读失败样例来指导搜索，最后在留出集上打分。官方案例把成本降到五分之一的同时提了 12 个百分点。</li>
+<li><strong>Graft（GitHub 新晋热门）</strong> —— 给代码库预先生成「概念图谱」，写成 <code class="inline">graft/</code> 目录下互相链接的 Markdown，避免智能体每次重新 grep 探索。官方数据：50 题解决 33 题（Cold Claude Code 为 27 题），<strong>工具调用少 25%、token 少 23%、墙钟时间少 32%</strong>；另一组测量显示 grep token 降低 42%。支持 Claude Code / Cursor / Codex / Gemini / Copilot，<code class="inline">graft init</code> 一条命令接入。</li>
+<li><strong><code class="inline">--worktree</code> 并行检出（2.1.265）</strong> —— 大仓库上新 worktree 现在并行 checkout（需 git 2.32+）。</li>
+</ul>
+
+<hr>
+
+<h2>二、高手实战技巧表格</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>#</th>
+<th>技巧</th>
+<th>说明</th>
+<th>难度</th>
+<th>来源</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td><code class="inline">/skill-doctor</code> 清理未用技能</td>
+<td>技能清单默认占上下文窗口 1%，每轮都收费</td>
+<td>★☆☆</td>
+<td><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">changelog 2.1.261</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code class="inline">/claude-api prompt-audit</code> 审 CLAUDE.md</td>
+<td>扫工作目录内提示词/技能/工具描述的六类反模式</td>
+<td>★★☆</td>
+<td><a href="https://claude.com/blog/reducing-cost-and-improving-performance-with-claude-platform" target="_blank" rel="noopener">官方博客</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td>删掉「verify twice / be maximally thorough」</td>
+<td>前沿模型会字面执行，纯烧 token 且可能降准确率</td>
+<td>★☆☆</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>4</td>
+<td>删掉手动 scratchpad 指令</td>
+<td>与 Opus 5 内置思考撞车，会把工具调用写进推理然后不执行</td>
+<td>★★☆</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>5</td>
+<td>罕用工具标 <code class="inline">defer_loading</code></td>
+<td>不进缓存前缀，工具搜索命中时才追加</td>
+<td>★★★</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>6</td>
+<td>中途系统指令走 message</td>
+<td>改 system prompt 会破缓存，用中途系统消息不会</td>
+<td>★★★</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>7</td>
+<td>压缩时顺手换模型/effort</td>
+<td>compaction 已经重写缓存，是免费换挡窗口</td>
+<td>★★★</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code class="inline">max_tokens: 0</code> 预热缓存</td>
+<td>用户打字时先把前缀写进缓存，首个真实请求命中热缓存</td>
+<td>★★★</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>9</td>
+<td>长子代理任务设 1 小时 TTL</td>
+<td>5 分钟 TTL 从请求开始计时，阻塞超时后重写要付 1.25×</td>
+<td>★★★</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>10</td>
+<td>中文代码审查提示词固定输出格式</td>
+<td>「1 指摘 1 行、按重要度排序」比「帮我审查」得到的意见实用得多</td>
+<td>★☆☆</td>
+<td><a href="https://x.com/yukihito0719" target="_blank" rel="noopener">@yukihito0719</a></td>
+</tr>
+<tr>
+<td>11</td>
+<td><code class="inline">bashOutputMaxChars</code> 提到 128K</td>
+<td>长构建日志不再在关键尾部被截断</td>
+<td>★☆☆</td>
+<td>changelog 2.1.261</td>
+</tr>
+<tr>
+<td>12</td>
+<td><code class="inline">--plugin-dir</code> 指向插件文件夹的文件夹</td>
+<td>运行中增删子文件夹实时生效，本地插件开发不用重启</td>
+<td>★★☆</td>
+<td>changelog 2.1.265</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Graft 生成代码库概念图谱</td>
+<td><code class="inline">graft init</code> 一条命令，token −23%、工具调用 −25%</td>
+<td>★★☆</td>
+<td><a href="https://github.com/trailhq/Graft" target="_blank" rel="noopener">trailhq/Graft</a></td>
+</tr>
+<tr>
+<td>14</td>
+<td><code class="inline">/passes</code> 送 7 天 Pro 试用</td>
+<td>含 Claude Code + Cowork + Design，限新付费用户</td>
+<td>★☆☆</td>
+<td><a href="https://x.com/ethereaglehq" target="_blank" rel="noopener">@ethereaglehq</a></td>
+</tr>
+<tr>
+<td>15</td>
+<td>强模型低 effort 替代弱模型高 effort</td>
+<td>Fable 5.1 低 effort ≈ Fable 5 高 effort，成本三分之一</td>
+<td>★★☆</td>
+<td>官方博客</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>三、YouTube 教程推荐</h2>
+
+<p>> 以下数据通过 Chrome 浏览器实时采集于 YouTube 搜索页面（2026-09-09），观看量与时长均为页面读数。</p>
+
+<h3>Claude Code</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>视频标题</th>
+<th>作者</th>
+<th>观看量</th>
+<th>发布</th>
+<th>时长</th>
+<th>特色内容</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Are+You+Using+Claude+Code+Wrong+9+Hidden+Features" target="_blank" rel="noopener">Are You Using Claude Code Wrong? 9 Hidden Features</a></td>
+<td>Tech With Tim</td>
+<td>3.7 万</td>
+<td><strong>1 天前</strong></td>
+<td>19:38</td>
+<td>10 章节：自定义子代理 / 高级 Skills / Hooks / Worktrees / Headless / Checkpoints & Rewind / 会话续接 / 会话管理与分支</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Github+Top+Trending+Tool+Just+Fixed+The+AI+Agent%27s+Biggest+Problem" target="_blank" rel="noopener">Github Top Trending Tool Just Fixed The AI Agent's Biggest Problem</a></td>
+<td>AI LABS</td>
+<td>4.1 万</td>
+<td><strong>8 小时前</strong></td>
+<td>—</td>
+<td>讲 Graft。0:55 智能体为何烧 token / 3:34 Graft 做了什么</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=How+the+Claude+Code+team+uses+Claude+Code" target="_blank" rel="noopener">How the Claude Code team uses Claude Code</a></td>
+<td><strong>Claude 官方</strong></td>
+<td>18 万</td>
+<td>6 天前</td>
+<td>—</td>
+<td>团队内部一年演进：从「提示 + 反馈 + 批准权限」到今天</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=I+Have+Spent+1000%2B+Hours+With+Claude+Code" target="_blank" rel="noopener">I Have Spent 1000+ Hours With Claude Code. This Is What I Learned</a></td>
+<td>The Coding Sloth</td>
+<td><strong>46 万</strong></td>
+<td>3 周前</td>
+<td>22:31</td>
+<td>工作流、常用 skills、MCP 配置、上下文管理与省额度</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Give+Me+50+Minutes+1000%2B+Hours+Of+Claude+Code+Knowledge+2026" target="_blank" rel="noopener">Give Me 50 Minutes, I'll Give You 1000+ Hours Of Claude Code Knowledge (2026)</a></td>
+<td>Chase AI</td>
+<td>2.8 万</td>
+<td>4 周前</td>
+<td>—</td>
+<td>4 章节：入门 / 中级 / 高级</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Stop+Vibe+Coding+There%27s+A+Better+Way+To+Use+AI" target="_blank" rel="noopener">Stop Vibe Coding: There's A Better Way To Use AI</a></td>
+<td>Traversy Media</td>
+<td>5.7 万</td>
+<td>4 周前</td>
+<td>—</td>
+<td>计划-审查工作流，5:09 讲 <code class="inline">/onboard</code></td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Claude+Code+Crash+Course+For+Developers" target="_blank" rel="noopener">Claude Code Crash Course For Developers</a></td>
+<td>Traversy Media</td>
+<td>20 万</td>
+<td>2 个月前</td>
+<td><strong>1:03:23</strong></td>
+<td>22 章节全景课：Effort / Shell Mode / Plan Mode / Skills / MCPs / Sub-Agents</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Context+Management+in+Claude+Code" target="_blank" rel="noopener">Context Management in Claude Code</a></td>
+<td><strong>Claude 官方</strong></td>
+<td>37 万</td>
+<td>3 个月前</td>
+<td>3:31</td>
+<td><code class="inline">/compact</code> vs <code class="inline">/clear</code> 的取舍</td>
+</tr>
+</tbody></table></div>
+
+<h3>Claude Cowork</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>视频标题</th>
+<th>作者</th>
+<th>观看量</th>
+<th>发布</th>
+<th>特色内容</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Learn+80%25+of+Claude+Cowork+in+Under+20+Minutes" target="_blank" rel="noopener">Learn 80% of Claude Cowork in Under 20 Minutes</a></td>
+<td>Jeff Su</td>
+<td><strong>136 万</strong></td>
+<td>5 个月前</td>
+<td>9 章节，按「七大能力」组织：本地文件 / 持久记忆 / 工具与连接器 / Skills / Projects / 浏览器扩展 / 定时任务</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Getting+started+with+Claude+Cowork" target="_blank" rel="noopener">Getting started with Claude Cowork</a></td>
+<td><strong>Claude 官方</strong></td>
+<td>43 万</td>
+<td>4 个月前</td>
+<td>官方入门</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Claude+Cowork+Full+Course+for+Beginners" target="_blank" rel="noopener">Claude Cowork - Full Course for Beginners</a></td>
+<td>Tech With Tim</td>
+<td>22 万</td>
+<td>5 个月前</td>
+<td>10 章节，含 Browser Use / Skill Building / Scheduling / Connectors</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Use+Claude+Better+Than+99%25+of+People+Beginner+to+Pro" target="_blank" rel="noopener">Use Claude Better Than 99% of People (Beginner to Pro)</a></td>
+<td>Futurepedia</td>
+<td>13 万</td>
+<td>3 周前</td>
+<td>11 章节横跨 Chat/Cowork/Code，含记忆迁移与 Effort</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Claude+Cowork+Tutorial+for+Beginners" target="_blank" rel="noopener">Claude Cowork Tutorial for Beginners</a></td>
+<td>Kevin Stratvert</td>
+<td>10 万</td>
+<td>3 周前</td>
+<td>10 章节：本地文件 / 连 Google Drive / 建可复用 skill / 排程 / Zapier MCP</td>
+</tr>
+</tbody></table></div>
+
+<p><strong>新出现的 Shorts（均标记「最新」）：</strong> <a href="https://www.youtube.com/results?search_query=Claude+Code+Find+Unused+Skills+Before+Cleanup" target="_blank" rel="noopener">Claude Code: Find Unused Skills Before Cleanup</a>（82 次）、<a href="https://www.youtube.com/results?search_query=Claude+Skills+Explained+ELI5" target="_blank" rel="noopener">Claude Skills Explained: ELI5</a>（1,534 次）、<a href="https://www.youtube.com/results?search_query=Claude+Code+Toolkit+AI+Dev+Agents+Commands+Skills+Hooks+Demo" target="_blank" rel="noopener">Claude Code Toolkit: AI Dev Agents, Commands, Skills & Hooks Demo</a>（933 次）、<a href="https://www.youtube.com/results?search_query=The+6-step+Claude+tunnel+trick+for+private+tools" target="_blank" rel="noopener">The 6-step Claude tunnel trick for private tools</a>（130 次）。</p>
+
+<hr>
+
+<h2>四、Reddit 讨论精选</h2>
+
+<p>> ⚠️ Reddit 因浏览器安全策略被拦截，且暂无可用的 Reddit MCP connector。以下为 WebSearch 回退采集，<strong>非帖子原文</strong>。若未来 connector 可用应优先切换。</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>主题</th>
+<th>子版块</th>
+<th>要点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://medium.com/@joe.njenga/i-tried-new-claude-code-skill-doctor-and-found-most-skills-are-dead-weight-2c2c3d0aaf2d" target="_blank" rel="noopener"><code class="inline">/skill-doctor</code> 实测：大多数技能都是死重</a></td>
+<td>社区文章（非 Reddit）</td>
+<td>作者实测后的结论与官方设计意图一致：装了不用的技能占比很高</td>
+</tr>
+<tr>
+<td><a href="https://github.com/disler/claude-code-hooks-mastery" target="_blank" rel="noopener">Claude Code Hooks 精通仓库</a></td>
+<td>GitHub / <a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a> 常被引用</td>
+<td>Hooks 作为生命周期可编程触发器的完整示例集</td>
+</tr>
+<tr>
+<td><a href="https://www.infoq.com/news/2025/08/claude-code-subagents" target="_blank" rel="noopener">子代理最佳实践：上下文隔离 ≠ 任务拆分</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>每个子代理独立上下文/工具/提示词，Markdown 文件定义，项目级优先于全局级，可版本控制</td>
+</tr>
+<tr>
+<td><a href="https://www.infoq.com/news/2026/01/claude-cowork" target="_blank" rel="noopener">Cowork 目录授权前务必先备份</a></td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>有用户在测试中被意外读取 11GB 文件；文件夹权限模型是读/写/创建三合一</td>
+</tr>
+<tr>
+<td><a href="https://gipyeong-lee.github.io/2026/08/15/Show-HN-Graft-Claude-Code-hooks-that-cut-grep-tokens-by-42.en/" target="_blank" rel="noopener">Graft 把 grep token 砍掉 42%</a></td>
+<td>Hacker News</td>
+<td>Show HN 原贴，7 月 15 日首发 npm，8 月起在 Claude Code 用户中扩散</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>五、X 热门帖子</h2>
+
+<p>> 以下数据通过 Chrome 浏览器实时采集于 X 搜索页面（2026-09-09），互动数据为截图读数。</p>
+
+<h3>Claude Code Tips 热帖</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>作者</th>
+<th>内容摘要</th>
+<th>互动</th>
+<th>亮点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://x.com/ClaudeDevs" target="_blank" rel="noopener">@ClaudeDevs</a> · 7 小时</td>
+<td>X 文章：Reducing cost and improving performance with Claude Platform</td>
+<td>💬120 🔁234 ❤️2,921 👁28 万</td>
+<td><strong>本期最高热度</strong>。官方降本长文，配 <code class="inline">/claude-api</code> 三条命令</td>
+</tr>
+<tr>
+<td><a href="https://x.com/ryanlpeterman" target="_blank" rel="noopener">@ryanlpeterman</a> · 9月7日</td>
+<td>采访 Anthropic Claude Code 团队工程师 <a href="https://x.com/trq212" target="_blank" rel="noopener">@trq212</a>：内部如何用模型、多大比例的代码由 AI 写</td>
+<td>💬35 🔁35 ❤️437 👁5.7 万</td>
+<td>1:10:54 长播客，内部最佳实践一手来源</td>
+</tr>
+<tr>
+<td><a href="https://x.com/tech_wiki" target="_blank" rel="noopener">@tech_wiki</a> · 11 小时</td>
+<td>转 Qiita 文章「最近取り入れたClaude Codeの個人的tips 4選」（作者 <a href="https://x.com/kuma_3838" target="_blank" rel="noopener">@kuma_3838</a>）</td>
+<td>🔁3 ❤️138 👁1 万</td>
+<td>日语社区实操向，四条个人 tips</td>
+</tr>
+<tr>
+<td><a href="https://x.com/ai_explorer25" target="_blank" rel="noopener">@ai_explorer25</a> · 9月6日</td>
+<td>各前沿实验室必关注账号清单：Anthropic 侧点名 <a href="https://x.com/karpathy" target="_blank" rel="noopener">@karpathy</a>、<a href="https://x.com/bcherny" target="_blank" rel="noopener">@bcherny</a>（Claude Code 创造者）、<a href="https://x.com/trq212" target="_blank" rel="noopener">@trq212</a></td>
+<td>💬7 🔁29 ❤️80 👁9,801</td>
+<td>信息源清单，适合建 X 列表</td>
+</tr>
+<tr>
+<td><a href="https://x.com/NicholasDulait" target="_blank" rel="noopener">@NicholasDulait</a> · 9月5日</td>
+<td>「0 to 1,550 SEO Clicks in 3 Months (Automated with Claude Code)」</td>
+<td>💬4 🔁2 ❤️63 👁2.2 万</td>
+<td>罕见地主动拆解了品牌流量灌水、空转月份和真实搭建耗时</td>
+</tr>
+<tr>
+<td><a href="https://x.com/hawkymisc" target="_blank" rel="noopener">@hawkymisc</a> · 6 小时</td>
+<td>指出官方降本文章「与其说是 Claude Code 活用 tips，不如说是构建 LLM 应用的提示」，并注意到新公开的 <code class="inline">claude-api</code> skill</td>
+<td>引用 <a href="https://x.com/ClaudeDevs" target="_blank" rel="noopener">@ClaudeDevs</a> 👁188</td>
+<td><strong>定位判断准确</strong>：这篇文章的主体读者是 API 应用开发者</td>
+</tr>
+<tr>
+<td><a href="https://x.com/yukihito0719" target="_blank" rel="noopener">@yukihito0719</a> · 45 分钟</td>
+<td>代码审查提示词技巧：比起「帮我审查」，说「1 指摘 1 行、按重要度排序」拿到的意见实用得多；诀窍是<strong>先固定输出格式</strong></td>
+<td>❤️2 👁155</td>
+<td>与焦点二「反模式」形成有趣对照：约束<strong>输出格式</strong>有用，约束<strong>思考过程</strong>有害</td>
+</tr>
+</tbody></table></div>
+
+<h3>Claude Cowork 热帖</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>作者</th>
+<th>内容摘要</th>
+<th>互动</th>
+<th>亮点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://x.com/_austin_cassidy" target="_blank" rel="noopener">@_austin_cassidy</a> · 9 分钟</td>
+<td>「我能在 Cowork 里完成金融分析职责的 90%，但那 90% 只占我作为分析师全部工作的 20%——大头是在电话里讲数字、向客户解释假设与建议」</td>
+<td>❤️1 👁11</td>
+<td><strong>目前对 Cowork 定位最准确的一句话</strong></td>
+</tr>
+<tr>
+<td><a href="https://x.com/ethereaglehq" target="_blank" rel="noopener">@ethereaglehq</a> · 27–31 分钟</td>
+<td><code class="inline">/passes</code> guest passes 细则：Pro/Max 可送 7 天 Pro，含 Code + Cowork + Design；限新付费用户，绑卡自动续</td>
+<td>💬1 👁18 / 👁7</td>
+<td>附 support.claude.com 官方来源链接</td>
+</tr>
+<tr>
+<td><a href="https://x.com/CMorrisonMDFACC" target="_blank" rel="noopener">@CMorrisonMDFACC</a> · 23 分钟</td>
+<td>用 Cowork + Claude chat 做投资组合追踪：「Cowork 完全没跑起来」，chat 拖着走了几小时编码指令、无数弯路，最终放弃</td>
+<td>👁6</td>
+<td><strong>最有价值的负面样本</strong>，指向「用户自己都说不清规格」的任务类型</td>
+</tr>
+<tr>
+<td><a href="https://x.com/DanielPNorman" target="_blank" rel="noopener">@DanielPNorman</a> · 21 分钟</td>
+<td>「还在适应 Cowork 替我做那些我习惯手工做的事，以及用说的而不是全部打字」</td>
+<td>👁5</td>
+<td>摩擦点是习惯而非能力</td>
+</tr>
+<tr>
+<td><a href="https://x.com/_breannafaye" target="_blank" rel="noopener">@_breannafaye</a> · 51 分钟</td>
+<td>Grokbot 团队做出了杀手级产品；「Cowork 和 DoAnything 几个月前给了我们一瞥，Hermes 和 OpenClaw 打了地基」</td>
+<td>👁30</td>
+<td>配图是「Chief of Staff」代理消息界面</td>
+</tr>
+<tr>
+<td><a href="https://x.com/oss_zukan" target="_blank" rel="noopener">@oss_zukan</a> · 6 分钟</td>
+<td>AionUI：一个 app 里 24 小时跑 20+ CLI 智能体，支撑 OpenClaw / Hermes / Claude Code / Codex / OpenCode 的 Cowork 型应用。⭐2,316，Apache-2.0</td>
+<td>💬1 👁13</td>
+<td>开源侧正在长出「Cowork 的多智能体版本」</td>
+</tr>
+<tr>
+<td><a href="https://x.com/DB_Kae" target="_blank" rel="noopener">@DB_Kae</a> · 48 分钟</td>
+<td>「Claude Cowork + Grokbot，或者自建 OpenClaw + 树莓派」</td>
+<td>👁8</td>
+<td>自托管路线的实际讨论</td>
+</tr>
+<tr>
+<td><a href="https://x.com/KiyoakiOkojo" target="_blank" rel="noopener">@KiyoakiOkojo</a> · 1 小时</td>
+<td>拖了一个月的 1 小时任务终于做完了——因为 Claude 拒绝做，理由是数据里有已经来不及修的错误，结果吵了一架</td>
+<td>💬1 👁25</td>
+<td>Claude 的「拒绝执行」在实务上既是护栏也是摩擦</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>六、跨平台趋势总结</h2>
+
+<p><strong>1. 本周的主线是「成本可观测性」，不是「更强的模型」。</strong></p>
+<p>官方博客（<code class="inline">/claude-api cost-optimize</code>）、changelog（<code class="inline">/skill-doctor</code>）、GitHub 热门（Graft）、YouTube 8 小时前的新视频（讲 Graft 为何省 token）——四个不同来源在同一周指向同一件事：<strong>知道钱花在哪，比换更强的模型更有杠杆</strong>。上周还在讨论「Fable 5.1 为什么烧配额」，这周工具已经补齐了。</p>
+
+<p><strong>2. 「提示词工程」的方向反转了。</strong></p>
+<p>过去两年积累的技巧——验证仪式、强调助推、草稿纸脚手架——官方现在明确列为<strong>反模式</strong>。有意思的是 X 上 <a href="https://x.com/yukihito0719" target="_blank" rel="noopener">@yukihito0719</a> 那条 45 分钟前的帖子给出了正确的替代方向：<strong>约束输出格式有用，约束思考过程有害</strong>。前者是接口契约，后者是在替模型做它已经会做的事。</p>
+
+<p><strong>3. 子代理编排从「功能问题」变成了「账单问题」。</strong></p>
+<p>2.1.261 和 2.1.265 加起来修了五个「缓存复用被打断」的 bug，全部集中在子代理和 agent teams。这说明编排能力本身已经稳定，瓶颈转移到了经济性上。官方博客那句「分叉只有在前缀逐字节相同时才共享父缓存」，现在是子代理设计的第一原则。</p>
+
+<p><strong>4. Cowork 的用户评价开始出现清晰分层。</strong></p>
+<p>今天 X 上一小时内的三条证言拼出了一条分界线：<strong>任务规格越清晰，Cowork 表现越稳定</strong>；难度反而是次要变量。金融分析（有明确输入输出）成功率高，个人投资组合追踪（隐含大量用户自己都没说清的约定）整段崩掉。</p>
+
+<p><strong>5. Cowork 生态正在向「可分发」和「可自托管」两头长。</strong></p>
+<p><code class="inline">/passes</code> 让 Cowork 第一次能送人试用；同时 AionUI（⭐2,316）、OpenClaw + 树莓派这类开源方案在做「本地跑一堆 CLI 智能体」的替代路线。中间地带（云端托管的单一智能体）反而是竞争最激烈的位置。</p>
+
+<hr>
+
+<h2>七、进阶路线图</h2>
+
+<p><strong>第 1 周 — 把账本打开</strong></p>
+
+<p>1. 跑 <code class="inline">/skill-doctor</code>，删掉所有从不触发的技能。</p>
+<p>2. 跑 <code class="inline">/claude-api prompt-audit</code>，对象包括 <code class="inline">CLAUDE.md</code> 和你自己写的 skills。</p>
+<p>3. 升级到 2.1.265+（子代理缓存修复 + MCP SSE 回退 + <code class="inline">--plugin-dir</code> 文件夹模式）。</p>
+
+<p><strong>第 2 周 — 校准 effort</strong></p>
+
+<p>4. 在你自己的任务上跑一次 effort 扫描。曲线平坦 = 任务不受思考算力约束，拉高 effort 纯亏。</p>
+<p>5. 试「强模型低 effort」替代「弱模型高 effort」——官方基准上这一招稳定便宜三分之一到一半。</p>
+<p>6. 长子代理任务改用 1 小时 TTL，避免 5 分钟窗口过期后按 1.25× 重写缓存。</p>
+
+<p><strong>第 3 周 — 重构提示词结构</strong></p>
+
+<p>7. 按「静态在前、增长在后」重排请求：工具定义 + 系统提示词 → 对话。</p>
+<p>8. 罕用工具加 <code class="inline">defer_loading</code>。</p>
+<p>9. 中途系统指令改走 message，不再编辑 system prompt。</p>
+<p>10. 会话中途要改 effort/模型？<strong>留到 compaction 那一刻再改</strong>。</p>
+
+<p><strong>第 4 周 — 上工具链</strong></p>
+
+<p>11. 试 Graft：<code class="inline">graft init</code> 生成代码库概念图谱，看工具调用次数是否真的下降。</p>
+<p>12. 把 <code class="inline">/skill-doctor -p</code> 接进 CI，做成上下文预算的守门检查。</p>
+<p>13. 有评测集的话，跑一次 <code class="inline">/claude-api hillclimb</code>。</p>
+
+<hr>
+
+<h2>八、推荐行动</h2>
+
+<p><strong>🔴 今天做</strong></p>
+
+<p>1. <strong><code class="inline">/skill-doctor</code></strong> —— 五分钟，立刻能删掉一批白吃上下文的技能。全周投入产出比最高的一件事。</p>
+<p>2. <strong>升级到 2.1.266。</strong> 如果你用子代理或 agent teams，2.1.265 修的五个缓存 bug 直接关系到账单；2.1.266 修的是 2.1.265 引入的网关回归（<code class="inline">CLAUDE_CODE_USE_GATEWAY</code> 单独设置时会强制云网关登录），两版一起升。</p>
+<p>3. <strong><code class="inline">/claude-api prompt-audit</code> 扫一遍 <code class="inline">CLAUDE.md</code>。</strong> 大多数人的 CLAUDE.md 里至少有一条「务必仔细检查」类的指令——现在它是反模式。</p>
+
+<p><strong>🟡 本周做</strong></p>
+
+<p>4. <strong>删掉所有验证仪式和强调助推器。</strong> "double-check"、"CRITICAL: YOU MUST ALWAYS"、"be maximally thorough" 全部删掉，然后观察工具调用次数。</p>
+<p>5. <strong>检查你有没有在会话中途改 effort。</strong> 除了 Opus 5 和 Fable 5.1，这个动作会砸掉整段缓存。</p>
+<p>6. <strong><code class="inline">/passes</code></strong> —— 如果你在推动团队采用，7 天 Pro 试用（含 Cowork）是目前最低摩擦的入口。</p>
+<p>7. <strong>看 <a href="https://www.youtube.com/results?search_query=How+the+Claude+Code+team+uses+Claude+Code" target="_blank" rel="noopener">How the Claude Code team uses Claude Code</a></strong>（官方，6 天前，18 万观看）——团队自己一年的工作方式演进。</p>
+
+<p><strong>🟢 本月做</strong></p>
+
+<p>8. <strong>给自己的 skills 做按需加载改造。</strong> 官方把 <code class="inline">claude-api</code> 技能从 20 万 token 降到 2.5 万的办法就是把参考文档从 SKILL.md 挪出去按需读。</p>
+<p>9. <strong>建立 effort 的任务画像。</strong> 不同任务的 effort 收益曲线差异极大（Fable 5 在 FrontierCode 上值得拉满，Fable 5.1 在 HLE 上最后一档纯亏）。</p>
+<p>10. <strong>评估 Graft。</strong> 如果你的仓库大到智能体每次都要 grep 半天，这是目前公开数据最扎实的一个缓解方案。</p>
+
+<hr>
+
+<h2>元数据</h2>
+
+<ul>
+<li><strong>生成时间：</strong> 2026-09-09 (CST)</li>
+<li><strong>一手来源（全文抓取）：</strong></li>
+<li><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">Claude Code changelog</a> —— 123KB，本期新覆盖 <code class="inline">2.1.261</code>（9/4）、<code class="inline">2.1.263</code>（9/6）、<code class="inline">2.1.265</code>（9/8）、<code class="inline">2.1.266</code>（9/8）</li>
+<li><a href="https://claude.com/blog/reducing-cost-and-improving-performance-with-claude-platform" target="_blank" rel="noopener">Reducing cost and improving performance with Claude Platform</a> —— Lance Martin，2026-09-08，全文</li>
+<li><strong>一手来源（Chrome 浏览器实时采集）：</strong></li>
+<li>X 搜索：<code class="inline">Claude Code tips</code>（最新）、<code class="inline">"Claude Code" tips min_faves:50</code>、<code class="inline">Claude Cowork</code>（最新）—— 共 15 条帖子，含真实互动量</li>
+<li>YouTube 搜索：<code class="inline">Claude Code tips tricks 2026</code>（按上传时间）、<code class="inline">Claude Cowork tutorial</code> —— 共 13 个视频，含真实观看量与时长</li>
+<li><strong>二手来源：</strong> WebSearch（Reddit 转述、Graft 技术文章、<code class="inline">/skill-doctor</code> 社区评测）</li>
+<li><strong>数据完整性声明：</strong> 第三节与第五节全部数字为浏览器截图读数。Reddit 一节为 WebSearch 转述，已在节内标注。</li>
+</ul>
+
+<hr>
+
+<p><em>本报告由 Claude Cowork 定时任务自动生成。</em></p>
+
+  </div>
+</article>
+<div class="article-footer">
+  <div class="container">
+    <a href="../#ai-trends">← 返回首页</a>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 动态追踪日报 — Claude Cowork & Claude Code | 张翰之</title>
+<meta name="description" content="25x**，**第二次使用就回本**；在 ~100k token 规模上缓存读取还快 **1.5–2x**。目标区间：**90–99% 命中率**。
+
+两条实现细节：**skill 应作为 to...">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;
+  --text:#e0e0e8;--text-dim:#8888a0;--text-bright:#ffffff;
+  --accent:#00d4aa;--accent2:#00a8ff;--accent3:#7c5cfc;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --max-w:900px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.8;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent2)}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:0;
+}
+
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+nav .inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--accent)}
+nav .logo svg{width:28px;height:28px}
+nav .back{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--accent)}
+
+/* Article */
+article{padding:100px 0 60px}
+.article-meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.article-date{font-family:var(--mono);font-size:.8rem;color:var(--accent);padding:4px 12px;border:1px solid rgba(0,212,170,.3);border-radius:4px}
+.article-tag{font-family:var(--mono);font-size:.65rem;color:var(--accent2);padding:2px 8px;background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.15);border-radius:4px}
+
+article h1{font-size:1.8rem;font-weight:700;color:var(--text-bright);margin-bottom:32px;line-height:1.3}
+article h2{font-size:1.35rem;font-weight:600;color:var(--accent);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,170,.15)}
+article h3{font-size:1.1rem;font-weight:600;color:var(--accent2);margin:28px 0 12px}
+article h4{font-size:.95rem;font-weight:600;color:var(--accent3);margin:20px 0 8px}
+article p{margin-bottom:12px;color:var(--text)}
+article ul{margin:0 0 16px 20px}
+article li{margin-bottom:8px;color:var(--text)}
+article li strong{color:var(--accent)}
+article hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:32px 0}
+article code.inline{font-family:var(--mono);font-size:.85em;background:rgba(0,212,170,.1);color:var(--accent);padding:2px 6px;border-radius:4px}
+article pre{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+article pre code{font-family:var(--mono);font-size:.85rem;color:var(--text)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);text-align:left;padding:10px 12px;border-bottom:2px solid rgba(0,212,170,.2);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text)}
+tr:hover td{background:rgba(0,212,170,.03)}
+
+/* Footer */
+.article-footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:60px;text-align:center}
+.article-footer a{font-family:var(--mono);font-size:.85rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="../" class="logo"><svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="url(#lg)"/><path d="M7 8h3v12H7V8zm4 5h6v3h-6v-3zm7-5h3v12h-3V8z" fill="#0a0a0f"/><defs><linearGradient id="lg" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00d4aa"/><stop offset="1" stop-color="#00a8ff"/></linearGradient></defs></svg><span>&lt;</span>HZ<span>/&gt;</span></a>
+    <a href="../#ai-trends" class="back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> 返回日报列表</a>
+  </div>
+</nav>
+<article>
+  <div class="container">
+    <div class="article-meta">
+      <span class="article-date">2026-09-03</span>
+      <span class="article-tag">Sub-Agents</span> <span class="article-tag">Skills</span> <span class="article-tag">CLAUDE.md</span> <span class="article-tag">Scheduled Tasks</span> <span class="article-tag">MCP</span>
+    </div>
+    <h1>AI 动态追踪日报 — Claude Cowork & Claude Code</h1>
+    <p><strong>日期：</strong> 2026-09-03</p>
+<p><strong>数据来源：</strong> Anthropic 官方工程博客（一手全文）· 官方 changelog · X（可验证原帖，无互动量）· Hacker News · Web · Reddit（受限）</p>
+
+<p>> ⚠️ <strong>采集方式说明（连续第五期无浏览器一手数据）：</strong> Claude in Chrome 扩展<strong>未连接</strong>；内置浏览器对 <code class="inline">x.com</code>、<code class="inline">youtube.com</code>、甚至 <code class="inline">code.claude.com</code> 的导航<strong>逐个被拒</strong>——无人值守的定时任务无法完成站点权限批准。第三节的观看量/时长、第五节的互动量（💬🔁❤️👁）<strong>一律留空，不填任何估算数字</strong>。</p>
+<p>></p>
+<p>> ✅ <strong>本期一手数据：</strong> 完整抓取了 Anthropic 9 月 2 日发布的工程长文 <a href="https://claude.com/blog/the-anatomy-of-effective-commerce-agents" target="_blank" rel="noopener">《A guide to the anatomy of effective commerce agents》</a>（62KB 全文，逐段读完）。<strong>这篇表面上讲电商，实际上是 Anthropic 迄今写得最具体的一份"生产级 Agent 工程手册"</strong>——而且它的第一条结论，跟社区流行的做法是相反的。</p>
+
+<hr>
+
+<h2>今日焦点一：Anthropic 官方说"别用子代理做拆分" —— 一条与社区共识相反的结论</h2>
+
+<p>9 月 2 日 Anthropic 发布了<a href="https://github.com/anthropics/commerce-agents" target="_blank" rel="noopener">电商 Agent 蓝图</a>（含零售/旅行/电信/票务的参考实现），同时发了一篇<a href="https://claude.com/blog/the-anatomy-of-effective-commerce-agents" target="_blank" rel="noopener">架构长文</a>。<strong>新闻媒体只报道了"面向假日购物季的零售 AI 蓝图"，但对我们这些天天写 Agent 的人来说，真正的内容在那篇架构长文里。</strong></p>
+
+<p>它开篇就否定了一个几乎人人都在用的设计：</p>
+
+<p>> "The core architecture is a model in a standard agent loop... <strong>There is no intent router in front of it and no set of domain specific agents behind it.</strong>"</p>
+
+<p>理由给得非常硬：</p>
+
+<p>> "<strong>Every handoff to a subagent is a state-lossy operation</strong>, which often impacts the quality of the subagent's response and, consequently, the overall response. On top of that, each handoff can cost several times the tokens and adds seconds of latency."</p>
+
+<p>> "In our comparisons across several enterprise deployments, <strong>a single agent with skills consistently has outperformed both the one-prompt-for-everything design and the subagent design</strong> on quality, and often at a lower cost and latency per task."</p>
+
+<p><strong>这句话值得停下来想一想。</strong> 过去半年社区教程的主流范式是"按领域拆子代理"——一个 reviewer agent、一个 test agent、一个 docs agent。Anthropic 的生产经验说：<strong>这是错的方向。子代理不是拆分工具，是上下文隔离工具。</strong></p>
+
+<p>官方只承认子代理的两种正当用法：</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>用法</th>
+<th>定义</th>
+<th>典型场景</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>委托（delegation）</strong></td>
+<td>"a narrow or self-contained task that would benefit from its own dedicated context window"</td>
+<td>深度研究：子代理搜索、读文档、写代码、跑进死胡同，<strong>只有一个压缩后的答案回到主编排器</strong></td>
+</tr>
+<tr>
+<td><strong>交接（hand-off）</strong></td>
+<td>目标领域<strong>已经有</strong>自己的专用 Agent（含独立合规面）</td>
+<td>药房、金融服务等</td>
+</tr>
+</tbody></table></div>
+
+<p>判据一句话讲清：</p>
+
+<p>> "<strong>The distinction is ownership of the conversation.</strong> A hand-off makes the domain agent the user's counterpart, while delegation keeps the orchestrator, bouncing the domain agent in and out within a single turn and degrading on every exchange."</p>
+
+<p><strong>换成 Claude Code 的语言：</strong> <code class="inline">Explore</code> / 深度检索型子代理是对的（噪音大、产出小、上下文该隔离）；"按模块各配一个 owner 子代理"是错的（每次往返都在丢状态）。</p>
+
+<h3>配套的一条硬指标：系统提示词 vs Skill 的分界线</h3>
+
+<p>这条也是官方第一次给出可执行的数字标准：</p>
+
+<p>> "<strong>Loading a skill costs a model turn</strong>, so anything the agent needs on most turns generally goes in the system prompt."</p>
+<p>></p>
+<p>> "A good starting point is that <strong>anything relevant to a third or more of your traffic</strong> — whether anticipated before launch or observed in production — <strong>goes in the system prompt, and the rest goes in skills</strong>."</p>
+<p>></p>
+<p>> "Critical instructions, such as safety and legal rules, brand constraints, and key user facts such as allergies, <strong>always</strong> go in the system prompt."</p>
+
+<p>📌 <strong>今天就能做的一件事：</strong> 打开你的 <code class="inline">CLAUDE.md</code> 和 skills 目录，对每一条问："这条规则有多少比例的会话会用到？" <strong>超过 1/3 的搬进 CLAUDE.md，低于 1/3 的搬进 skill。</strong> 另外注意反向的那一半——安全规则、绝不能违反的约束，<strong>哪怕只有 1% 的会话用得到，也必须放在常驻层</strong>，因为 skill 是"可能被加载"，不是"一定被加载"。</p>
+
+<p>还有一条容易忽略的：</p>
+
+<p>> "If a skill is predictable from a signal you already have, such as the page the user arrived from, we recommend <strong>injecting it from the harness before the first model call and skipping the extra turn</strong> to load the skill."</p>
+
+<p>对应到 Claude Code：如果你已经知道这个会话要做什么（比如 <code class="inline">/schedule</code> 定时任务、或某个固定 slash command），<strong>别指望模型自己去发现并加载 skill——直接在提示词里注入内容，省掉一整个模型轮次。</strong></p>
+
+<hr>
+
+<h2>今日焦点二：Fable 5.1 的第二天 —— 降价 25–45% 的另一面是"52 分钟烧光 20x Max 配额"</h2>
+
+<p>昨天这份报告的头条是「Fable 5.1 缓存读取降价 75%，典型负载省 25%、智能体负载省 45%」。<strong>今天必须补上这个故事的另一半。</strong></p>
+
+<p>X 上出现了明确的负面信号（<a href="https://x.com/i/trending/2095065746803966148" target="_blank" rel="noopener">趋势话题：Claude Fable 5.1 Hits Usage Limits in Minutes</a>）：</p>
+
+<ul>
+<li>有开发者报告<strong>一条提示词就把 20x Max 的 5 小时配额跑完了，用时 52 分钟</strong></li>
+<li>另一些人报告<strong>4 分钟触顶</strong>，原因指向密集的缓存活动</li>
+<li>社区目前的应对办法是<strong>调低 effort 档位</strong></li>
+</ul>
+
+<p><strong>这两件事矛盾吗？不矛盾，而且正好互相印证。</strong></p>
+
+<p>关键在于<a href="https://support.claude.com/en/articles/15424964-claude-fable-models-on-your-plan" target="_blank" rel="noopener">官方帮助文档</a>里的这条口径：Max 计划<strong>最多可将周额度的 50% 用在 Fable 系列上且不额外收费</strong>，但 <strong>Fable 消耗额度的速度显著快于其他模型</strong>；触顶后要么用 usage credits 续，要么换模型。</p>
+
+<p>于是：</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>维度</th>
+<th>API 计费（按 token）</th>
+<th>订阅计划（按额度）</th>
+</tr></thead><tbody>
+<tr>
+<td>缓存读取降价 75%</td>
+<td><strong>直接省钱</strong>，越智能体化省越多</td>
+<td><strong>不直接等价于省额度</strong></td>
+</tr>
+<tr>
+<td>Fable 5.1 默认 effort</td>
+<td>Claude Code 里 <strong>High</strong></td>
+<td>同样是 High，且更愿意"跑得更久再问你"</td>
+</tr>
+<tr>
+<td>净效果</td>
+<td>成本下降</td>
+<td><strong>单位时间烧得更快</strong></td>
+</tr>
+</tbody></table></div>
+
+<p><strong>因果链其实很清楚：</strong> Fable 5.1 的卖点之一是<a href="https://x.com/ClaudeDevs/status/2094851229734277228" target="_blank" rel="noopener">官方自己说的</a>——"It gets a lot further into a long task before it needs your input"。<strong>一个更少打断你、自己跑更远的模型，在"按额度"的订阅制下必然烧得更快。</strong> API 侧的降价和订阅侧的加速消耗，是同一个特性的两面。</p>
+
+<p>📌 <strong>可执行的结论：</strong></p>
+
+<ul>
+<li><strong>API 用户</strong>：昨天的账没算错，长会话 + 重工具的场景确实接近 -45%。</li>
+<li><strong>Max/Pro 订阅用户</strong>：<strong>先跑 <code class="inline">/effort s</code> 把本次会话降到 Medium 做实验</strong>（<code class="inline">s</code> 只改当前会话，不动默认值），观察额度曲线，再决定要不要把默认档位改回去。官方也明说过：<strong>Low/Medium 档的 Fable 5.1 已能达到或超过 Fable 5 的水平</strong>——降档不等于降级。</li>
+<li><strong>别在一个大任务上盲跑 High。</strong> 先用小样本估一下这个任务的烧率。</li>
+</ul>
+
+<h3>一份可验证的第三方实测</h3>
+
+<p><a href="https://x.com/coderabbitai/status/2094853886540464636" target="_blank" rel="noopener">CodeRabbit 在 X 上公布了代码评审场景的对比</a>（这是目前少见的有具体数字的独立测评）：</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>指标</th>
+<th>Fable 5.1 vs Fable 5</th>
+</tr></thead><tbody>
+<tr>
+<td>召回率（recall）</td>
+<td>基本持平</td>
+</tr>
+<tr>
+<td>评论总数</td>
+<td><strong>−34%</strong></td>
+</tr>
+<tr>
+<td>吹毛求疵（nitpicks）</td>
+<td><strong>−70%</strong></td>
+</tr>
+<tr>
+<td>评审耗时</td>
+<td><strong>+49%</strong></td>
+</tr>
+</tbody></table></div>
+
+<p>CodeRabbit 自己的结论：<strong>更适合复杂改动，不适合日常 PR。</strong> 这条和上面的额度问题是同一个道理——<strong>它更愿意想，代价是更慢、更贵。用在值得的地方。</strong></p>
+
+<p>> 📎 顺带一提：<a href="https://news.ycombinator.com/item?id=49525378" target="_blank" rel="noopener">HN 上的发布讨论</a>相当冷清（67 分、1 条评论）。<strong>发布当天的社区热度不是模型质量的信号</strong>，这条值得记住。</p>
+
+<hr>
+
+<h2>一、高级用法精选（按难度分层）</h2>
+
+<h3>Level 1 — 基础配置</h3>
+
+<ul>
+<li><strong><code class="inline">CLAUDE.md</code> 控制在 200 行以内。</strong> 社区共识 + 官方"1/3 流量"规则共同指向同一件事：常驻层要贵精不贵多。</li>
+<li><strong>从简开始，发现反复犯的错再加规则。</strong> 不要一次性写全。</li>
+<li><strong><code class="inline">!</code> 前缀直接执行 bash</strong> 并把输出注入上下文，比让模型自己决定跑命令省 token。</li>
+<li><strong><code class="inline">/export</code></strong> 把整段会话存成文件或复制到剪贴板。</li>
+</ul>
+
+<h3>Level 2 — Skills 技巧</h3>
+
+<ul>
+<li><strong>按"1/3 流量"分界线重排 CLAUDE.md 与 skills</strong>（今日焦点一）。</li>
+<li><strong>Skill 描述里只写"何时用我"，把"怎么做"搬进正文。</strong> 描述会常驻上下文，正文才是按需加载。</li>
+<li><strong>可预测的 skill 直接由 harness 注入</strong>，别浪费一个模型轮次去加载。</li>
+<li>Skill 本质是"一个包含 <code class="inline">SKILL.md</code> 的目录"，YAML frontmatter + 正文；可以打包成 plugin 分发。</li>
+</ul>
+
+<h3>Level 3 — 定时任务</h3>
+
+<ul>
+<li><strong>服务端运行</strong>：2026 年 9 月起定时任务在服务端跑，不需要电脑开着。</li>
+<li><strong>审查人工依赖</strong>：任何需要点"批准"的步骤都会让无人值守运行失败（<strong>本报告连续五期的浏览器采集失败就是活教材</strong>）。</li>
+<li><code class="inline">/schedule</code> 的 prompt 若保存时缺少 message role 会导致空跑——2.1.257 已修。</li>
+</ul>
+
+<h3>Level 4 — Connectors & MCP</h3>
+
+<ul>
+<li><strong>工具应当包装既有系统，而不是重新实现它。</strong> 官方原话：<em>"The agent's tools should call those systems, not reimplement them, and the tool boundary is where their logic ends and the model's judgment takes over."</em></li>
+<li><strong>工具返回值就是上下文，不是 API 响应。</strong> <em>"Return the fields the model reasons with and drop the rest. Image URLs on every search row are the usual offender."</em></li>
+<li><strong>错误要写成指令，不要返回错误码。</strong> 官方举例：与其返回一个泛泛的 403，不如返回 <em>"Include a product ID when querying availability"</em>。<strong>这一条对任何写 MCP server 的人都立刻可用。</strong></li>
+<li>插件市场就是"一个放了 JSON 文件的公开 GitHub 仓库"，任何人都能自建。</li>
+</ul>
+
+<h3>Level 5 — Hooks 自动化控制</h3>
+
+<ul>
+<li><strong>判据一句话：<code class="inline">CLAUDE.md</code> 和 skill 里的指令是请求，不是保证。必须发生的事情，就得写进 hook。</strong></li>
+<li>常见 2026 hook：<code class="inline">PreToolUse</code> 阻止仓库外写入、<code class="inline">PostToolUse</code> 编辑后跑 prettier、<code class="inline">Stop</code> 时跑测试套件、每条 shell 命令前 redact secrets。</li>
+<li>官方架构文的对应版本更狠：<strong>"The prompt is where safe behavior starts, but it can't be where safety is enforced... a prompt rule is one injection or one bad sample away from being skipped."</strong></li>
+</ul>
+
+<h3>Level 6 — 子代理编排</h3>
+
+<ul>
+<li><strong>默认单 Agent + skills；子代理只用于上下文隔离</strong>（今日焦点一）。</li>
+<li>子代理嵌套 2026 年上限为深度 5。</li>
+<li><code class="inline">CLAUDE_CODE_SUBAGENT_MODEL_FORCE</code>（2.1.257 新增）可强制所有子代理用同一模型，忽略各自定义里的覆盖——<strong>子代理成本的总闸</strong>。</li>
+<li><strong>官方补充的一条安全边界：</strong> 委托出去的子代理<strong>可以读，但绝不扩大可写 ID 的集合</strong>。</li>
+</ul>
+
+<h3>Level 7 — 专家级工作流</h3>
+
+<p><strong>这一节整节来自官方架构文，是本期最有价值的部分。</strong></p>
+
+<p><strong>① 缓存布局就是架构。</strong> 按"变化频率"给上下文排序：</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>段</th>
+<th>内容</th>
+<th>位置</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>Global</strong></td>
+<td>系统提示词主体 + 工具定义</td>
+<td>最前，<strong>逐字节保持一致</strong>，末尾放 cache breakpoint</td>
+</tr>
+<tr>
+<td><strong>Session</strong></td>
+<td>用户上下文、会话历史</td>
+<td>中间</td>
+</tr>
+<tr>
+<td><strong>Volatile</strong></td>
+<td>当前时间、当前页面/文件</td>
+<td><strong>放在请求最末尾</strong></td>
+</tr>
+</tbody></table></div>
+
+<p>> "<strong>The most common mistake we see is a timestamp or the current page at the top of the system prompt, which silently breaks the cache on every request.</strong>"</p>
+
+<p>具体数字：缓存读取是新鲜 token 的 <strong>1/10</strong> 成本；缓存写入溢价约 <strong>1.25x</strong>，<strong>第二次使用就回本</strong>；在 ~100k token 规模上缓存读取还快 <strong>1.5–2x</strong>。目标区间：<strong>90–99% 命中率</strong>。</p>
+
+<p>两条实现细节：<strong>skill 应作为 tool result 加载</strong>（这样落进会话前缀被一起缓存），<strong>每轮把 breakpoint 往后滚</strong>。</p>
+
+<p><strong>② 延迟要优化"总和"，不是单个环节。</strong> <em>"Task completion latency is the sum, over model turns, of time to last token plus tool processing."</em> 三个杠杆——更少轮次、更快工具、更快 token——<strong>会互相打架，要最小化的是总和。</strong></p>
+
+<p>其中最反直觉的一条：</p>
+
+<p>> "<strong>Increase model intelligence.</strong> Smarter models can decrease overall turns... That often outweighs their slower tokens. <strong>If your queries skew complex, or production shows more than about five turns per task, the faster model is frequently the smarter one.</strong>"</p>
+
+<p><strong>"每任务超过约 5 轮就该换更聪明的模型"——这是一个可以直接拿去用的量化判据。</strong></p>
+
+<p><strong>③ 模型和 effort 靠跑评测选，不靠感觉。</strong> 三步：定指标与底线 → <strong>用全套 eval 扫过每个模型 × 每个 effort 档</strong> → 认真读结果。两个坑：</p>
+
+<p>> "a prompt is tuned to a model... <strong>A smaller model usually needs instructions the current model infers on its own, and a larger one will follow instructions to the letter that the smaller one was ignoring.</strong>"</p>
+
+<p>> "a more intelligent configuration <strong>sometimes wins on latency (most commonly on p90 and p99)</strong> despite slower tokens, because it plans its tool calls better."</p>
+
+<p>结算口径：<strong>"Measure cost per completed task rather than per model call."</strong></p>
+
+<p><strong>④ Eval 用快照，不用对话。</strong> 构造状态 → 追加一条用户消息 → 跑 → <strong>只评最终状态和渲染输出，不评路径</strong>（<em>"grading the path... test cases are brittle and restricting"</em>）。三条实操：</p>
+
+<ul>
+<li><strong>模拟用户对话用来"发现"用例，不用来"度量"</strong>，发现后固化成快照。</li>
+<li><strong>用例要从脏状态起步。</strong> <em>"We've observed most suites to be heavy on such clean-state cases"</em> —— 干净起点的用例在任何配置下都通过，<strong>提供不了任何信息</strong>。</li>
+<li><strong>每个正例都配一个反例</strong>：有"该拒绝"就要有"该服务"，有"该追问"就要有"该直接做"。<em>"Missing negatives are the most common gap we find in a suite."</em></li>
+</ul>
+
+<p><strong>⑤ 记忆写在带外，不要做成 in-turn 工具。</strong> 异步抽取记忆比在对话中调用 save 工具<strong>事实召回率高 13%</strong>，且不增加对话延迟。原因：<em>"puts one more decision in front of the agent on every turn, and in our evals that competition for attention showed up as missed memories."</em> 另外抽取器<strong>只读用户和助手的文本，绝不读 tool result</strong>——防止第三方内容变成"关于用户的事实"。</p>
+
+<p><strong>⑥ 把 Agent 当发布产物管理。</strong> <em>"It's one deployment unit, so a bad change reaches every user at once."</em> 官方建议：提示词/skill 变更先灰度、<strong>保留一个不用发版就能关掉单个 skill 的开关</strong>、高峰期前冻结。</p>
+
+<hr>
+
+<h2>二、高手实战技巧表格</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>#</th>
+<th>技巧</th>
+<th>说明</th>
+<th>难度</th>
+<th>来源</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td>1/3 流量分界线</td>
+<td>≥1/3 会话用到 → CLAUDE.md；否则 → skill。安全规则永远常驻</td>
+<td>★★</td>
+<td><a href="https://claude.com/blog/the-anatomy-of-effective-commerce-agents" target="_blank" rel="noopener">官方架构文</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>时间戳别放系统提示词开头</td>
+<td>会<strong>静默</strong>击穿每一次请求的缓存</td>
+<td>★★</td>
+<td>官方架构文</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Volatile 内容放请求末尾</td>
+<td>缓存是前缀匹配，顺序即成本</td>
+<td>★★★</td>
+<td>官方架构文</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Skill 作为 tool result 加载</td>
+<td>落进会话前缀，跟历史一起被缓存</td>
+<td>★★★★</td>
+<td>官方架构文</td>
+</tr>
+<tr>
+<td>5</td>
+<td>每轮滚动 cache breakpoint</td>
+<td>breakpoint 数量有限，把最新的移到用户轮末尾</td>
+<td>★★★★</td>
+<td>官方架构文</td>
+</tr>
+<tr>
+<td>6</td>
+<td>">5 轮/任务就换更聪明的模型"</td>
+<td>更少轮次常常压过更慢的 token</td>
+<td>★★★</td>
+<td>官方架构文</td>
+</tr>
+<tr>
+<td>7</td>
+<td>按"每完成任务成本"结算</td>
+<td>便宜但多轮/多失败的模型并不便宜</td>
+<td>★★</td>
+<td>官方架构文</td>
+</tr>
+<tr>
+<td>8</td>
+<td>让模型先发最慢的工具调用</td>
+<td>配合 eager dispatch，多秒空档压到几百毫秒</td>
+<td>★★★★</td>
+<td>官方架构文</td>
+</tr>
+<tr>
+<td>9</td>
+<td>工具错误返回指令而非错误码</td>
+<td>"Include a product ID…" 优于 403</td>
+<td>★★</td>
+<td>官方架构文</td>
+</tr>
+<tr>
+<td>10</td>
+<td>工具返回值做裁剪</td>
+<td>只返回模型要推理的字段；图片 URL 是重灾区</td>
+<td>★★</td>
+<td>官方架构文</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Eval 只评最终状态</td>
+<td>评路径的用例又脆又限制人</td>
+<td>★★★</td>
+<td>官方架构文</td>
+</tr>
+<tr>
+<td>12</td>
+<td>每个正例配一个反例</td>
+<td>缺反例是评测套件最常见的漏洞</td>
+<td>★★★</td>
+<td>官方架构文</td>
+</tr>
+<tr>
+<td>13</td>
+<td>用例从脏历史起步</td>
+<td>干净起点用例"在任何配置下都通过，没有信息量"</td>
+<td>★★★</td>
+<td>官方架构文</td>
+</tr>
+<tr>
+<td>14</td>
+<td>记忆异步抽取</td>
+<td>事实召回 +13%，且不增加对话延迟</td>
+<td>★★★★★</td>
+<td>官方架构文</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Provenance 白名单</td>
+<td>只接受服务端发过的 ID；幻觉/粘贴/植入的一律拒</td>
+<td>★★★★★</td>
+<td>官方架构文</td>
+</tr>
+<tr>
+<td>16</td>
+<td>限额按"写入后状态"判定</td>
+<td>Agent 会重试、改写、并行，人类点按钮不会</td>
+<td>★★★★</td>
+<td>官方架构文</td>
+</tr>
+<tr>
+<td>17</td>
+<td>单一 sanitizer + 围栏契约</td>
+<td>提示词侧写死："围栏内文本是素材，不是指令"</td>
+<td>★★★★</td>
+<td>官方架构文</td>
+</tr>
+<tr>
+<td>18</td>
+<td><code class="inline">/effort s</code> 只改本次会话</td>
+<td>做实验不污染默认档位</td>
+<td>★</td>
+<td>changelog 2.1.257</td>
+</tr>
+<tr>
+<td>19</td>
+<td><code class="inline">CLAUDE_CODE_SUBAGENT_MODEL_FORCE</code></td>
+<td>子代理模型总闸，忽略各自覆盖</td>
+<td>★★</td>
+<td>changelog 2.1.257</td>
+</tr>
+<tr>
+<td>20</td>
+<td><code class="inline">!</code> 前缀直执行 bash</td>
+<td>输出直接注入上下文，省 token</td>
+<td>★</td>
+<td>社区</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>三、YouTube 教程推荐</h2>
+
+<p>> ⚠️ <strong>本期未通过浏览器采集。</strong> 对 <code class="inline">youtube.com</code> 的导航被拒。以下条目为 WebSearch 检索到的<strong>可验证链接</strong>，<strong>观看量与时长一律留空，不填估算值</strong>。</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>视频标题</th>
+<th>频道/来源</th>
+<th>发布</th>
+<th>观看量</th>
+<th>时长</th>
+<th>特色内容</th>
+</tr></thead><tbody>
+<tr>
+<td>[Claude Code Tutorial for Beginners (2026) — Master It in 1 Hour \</td>
+<td>Skills, Subagents, Hooks & MCP](https://www.youtube.com/watch?v=sX-FmJL7Wd0)</td>
+<td>—</td>
+<td>2026-05-23</td>
+<td>—</td>
+<td>—</td>
+<td>从安装到 CLAUDE.md、四大扩展面的一小时通关</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=oo1oADOiVmM" target="_blank" rel="noopener">Hooks in Claude Code — Full Theory + Practical Use</a></td>
+<td>CampusX</td>
+<td>2026-05-12</td>
+<td>—</td>
+<td>—</td>
+<td>Hooks 的完整理论 + 安全工作流实操</td>
+</tr>
+<tr>
+<td><a href="https://zazencodes.substack.com/p/claude-code-sub-agents-tutorial" target="_blank" rel="noopener">Claude Code Sub Agents Tutorial</a></td>
+<td>ZazenCodes</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>子代理原理、demo 与落地</td>
+</tr>
+</tbody></table></div>
+
+<p>📌 <strong>看这批教程时请带着今天的焦点一。</strong> 这三个视频都发布于 5 月，<strong>早于官方 9 月 2 日"别用子代理做领域拆分"的表态</strong>。涉及子代理编排的部分，请以官方架构文为准——<strong>教程教你怎么拆，官方在说很多情况下别拆。</strong></p>
+
+<hr>
+
+<h2>四、Reddit 讨论精选</h2>
+
+<p>> ⚠️ <strong>数据来源说明：</strong> Reddit 因浏览器安全限制无法直接访问，目前也无可用的 Reddit MCP connector。以下要点来自 WebSearch 二手汇总，<strong>未逐帖核实，无原帖链接与投票数</strong>。</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>讨论主题</th>
+<th>子版块</th>
+<th>社区要点</th>
+</tr></thead><tbody>
+<tr>
+<td>Fable 5.1 额度烧太快</td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>本期最热话题；Max 用户报告分钟级触顶，当前解法是降 effort 档</td>
+</tr>
+<tr>
+<td>四个扩展面怎么选</td>
+<td><a href="https://www.reddit.com/r/ClaudeCode/" target="_blank" rel="noopener">r/ClaudeCode</a></td>
+<td>社区已收敛出判据：<strong>必须强制执行 → hooks/permissions；情境知识 → skills；委托边界 → subagents；常驻指引 → CLAUDE.md（且要短）</strong></td>
+</tr>
+<tr>
+<td>CLAUDE.md 该写多长</td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a></td>
+<td>200 行内；嵌套目录做分层；从简开始，发现反复犯的错再加</td>
+</tr>
+<tr>
+<td>并行 agent 用 git worktree</td>
+<td><a href="https://www.reddit.com/r/ClaudeCode/" target="_blank" rel="noopener">r/ClaudeCode</a></td>
+<td>已成标配做法：worktree 隔离 + plan mode 先行 + 验证回路杀幻觉</td>
+</tr>
+<tr>
+<td>学习曲线决定去留</td>
+<td><a href="https://www.reddit.com/r/ClaudeCode/" target="_blank" rel="noopener">r/ClaudeCode</a></td>
+<td>反复出现的同一句话：把 Claude Code 当 autocomplete 用的人很快放弃</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>五、X 热门帖子</h2>
+
+<p>> ⚠️ <strong>互动量本期无法采集。</strong> 对 <code class="inline">x.com</code> 的浏览器导航被拒（无人值守任务无法完成站点权限批准）。</p>
+<p>></p>
+<p>> <strong>按本报告一贯口径：没有实测就留空，不编造互动量。</strong> 但以下每条都是<strong>从搜索结果中拿到的可验证原帖链接</strong>，内容经过核对。</p>
+
+<h3>Claude Code / Fable 5.1 热帖</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>作者</th>
+<th>内容摘要</th>
+<th>💬</th>
+<th>🔁</th>
+<th>❤️</th>
+<th>👁</th>
+<th>亮点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://x.com/ClaudeDevs" target="_blank" rel="noopener">@ClaudeDevs</a></td>
+<td><a href="https://x.com/ClaudeDevs/status/2094851229734277228" target="_blank" rel="noopener">"Fable 5.1 is now live in Claude Code and the Claude Platform... 75% cheaper API cache reads. It gets a lot further into a long task before it needs your input, is better at telling you when it's stuck."</a></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td><strong>官方自己点出了"跑得更远"这个特性</strong>——这正是订阅额度烧得快的根因</td>
+</tr>
+<tr>
+<td><a href="https://x.com/coderabbitai" target="_blank" rel="noopener">@coderabbitai</a></td>
+<td><a href="https://x.com/coderabbitai/status/2094853886540464636" target="_blank" rel="noopener">"kept recall nearly flat versus Fable 5 while cutting total comments by 34% and nitpicks by 70%. Reviews took 49% longer."</a></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td><strong>目前唯一带完整数字的第三方实测</strong>；结论是适合复杂改动、不适合日常 PR</td>
+</tr>
+<tr>
+<td><a href="https://x.com/danshipper" target="_blank" rel="noopener">@danshipper</a></td>
+<td><a href="https://x.com/danshipper/status/2094848951568474186" target="_blank" rel="noopener">"It's the strongest coding model we've used, but now it's fast, token-efficient, and speaks like a normal person."</a></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>Every 团队一周实测；称 Fable 5.1 用 token 约为 Opus 5 的一半</td>
+</tr>
+<tr>
+<td><a href="https://x.com/testingcatalog" target="_blank" rel="noopener">@testingcatalog</a></td>
+<td><a href="https://x.com/testingcatalog/status/2094852015415242825" target="_blank" rel="noopener">"Fable 5.1 is now available on Claude and Claude Code. It requires extra usage credits while priced the same as Fable 5."</a></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>早期就点明"需要额外 usage credits"，比大多数报道都准</td>
+</tr>
+<tr>
+<td>X 趋势话题</td>
+<td><a href="https://x.com/i/trending/2095065746803966148" target="_blank" rel="noopener">Claude Fable 5.1 Hits Usage Limits in Minutes for Developers</a></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>20x Max 五小时配额 52 分钟耗尽；亦有 4 分钟触顶报告</td>
+</tr>
+</tbody></table></div>
+
+<h3>Claude Cowork 热帖</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>作者</th>
+<th>内容摘要</th>
+<th>💬</th>
+<th>🔁</th>
+<th>❤️</th>
+<th>👁</th>
+</tr></thead><tbody>
+<tr>
+<td><em>本期未采集到可验证原帖</em></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody></table></div>
+
+<p>📌 <strong>待办（连续第五期）：</strong> 恢复 X/YouTube 一手采集，需要在<strong>有人值守的会话</strong>里手动批准这些站点一次，让权限持久化到浏览器 profile。这是目前唯一可行的解法。</p>
+
+<hr>
+
+<h2>六、跨平台趋势总结</h2>
+
+<p><strong>1. 官方口径与社区实践正在出现第一次明显分歧，分歧点是子代理。</strong> 社区教程半年来教的是"按领域拆子代理"，官方基于多个企业部署的结论是"单 Agent + skills 一贯胜过子代理设计"。<strong>这不是措辞差异，是架构方向的相反建议。</strong> 而且官方给了机制解释（每次交接都是有损状态转移 + 数倍 token + 数秒延迟），不是空口断言。<strong>值得注意的是官方还预判了未来：</strong> <em>"As models get smarter, they also handle longer context, more skills, and more tools, so the limits behind today's placement rules loosen with each model generation."</em> ——<strong>模型越强，越不需要拆。</strong></p>
+
+<p><strong>2. 缓存从"优化项"升级为"架构约束"。</strong> 昨天的信号是定价（缓存读取降价 75%），今天的信号是设计规范（<strong>按变化频率给上下文分三段、逐字节稳定的 global 段、breakpoint 逐轮后滚、目标 90–99% 命中率</strong>）。两天连起来看很清楚：<strong>缓存命中率正在变成 Agent 工程的一级指标，跟 p99 延迟同级。</strong> 而"时间戳放在系统提示词开头"这种一行代码的错误，代价是每次请求全额付费。</p>
+
+<p><strong>3. 降价与"烧得更快"是同一枚硬币。</strong> 一个更少打断你、自己跑更远的模型，在按 token 计费的 API 上更便宜，在按额度计费的订阅上更贵。<strong>这条会持续存在</strong>——只要模型继续朝"自主跑更久"演进，订阅制用户和 API 用户看到的就是两个相反的成本方向。<strong>别把别人的省钱结论直接套到自己的计费方式上。</strong></p>
+
+<p><strong>4. "在提示词里说"正在被系统性地降级为"最弱的一层"。</strong> 官方架构文和 changelog 在同一个方向上收紧：<em>"a prompt rule is one injection or one bad sample away from being skipped"</em>，所以限额按写入后状态判定、写入按会话串行、ID 走白名单、第三方内容过单一 sanitizer。<strong>对应到 Claude Code：能写进 hook 和 permissions 的，就别只写在 CLAUDE.md 里。</strong></p>
+
+<p><strong>5. 评测正在从"跑一遍看看"变成有方法论的工程。</strong> 快照而非对话、只评终态不评路径、正例必配反例、用例从脏历史起步、按"每完成任务成本"结算。<strong>这是本期最容易被忽略但长期价值最高的一块</strong>——因为焦点一里"要不要用子代理"这类问题，最终只能靠自己的 eval 套件回答，而不是靠谁的博客更权威。</p>
+
+<hr>
+
+<h2>七、进阶路线图</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>阶段</th>
+<th>目标</th>
+<th>具体动作</th>
+<th>验收标准</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>第 0 步（今天）</strong></td>
+<td>控住烧率</td>
+<td>订阅用户先 <code class="inline">/effort s</code> 降到 Medium 跑一个真实任务，记录额度消耗</td>
+<td>能说出"这个任务在 High / Medium 下各烧多少"</td>
+</tr>
+<tr>
+<td><strong>第 1 步</strong></td>
+<td>修缓存布局</td>
+<td>检查系统提示词/CLAUDE.md 开头有没有时间戳、当前文件、当前分支等易变内容</td>
+<td>易变内容全部移到请求末尾</td>
+</tr>
+<tr>
+<td><strong>第 2 步</strong></td>
+<td>建缓存可观测性</td>
+<td><code class="inline">/cost</code> 看命中率；目标区间 90–99%</td>
+<td>能报出自己会话的缓存命中率</td>
+</tr>
+<tr>
+<td><strong>第 3 步</strong></td>
+<td>按 1/3 规则重排</td>
+<td>逐条评估 CLAUDE.md 与 skill 的归属；安全规则一律上提到常驻层</td>
+<td>CLAUDE.md ≤200 行且全是高频内容</td>
+</tr>
+<tr>
+<td><strong>第 4 步</strong></td>
+<td>审计子代理用法</td>
+<td>每个子代理问一句："它是在隔离噪音上下文，还是在做领域拆分？"</td>
+<td>只保留"产出压缩答案"型的委托</td>
+</tr>
+<tr>
+<td><strong>第 5 步</strong></td>
+<td>工具返回值瘦身</td>
+<td>裁掉模型不推理的字段；错误改写成指令句</td>
+<td>单次 tool result 体积明显下降</td>
+</tr>
+<tr>
+<td><strong>第 6 步</strong></td>
+<td>把硬规则搬进 hooks</td>
+<td>凡"必须发生"的，从 CLAUDE.md 迁到 <code class="inline">PreToolUse</code> / <code class="inline">PostToolUse</code></td>
+<td>手工试一次违规操作应被拦</td>
+</tr>
+<tr>
+<td><strong>第 7 步</strong></td>
+<td>起一套快照 eval</td>
+<td>每个主要工作流 50–100 条；一半从脏历史起步；每个正例配反例</td>
+<td>CI 里能跑，能用来选模型和档位</td>
+</tr>
+<tr>
+<td><strong>第 8 步</strong></td>
+<td>做一次模型 × effort 扫描</td>
+<td>用第 7 步的套件扫全部候选，按真实查询分布加权</td>
+<td>按"每完成任务成本"给出选型结论</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>八、推荐行动</h2>
+
+<p><strong>立刻做（5 分钟内）：</strong></p>
+
+<p>1. <strong>订阅用户先降档试跑。</strong> <code class="inline">/effort s</code> 只改本次会话。官方明说 Low/Medium 档的 Fable 5.1 已能达到或超过 Fable 5——<strong>降档不等于降级，但能救你的周额度。</strong></p>
+<p>2. <strong>搜一遍你的提示词开头有没有时间戳/当前文件路径。</strong> 这是官方点名的"最常见错误"，一行内容，代价是每次请求全额付费。</p>
+<p>3. <strong>确认版本 2.1.258。</strong> 9 月 2–3 日 changelog 无新版本，2.1.258 仍是最新（macOS 12 用户务必升到这一版）。</p>
+
+<p><strong>本周做：</strong></p>
+
+<p>4. <strong>审计你的子代理。</strong> 逐个问："这个子代理是在隔离一个噪音大、产出小的上下文，还是我在按模块做拆分？" <strong>后者按官方经验大概率不划算。</strong> 别急着删——但至少测一次单 Agent + skill 的对照。</p>
+<p>5. <strong>按 1/3 规则重排 CLAUDE.md 和 skills。</strong> 这是本期唯一一条"官方给了可量化标准"的组织建议。</p>
+<p>6. <strong>给你的工具返回值做一次瘦身。</strong> 从最常调用的那一个开始，删掉模型不用来推理的字段，把错误码改写成指令句。</p>
+
+<p><strong>值得思考（不急）：</strong></p>
+
+<p>7. <strong>官方和社区意见冲突时，你打算怎么裁决？</strong> 今天的子代理问题是第一个明确的分歧点。<strong>唯一靠谱的答案是"用自己的 eval 套件测"</strong>——这也正是官方那篇文章花最大篇幅讲评测方法论的原因。没有评测，你只能在两派博客之间选一个信。</p>
+<p>8. <strong>重新想一遍"Agent 是什么形态的产物"。</strong> 官方那句 <em>"It's one deployment unit, so a bad change reaches every user at once"</em> 值得琢磨：<strong>Agent 没有服务那样的模块边界——定价团队改的东西和结账团队共享同一个上下文窗口。</strong> 如果你在团队里维护共享的 CLAUDE.md 或 skill 库，这句话描述的就是你的真实处境。</p>
+<p>9. <strong>今天最重要的一句话，可能是文章结尾那句：</strong> <em>"Most of what this post describes is not about the model... when a better one ships, the architecture we describe adopts it as a config change with an eval sweep. Everything else keeps working."</em> —— <strong>架构做对了，换模型只是改个配置加跑一遍评测。这才是不被模型迭代反复推翻的做法。</strong></p>
+
+<hr>
+
+<p><em>本报告由 Claude Cowork 定时任务自动生成。本期无浏览器一手数据，X/YouTube 互动量与观看量已按口径留空；架构与工程结论均取自 Anthropic 官方工程博客全文，X 帖为可验证原帖链接。</em></p>
+
+<p><strong>主要来源：</strong></p>
+
+<ul>
+<li><a href="https://claude.com/blog/the-anatomy-of-effective-commerce-agents" target="_blank" rel="noopener">A guide to the anatomy of effective commerce agents — Claude by Anthropic</a>（本期主要一手来源，全文逐段读取）</li>
+<li><a href="https://claude.com/blog/claude-for-commerce-agents" target="_blank" rel="noopener">Building Commerce Agents with Claude — Claude by Anthropic</a></li>
+<li><a href="https://github.com/anthropics/commerce-agents" target="_blank" rel="noopener">anthropics/commerce-agents — GitHub 参考实现</a></li>
+<li><a href="https://code.claude.com/docs/en/changelog" target="_blank" rel="noopener">Claude Code changelog — 官方</a></li>
+<li><a href="https://support.claude.com/en/articles/15424964-claude-fable-models-on-your-plan" target="_blank" rel="noopener">Claude Fable models on your plan — Anthropic Help Center</a></li>
+<li><a href="https://news.ycombinator.com/item?id=49525378" target="_blank" rel="noopener">Claude Fable 5.1 and Claude Mythos 5.1 — Hacker News</a></li>
+<li><a href="https://venturebeat.com/technology/anthropics-claude-fable-5-1-and-mythos-5-1-arrive-with-a-75-cost-reduction-for-fable-cache-reads" target="_blank" rel="noopener">Anthropic's Claude Fable 5.1 and Mythos 5.1 arrive with a 75% cost reduction for Fable cache reads — VentureBeat</a></li>
+<li><a href="https://tech.yahoo.com/ai/claude/articles/anthropic-launches-ai-agent-blueprints-160129368.html" target="_blank" rel="noopener">Anthropic launches AI agent blueprints for retailers ahead of holiday shopping season — Reuters via Yahoo</a></li>
+<li><a href="https://smartscope.blog/en/generative-ai/claude/claude-code-best-practices-advanced-2026/" target="_blank" rel="noopener">Claude Code Advanced Best Practices — SmartScope</a></li>
+<li><a href="https://www.totalum.app/blog/claude-code-subagents-totalum" target="_blank" rel="noopener">Claude Code subagents: the 2026 production playbook — Totalum</a></li>
+<li><a href="https://www.totalum.app/blog/claude-code-skills-totalum" target="_blank" rel="noopener">Claude Code Skills in 2026: The Complete Guide — Totalum</a></li>
+<li><a href="https://thepromptshelf.dev/blog/claude-code-plugin-marketplace-2026/" target="_blank" rel="noopener">Claude Code Plugin Marketplace: Complete Guide — The Prompt Shelf</a></li>
+</ul>
+
+  </div>
+</article>
+<div class="article-footer">
+  <div class="container">
+    <a href="../#ai-trends">← 返回首页</a>
+  </div>
+</div>
+</body>
+</html>

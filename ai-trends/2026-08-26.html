@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 动态追踪日报 — Claude Cowork & Claude Code | 张翰之</title>
+<meta name="description" content="今天只有一件大事，三个平台的分工非常清楚。** X 是唯一的一手现场——官方发布 6 小时内，日本、印度、中文圈的开发者已经完成了拆解、翻译和二次传播，而且**拆解质量高于多数英文媒体报道**（...">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;
+  --text:#e0e0e8;--text-dim:#8888a0;--text-bright:#ffffff;
+  --accent:#00d4aa;--accent2:#00a8ff;--accent3:#7c5cfc;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --max-w:900px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.8;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent2)}
+::selection{background:var(--accent);color:var(--bg)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:0;
+}
+
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+nav .inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--accent)}
+nav .logo svg{width:28px;height:28px}
+nav .back{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--accent)}
+
+/* Article */
+article{padding:100px 0 60px}
+.article-meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.article-date{font-family:var(--mono);font-size:.8rem;color:var(--accent);padding:4px 12px;border:1px solid rgba(0,212,170,.3);border-radius:4px}
+.article-tag{font-family:var(--mono);font-size:.65rem;color:var(--accent2);padding:2px 8px;background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.15);border-radius:4px}
+
+article h1{font-size:1.8rem;font-weight:700;color:var(--text-bright);margin-bottom:32px;line-height:1.3}
+article h2{font-size:1.35rem;font-weight:600;color:var(--accent);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,170,.15)}
+article h3{font-size:1.1rem;font-weight:600;color:var(--accent2);margin:28px 0 12px}
+article h4{font-size:.95rem;font-weight:600;color:var(--accent3);margin:20px 0 8px}
+article p{margin-bottom:12px;color:var(--text)}
+article ul{margin:0 0 16px 20px}
+article li{margin-bottom:8px;color:var(--text)}
+article li strong{color:var(--accent)}
+article hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:32px 0}
+article code.inline{font-family:var(--mono);font-size:.85em;background:rgba(0,212,170,.1);color:var(--accent);padding:2px 6px;border-radius:4px}
+article pre{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+article pre code{font-family:var(--mono);font-size:.85rem;color:var(--text)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);text-align:left;padding:10px 12px;border-bottom:2px solid rgba(0,212,170,.2);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text)}
+tr:hover td{background:rgba(0,212,170,.03)}
+
+/* Footer */
+.article-footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:60px;text-align:center}
+.article-footer a{font-family:var(--mono);font-size:.85rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="../" class="logo"><svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="url(#lg)"/><path d="M7 8h3v12H7V8zm4 5h6v3h-6v-3zm7-5h3v12h-3V8z" fill="#0a0a0f"/><defs><linearGradient id="lg" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00d4aa"/><stop offset="1" stop-color="#00a8ff"/></linearGradient></defs></svg><span>&lt;</span>HZ<span>/&gt;</span></a>
+    <a href="../#ai-trends" class="back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> 返回日报列表</a>
+  </div>
+</nav>
+<article>
+  <div class="container">
+    <div class="article-meta">
+      <span class="article-date">2026-08-26</span>
+      <span class="article-tag">CLAUDE.md</span> <span class="article-tag">Skills</span> <span class="article-tag">Scheduled Tasks</span> <span class="article-tag">MCP</span> <span class="article-tag">Hooks</span>
+    </div>
+    <h1>AI 动态追踪日报 — Claude Cowork & Claude Code</h1>
+    <p><strong>日期：</strong> 2026-08-26</p>
+<p><strong>数据来源：</strong> X (Twitter) · YouTube · Web · Reddit（受限）</p>
+
+<p>> 📡 <strong>本期采集方式：</strong> X 与 YouTube 数据通过 Chrome 浏览器实时采集（X 三组入口：<code class="inline">Claude Code tips</code>「最新」、<code class="inline">Claude Cowork</code>「最新」、<a href="https://x.com/claudeai" target="_blank" rel="noopener">@claudeai</a> 官方时间线；YouTube 两组关键词），互动量、观看量、视频时长均为页面实测值。Reddit 仍无法直接浏览（浏览器安全策略拦截，MCP registry 中确认无可用 Reddit connector），第四节改用 WebSearch 与媒体报道替代并逐条标注来源性质。本期核心事实已与 <a href="https://techcrunch.com/2026/08/25/claude-cowork-finally-remembers-what-you-told-the-app-in-chat/" target="_blank" rel="noopener">TechCrunch</a>、<a href="https://www.theregister.com/ai-and-ml/2026/08/25/claude-and-cowork-now-share-what-they-know-about-you/5292412" target="_blank" rel="noopener">The Register</a>、<a href="https://9to5mac.com/2026/08/25/anthropic-update-unifies-memory-feature-across-claude-cowork-and-chat/" target="_blank" rel="noopener">9to5Mac</a>、<a href="https://siliconangle.com/2026/08/25/anthropic-updates-claudes-memory-to-enhance-customization-and-protect-sensitive-topics/" target="_blank" rel="noopener">SiliconANGLE</a> 交叉核对。</p>
+
+<hr>
+
+<h2>今日焦点</h2>
+
+<p><strong>昨天补上的这块拼图，是 Cowork 从「能干活的工具」变成「知道你是谁的同事」的分界线：Claude 聊天与 Cowork 现在共用同一份记忆。</strong></p>
+
+<p><a href="https://x.com/claudeai" target="_blank" rel="noopener">@claudeai</a> 在 8 月 25 日发布（💬253 🔁463 ❤️5,626 👁45万）的原话很克制：</p>
+
+<p>> Claude 现在拥有一个跨聊天和 Claude Cowork 的记忆，你决定其中包含什么。</p>
+<p>> 将任务交给 Cowork，它会从 Claude 已从你的聊天中了解的内容开始：你讨论过的项目、你经理的偏好，或者上季度的客户。</p>
+
+<p><strong>这条更新真正改变的不是「记得更多」，而是「记忆发生的时机变了」。</strong></p>
+
+<p>过去 Claude 是在<strong>一段对话结束时</strong>做一次总结、写进记忆。新版改成<strong>边聊边按主题写入</strong>——你还在对话中间，Claude 就已经把新出现的细节存进对应主题里了。这个改动看起来很小，但它是「聊天 ↔ Cowork 来回切换」能成立的前提：如果必须等对话结束才落盘，你在聊天里刚讨论完的会议安排，转手交给 Cowork 时它是不知道的。</p>
+
+<p><strong>第二个变化是记忆从「一团文本」变成了「一张主题清单」。</strong> 官方后续帖（💬16 🔁23 ❤️473 👁5.7万）说明：Claude 记住的一切都以<strong>主题列表</strong>的形式保存在「设置 → Memory」（这次 Memory 拿到了独立标签页），你可以逐条阅读、编辑或删除单个主题。截图里能看到的真实条目形态是这样的——<code class="inline">Meal Planning</code>、<code class="inline">Client Pitch</code>、<code class="inline">Half Marathon Training</code>、<code class="inline">Recent Work</code>、<code class="inline">Fall Offsite</code>、<code class="inline">Scope And Priorities</code>、<code class="inline">Childcare Schedule</code>，每条都带独立的更新时间戳。</p>
+
+<p><strong>第三个变化是敏感话题第一次有了显式开关。</strong> 默认不写入记忆的包括健康状况、宗教信仰、种族、性别认同等；SSN、政府证件号、犯罪记录、移民身份这类 PII 则是<strong>任何情况下都不存</strong>。设置里新增了一个「Include sensitive topics in memory」开关，愿意让 Claude 记住健康或信仰相关细节的用户可以自己打开。日本开发者 <a href="https://x.com/takuto_pitaliy" target="_blank" rel="noopener">@takuto_pitaliy</a> 的总结最简洁：「保存内容按主题单位可阅览・编辑・删除，但健康信息或宗教观等敏感话题默认不保存。」</p>
+
+<p><strong>还有一个容易被忽略的入口：从其他 AI 提供商导入记忆。</strong> 设置页里有 "Import memory from other AI providers"，可以把你在别家积累的上下文一次性搬过来。</p>
+
+<p><strong>社区侧本期最值钱的资源是一个 GitHub 仓库。</strong> <a href="https://x.com/sulekhat95" target="_blank" rel="noopener">@sulekhat95</a> 在 18 小时前推的 <a href="https://github.com/shanraisshan/claude-code-best-practice" target="_blank" rel="noopener">shanraisshan/claude-code-best-practice</a>——<strong>19.7K 星、1.7K 分叉</strong>，README 顶栏的更新时间戳正是 <code class="inline">Aug 25, 2026</code>。它的定位不是又一份提示词合集，而是把 <strong>Anthropic Claude Code 团队（Boris Cherny、Thariq）公开过的 84 条实操技巧</strong>连同子代理、技能、钩子、斜杠命令、MCP、tmux + git worktrees、乃至 Claude + Codex 双模型协作工作流整合进了一套可复制的配置。仓库里被反复引用的一句话来自 Claude Code 创造者 Boris Cherny 本人：</p>
+
+<p>> "There is no one correct way to use Claude Code" — 团队每个人的 setup 都不一样，你应该实验出适合自己的那套。</p>
+
+<hr>
+
+<h2>一、高级用法精选（按难度分层）</h2>
+
+<h3>Level 1 — 基础配置</h3>
+
+<ul>
+<li><strong>今天该做的第一件事是去「设置 → Memory」通读一遍。</strong> 记忆已经默认开启（Free / Pro / Max 全平台：web、桌面、移动端），也就是说清单里<strong>已经有内容了</strong>。先看它记住了什么、有没有记错，比事后发现 Cowork 按错误前提干了半小时活便宜得多。</li>
+<li><strong>把「敏感话题」开关当成一个刻意决策，而不是默认值。</strong> 关着更安全，但也意味着「我在康复期，排程别排太满」这类真正影响 Cowork 输出质量的约束不会被记住。要么打开它，要么把这类约束写进项目指令而不是指望记忆。</li>
+<li><strong>想让某句话立刻进记忆，直接说「记住这个」。</strong> 这是官方明确支持的显式写入方式，比指望自动抽取靠谱。</li>
+<li><strong>迁移用户先跑一次 "Import memory from other AI providers"。</strong> 设置页里的这个入口能把其他家积累的上下文一次性带过来，省掉从零重建的几周。</li>
+<li><strong><code class="inline">CLAUDE.md</code> 与记忆是两回事，别混用。</strong> <code class="inline">CLAUDE.md</code> 是每轮都发送的项目级硬约定；记忆是跨对话的个人上下文，按需注入。把个人偏好塞进 <code class="inline">CLAUDE.md</code> 会白白吃掉每一轮的 token。</li>
+</ul>
+
+<h3>Level 2 — Skills 技巧</h3>
+
+<ul>
+<li><strong>记忆统一之后，skill 的写法可以更薄了。</strong> 以前一个 <code class="inline">/brief</code> skill 往往要在开头写一大段「我是谁、我团队多大、我老板喜欢什么格式」；现在这些属于记忆的职责，skill 只需要专注<strong>做法</strong>本身。skill 越薄，越容易复用到别的项目。</li>
+<li><strong>反过来，别把「做法」写进记忆。</strong> 记忆里适合放事实（项目名、人名、偏好、约束），不适合放流程（先做 A 再做 B）。流程放 skill，才有版本、能改、能分享。</li>
+<li><strong>Cowork 里最快的 skill 产出路径仍是内置 Skill Creator</strong>：把你这周重复了三次以上的那段指令直接喂给它，让它固化成 slash command。</li>
+<li><strong>官方 marketplace 装完的 skill 一定要改写。</strong> 通用模板产出通用结果——这是团队引入 skill 时最普遍的挫败来源。</li>
+</ul>
+
+<h3>Level 3 — 定时任务</h3>
+
+<ul>
+<li><strong>定时任务是记忆更新的最大受益者。</strong> 一个跑了两个月的周报任务，过去每周都从同样的空白起点开始；现在它能接上你这两个月在聊天里讨论过的项目变化。相应地，<strong>定时任务的产出质量现在依赖你的记忆卫生</strong>——记忆里留着三个月前已经取消的项目，周报里就会一直出现它。</li>
+<li><strong>建议给每个长期定时任务配一次月度记忆体检</strong>：打开 Memory 标签页，删掉已结束的主题。</li>
+<li><strong><a href="https://www.youtube.com/results?search_query=How+to+Use+Claude+Cowork+Step-by-Step+Tutorial+Kevin+Stratvert" target="_blank" rel="noopener">Kevin Stratvert 的 10 章教程</a>（8 天前，4.2 万观看，9:42）的章节顺序依然是最好的教学设计</strong>：本地文件 → 接 Google Drive → 更新 dashboard → <strong>写一个可复用 skill → 跑它 → 设置周期性任务</strong> → 用 Zapier MCP 接其他应用。先有可复用单元，再谈自动化。</li>
+</ul>
+
+<h3>Level 4 — Connectors & MCP</h3>
+
+<ul>
+<li><strong>Connector 与记忆解决的是两个不同的问题，别指望其中一个替代另一个。</strong> Connector 给的是<strong>实时数据</strong>（今天的日历、这封邮件）；记忆给的是<strong>稳定偏好</strong>（你老板要 bullet 不要段落）。两者叠加才是 Cowork 交付物「一次到位」的实际来源。</li>
+<li>推荐优先接入顺序不变：Gmail、Google Calendar、Notion、GitHub、Slack（聊天窗口左下角的加号）。</li>
+<li><strong>在写任何调用 connector 的自动化之前，先在对话里手工调一次这个工具看返回结构。</strong> MCP wrapper 经常改名参数、重塑输出，照着 API 文档写的解析代码大概率对不上。</li>
+</ul>
+
+<h3>Level 5 — Hooks 自动化控制</h3>
+
+<ul>
+<li><strong>判断该放哪一层，仍是第一道题</strong>：必须被强制执行的规则 → <strong>Hooks 或 permissions</strong>；上下文知识 → <strong>Skills</strong>；委派边界 → <strong>Subagents</strong>；始终生效的项目约定 → <strong><code class="inline">CLAUDE.md</code></strong>。</li>
+<li>Hooks 是生命周期上的事件脚本，本质是 AI 助手的中间件——拦截、监控、增强每一次交互（<a href="https://dev.to/bredmond1019/mastering-claude-hooks-building-observable-ai-systems-part-2-2ic4" target="_blank" rel="noopener">DEV Community</a>）。</li>
+<li><strong>入门顺序官方建议仍是「skill 优先」</strong>：skill 最容易创建、见效最快；需要确定性强制时再加 hook。倒过来做的团队通常会在 hook 上卡很久。</li>
+</ul>
+
+<h3>Level 6 — 子代理编排</h3>
+
+<ul>
+<li>子代理的核心价值是<strong>独立上下文窗口</strong>：每个子代理有自己的系统提示、自己的工具白名单、自己的上下文，彼此隔离，避免上下文污染（<a href="https://docs.anthropic.com/en/docs/claude-code/subagents" target="_blank" rel="noopener">Anthropic 文档</a>）。</li>
+<li><strong><a href="https://x.com/LarryPanozzo" target="_blank" rel="noopener">@LarryPanozzo</a>（20 分钟前）提出的对比值得记一笔</strong>：Codex 在等待本地运行完成时会持续消耗额度，而 <strong>Cowork 能在子任务运行期间挂起、任务完成时再唤醒</strong>。长时间跑测试或构建的场景，这是实打实的成本差异。</li>
+<li>用 <code class="inline">git worktrees</code> + <code class="inline">tmux</code> 让多个子代理在互不冲突的工作副本上并行——这是 <a href="https://github.com/shanraisshan/claude-code-best-practice" target="_blank" rel="noopener">claude-code-best-practice</a> 仓库里最被反复推荐的一条基础设施配置。</li>
+</ul>
+
+<h3>Level 7 — 专家级工作流</h3>
+
+<ul>
+<li><strong>所有主流工作流最终收敛到同一个骨架：Research → Plan → Execute → Review → Ship。</strong> 差别只在每一步用什么工具承载。</li>
+<li><strong>双模型协作（Claude + Codex）已经进了公开的最佳实践仓库。</strong> 典型分工是让一个模型做实现、另一个做审查——两者的失败模式不同，交叉审查能抓出单模型自查抓不到的问题。</li>
+<li><strong><a href="https://x.com/clementeortuzar" target="_blank" rel="noopener">@clementeortuzar</a>（5 小时前，💬0 🔁1 ❤️1 👁133）演示了一种轻量的跨工具交接</strong>：把一个分析结果导出成 <code class="inline">.md</code> 文件，或通过 MCP 直接递给 Codex / Claude Code。文件是最稳的跨代理接口。</li>
+<li><strong>记忆统一之后，「专家级」的定义变了一点。</strong> 过去的高手技巧是「怎么把上下文塞得又准又省」；现在多了一条「怎么设计一份长期正确的记忆」。前者是单次优化，后者是复利。</li>
+</ul>
+
+<hr>
+
+<h2>二、高手实战技巧表格</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>#</th>
+<th>技巧</th>
+<th>说明</th>
+<th>难度</th>
+<th>来源</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td>今天先审一遍 Memory</td>
+<td>记忆已默认开启，清单里已有内容；先纠错再用</td>
+<td>★</td>
+<td><a href="https://x.com/claudeai" target="_blank" rel="noopener">@claudeai</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>「记住这个」显式写入</td>
+<td>比指望自动抽取可靠，官方明确支持</td>
+<td>★</td>
+<td><a href="https://techcrunch.com/2026/08/25/claude-cowork-finally-remembers-what-you-told-the-app-in-chat/" target="_blank" rel="noopener">TechCrunch</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td>敏感话题开关要刻意选</td>
+<td>默认关闭更安全，但健康类约束也不会被记住</td>
+<td>★</td>
+<td><a href="https://x.com/takuto_pitaliy" target="_blank" rel="noopener">@takuto_pitaliy</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td>从其他 AI 导入记忆</td>
+<td>设置页 "Import memory from other AI providers"</td>
+<td>★</td>
+<td>官方设置截图</td>
+</tr>
+<tr>
+<td>5</td>
+<td>事实进记忆，流程进 skill</td>
+<td>记忆放人名/偏好/约束；流程要版本化就必须是 skill</td>
+<td>★★</td>
+<td>本期综合</td>
+</tr>
+<tr>
+<td>6</td>
+<td>记忆统一后 skill 可以更薄</td>
+<td>「我是谁」不必再写进每个 skill 开头</td>
+<td>★★</td>
+<td>本期综合</td>
+</tr>
+<tr>
+<td>7</td>
+<td>给长期定时任务配月度记忆体检</td>
+<td>过期主题会污染每周产出</td>
+<td>★★</td>
+<td>本期综合</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Connector 管实时，记忆管偏好</td>
+<td>两者叠加才有「一次到位」的交付物</td>
+<td>★★</td>
+<td>本期综合</td>
+</tr>
+<tr>
+<td>9</td>
+<td>写自动化前先手调一次 MCP 工具</td>
+<td>wrapper 常改名参数、重塑输出</td>
+<td>★★</td>
+<td>本期综合</td>
+</tr>
+<tr>
+<td>10</td>
+<td>四层归属判断法</td>
+<td>强制→hook／知识→skill／隔离→subagent／约定→CLAUDE.md</td>
+<td>★★★</td>
+<td><a href="https://ofox.ai/blog/claude-code-hooks-subagents-skills-complete-guide-2026/" target="_blank" rel="noopener">ofox.ai</a></td>
+</tr>
+<tr>
+<td>11</td>
+<td>skill 优先，hook 最后</td>
+<td>倒过来做的团队通常卡在 hook 上</td>
+<td>★★★</td>
+<td><a href="https://docs.anthropic.com/en/docs/claude-code/subagents" target="_blank" rel="noopener">Anthropic 文档</a></td>
+</tr>
+<tr>
+<td>12</td>
+<td>长任务用 Cowork 而非 Codex</td>
+<td>Cowork 子任务运行期可挂起，不烧额度</td>
+<td>★★★</td>
+<td><a href="https://x.com/LarryPanozzo" target="_blank" rel="noopener">@LarryPanozzo</a></td>
+</tr>
+<tr>
+<td>13</td>
+<td>git worktrees + tmux 并行子代理</td>
+<td>多副本互不冲突，是并行编排的基础设施前提</td>
+<td>★★★★</td>
+<td><a href="https://github.com/shanraisshan/claude-code-best-practice" target="_blank" rel="noopener">claude-code-best-practice</a></td>
+</tr>
+<tr>
+<td>14</td>
+<td>文件是最稳的跨代理接口</td>
+<td><code class="inline">.md</code> 导出或 MCP 递交，跨 Claude / Codex 都成立</td>
+<td>★★★★</td>
+<td><a href="https://x.com/clementeortuzar" target="_blank" rel="noopener">@clementeortuzar</a></td>
+</tr>
+<tr>
+<td>15</td>
+<td>Research → Plan → Execute → Review → Ship</td>
+<td>所有主流工作流的共同骨架</td>
+<td>★★★★★</td>
+<td><a href="https://github.com/shanraisshan/claude-code-best-practice" target="_blank" rel="noopener">claude-code-best-practice</a></td>
+</tr>
+<tr>
+<td>16</td>
+<td>双模型交叉审查</td>
+<td>Claude 实现 + Codex 审查，失败模式互补</td>
+<td>★★★★★</td>
+<td><a href="https://github.com/shanraisshan/claude-code-best-practice" target="_blank" rel="noopener">claude-code-best-practice</a></td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>三、YouTube 教程推荐</h2>
+
+<p>> 以下数据通过 Chrome 浏览器实时采集于 YouTube 搜索页面（2026-08-26），关键词 <code class="inline">Claude Code tips tricks 2026</code> 与 <code class="inline">Claude Cowork tutorial 2026</code>。观看量、发布时间、时长、章节数均为页面实测值。</p>
+
+<h3>Claude Code 方向</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>视频标题</th>
+<th>作者</th>
+<th>观看量</th>
+<th>发布</th>
+<th>特色内容</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Context+Management+in+Claude+Code" target="_blank" rel="noopener">Context Management in Claude Code</a></td>
+<td>Claude（官方）</td>
+<td>35万</td>
+<td>3个月前</td>
+<td>官方讲上下文即工作记忆；<code class="inline">/compact</code> vs <code class="inline">/clear</code> 的取舍时机</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=380+FREE+Claude+Code+Skills+You+Need+Right+Now" target="_blank" rel="noopener">380 FREE Claude Code Skills You Need Right Now</a></td>
+<td>— (Shorts)</td>
+<td>24万</td>
+<td>最新</td>
+<td>免费 skill 资源盘点，本期 Shorts 榜首</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=I+Tried+Claude+Code+For+1000+Hours+It+Broke+Me" target="_blank" rel="noopener">I Tried Claude Code For 1000+ Hours, It Broke Me</a></td>
+<td>The Coding Sloth</td>
+<td>17万</td>
+<td>7天前</td>
+<td>1000 小时实战复盘：常用工作流、爱用 skill、MCP 配置、如何不撞额度上限</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Use+Claude+Better+Than+99%25+of+People+Futurepedia" target="_blank" rel="noopener">Use Claude Better Than 99% of People (Beginner to Pro)</a></td>
+<td>Futurepedia</td>
+<td>6.1万</td>
+<td>9天前</td>
+<td>11 章；含 <strong>Memory Transfer</strong> 与 <strong>Cowork</strong> 专章，与本期焦点直接相关</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Claude+Code+New+Features+Explained+Greg+Isenberg" target="_blank" rel="noopener">Claude Code New Features, Explained</a></td>
+<td>Greg Isenberg</td>
+<td>4.7万</td>
+<td>8天前</td>
+<td>开篇即论点：「很多人用 Claude Code 的方式是错的」</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=27+Claude+Code+TIPS+you+didn%27t+know+about" target="_blank" rel="noopener">27 Claude Code TIPS you didn't know about (in 12 minutes)</a></td>
+<td>Jono Catliff</td>
+<td>3.1万</td>
+<td>4个月前</td>
+<td>12 分钟 27 条；注意作者已置顶更正：Antigravity 2.0 移除扩展，改用 VS Code</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=The+Ultimate+Claude+Code+Tutorial+Zinho+Automates" target="_blank" rel="noopener">The Ultimate Claude Code Tutorial (Beginner to Pro)</a></td>
+<td>Zinho Automates</td>
+<td>2.7万</td>
+<td>8天前</td>
+<td>从零到进阶完整路径</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=How+to+optimize+your+token+usage+on+Claude+Code" target="_blank" rel="noopener">How to optimize your token usage on Claude Code</a></td>
+<td>— (Shorts)</td>
+<td>9,986</td>
+<td>最新</td>
+<td>短视频版 token 优化</td>
+</tr>
+</tbody></table></div>
+
+<h3>Claude Cowork 方向</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>视频标题</th>
+<th>作者</th>
+<th>观看量</th>
+<th>时长</th>
+<th>特色内容</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Learn+80%25+of+Claude+Cowork+in+Under+20+Minutes+Jeff+Su" target="_blank" rel="noopener">Learn 80% of Claude Cowork in Under 20 Minutes</a></td>
+<td>Jeff Su</td>
+<td>130万</td>
+<td>18:55</td>
+<td>本方向观看量之最；开篇即讲清 Chat / Cowork / Code 三者分工</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Claude+COWORK+Full+Course+Zero+To+Working+AI+Employee+KJ+Rainey" target="_blank" rel="noopener">Claude COWORK Full Course: Zero To Working AI Employee (2026)</a></td>
+<td>KJ Rainey</td>
+<td>40万</td>
+<td>—</td>
+<td>21 章；含 Cowork vs ChatGPT 对比、设置、即时上手包</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=Claude+Cowork+Full+Course+for+Beginners+Tech+With+Tim" target="_blank" rel="noopener">Claude Cowork - Full Course for Beginners</a></td>
+<td>Tech With Tim</td>
+<td>21万</td>
+<td>24:16</td>
+<td>开发者视角的完整入门课</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=How+to+Use+Claude+Cowork+Full+Workflow+Automation+Guide+2026+AI+Master" target="_blank" rel="noopener">How to Use Claude Cowork – Full Workflow Automation Guide 2026</a></td>
+<td>AI Master</td>
+<td>20万</td>
+<td>16:12</td>
+<td>9 章；<strong>Projects & Persistent Memory</strong>、Skills、Scheduled Tasks 三段最值得看</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=FULL+Claude+Cowork+Tutorial+For+Beginners+in+2026+AI+Foundations" target="_blank" rel="noopener">FULL Claude Cowork Tutorial For Beginners in 2026! (Zero to PRO)</a></td>
+<td>AI Foundations</td>
+<td>7.3万</td>
+<td>—</td>
+<td>18 章，覆盖面最广：子代理、Live Artifacts、Connectors、Skills、Projects、定时任务</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/results?search_query=How+to+Use+Claude+Cowork+Step-by-Step+Tutorial+Kevin+Stratvert" target="_blank" rel="noopener">How to Use Claude Cowork (Step-by-Step Tutorial)</a></td>
+<td>Kevin Stratvert</td>
+<td>4.2万</td>
+<td>9:42</td>
+<td><strong>本方向最新（8 天前）</strong>；10 章顺序本身就是自动化的正确落地路径</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>四、Reddit 讨论精选</h2>
+
+<p>> ⚠️ Reddit 因浏览器安全策略拦截无法直接访问，且 MCP registry 中确认目前无可用 Reddit connector。以下条目通过 WebSearch 采集自公开报道与社区聚合内容，<strong>非 Reddit 原帖直采</strong>，来源性质已逐条标注。</p>
+
+<div class="table-wrap"><table><thead><tr>
+<th>主题</th>
+<th>社区 / 来源</th>
+<th>要点</th>
+<th>来源性质</th>
+</tr></thead><tbody>
+<tr>
+<td>授予目录访问前务必备份</td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a> 用户报告（经媒体转述）</td>
+<td>有用户报告 Cowork 测试中意外吞掉 11GB 文件；给目录权限前先做备份</td>
+<td>二手转述</td>
+</tr>
+<tr>
+<td>上传要控量控质，不是越多越好</td>
+<td>社区共识（<a href="https://substack.com/@sabrinaramonov/note/c-239806387" target="_blank" rel="noopener">Substack</a> 等）</td>
+<td>初期整理耗时但会复利——上传得好，后面就不用一直重复提示</td>
+<td>聚合</td>
+</tr>
+<tr>
+<td>Skills / Plugins / Scheduled Tasks 三件套的分工</td>
+<td><a href="https://aiblewmymind.substack.com/p/claude-cowork-scheduled-tasks-6-ways" target="_blank" rel="noopener">社区综述</a></td>
+<td>Skills 教 Claude 你怎么工作；Plugins 把 skill 与应用命令打包；Scheduled Tasks 让整套东西自动重复</td>
+<td>聚合</td>
+</tr>
+<tr>
+<td>Cowork Projects 是持久化工作区</td>
+<td><a href="https://ruben.substack.com/p/claude-cowork-project" target="_blank" rel="noopener">Ruben Hassid</a></td>
+<td>每个 Project 有自己的指令、文件夹、<strong>作用域记忆</strong>、定时任务与本地任务历史</td>
+<td>聚合</td>
+</tr>
+<tr>
+<td>官方 marketplace 新增 15 个插件</td>
+<td><a href="https://ruben.substack.com/i/187859421/4-claude-plugins" target="_blank" rel="noopener">社区综述</a></td>
+<td>覆盖设计、运营、HR 等；部分由 Anthropic 自建，部分为第三方经 Anthropic 验证</td>
+<td>聚合</td>
+</tr>
+<tr>
+<td>子代理的价值是上下文隔离</td>
+<td><a href="https://www.reddit.com/r/ClaudeAI/" target="_blank" rel="noopener">r/ClaudeAI</a> 相关讨论 / <a href="https://docs.anthropic.com/en/docs/claude-code/subagents" target="_blank" rel="noopener">Anthropic 文档</a></td>
+<td>独立上下文窗口避免任务间污染，让执行更可预测</td>
+<td>文档 + 聚合</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>五、X 热门帖子</h2>
+
+<p>> 以下数据通过 Chrome 浏览器实时采集于 X 搜索页面与 <a href="https://x.com/claudeai" target="_blank" rel="noopener">@claudeai</a> 官方时间线（2026-08-26），互动数据为采集时刻实测值。</p>
+
+<h3>Claude Cowork 热帖</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>作者</th>
+<th>内容摘要</th>
+<th>互动</th>
+<th>亮点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://x.com/claudeai" target="_blank" rel="noopener">@claudeai</a></td>
+<td>官宣：Claude 现在拥有一个跨聊天和 Cowork 的记忆，你决定其中包含什么。交给 Cowork 的任务会从 Claude 已从聊天中了解的内容开始</td>
+<td>💬253 🔁463 ❤️5,626 👁45万</td>
+<td><strong>本期唯一的官方一手发布</strong>，也是全部二手报道的源头</td>
+</tr>
+<tr>
+<td><a href="https://x.com/claudeai" target="_blank" rel="noopener">@claudeai</a></td>
+<td>补充说明：记忆以主题列表形式存于「设置」，可逐条阅读 / 编辑 / 删除；聊天时自动更新；也可说「记住这个」显式保存</td>
+<td>💬16 🔁23 ❤️473 👁5.7万</td>
+<td>截图里能看到真实主题条目与独立更新时间戳</td>
+</tr>
+<tr>
+<td><a href="https://x.com/shin_sasaki19" target="_blank" rel="noopener">@shin_sasaki19</a></td>
+<td>「お、良いね。」引用官方原文强调：聊天与 Cowork 全体共用一份记忆，内容由你决定</td>
+<td>👁250</td>
+<td>日本产品开发者视角的即时反应</td>
+</tr>
+<tr>
+<td><a href="https://x.com/takuto_pitaliy" target="_blank" rel="noopener">@takuto_pitaliy</a></td>
+<td>【记忆功能刷新】统合后不必等对话结束即可随时记录主题；按主题单位可阅览・编辑・删除；健康信息与宗教观等敏感话题默认不保存</td>
+<td>👁55</td>
+<td><strong>本期对新记忆机制拆解最完整的一条</strong>，附自制说明图</td>
+</tr>
+<tr>
+<td><a href="https://x.com/n5wana" target="_blank" rel="noopener">@n5wana</a></td>
+<td>四点速记：跨 Chat / Cowork 统一记忆；设置新增敏感话题开关；记忆主题拆分为独立分类；Memory 拿到独立标签页</td>
+<td>👁8</td>
+<td>变更点清单最干净</td>
+</tr>
+<tr>
+<td><a href="https://x.com/gori_me" target="_blank" rel="noopener">@gori_me</a></td>
+<td>「Claude 的记忆在聊天与 Cowork 中打通了。不用再重新解释一遍了」</td>
+<td>—</td>
+<td>一句话说清用户侧的实际收益</td>
+</tr>
+<tr>
+<td><a href="https://x.com/LarryPanozzo" target="_blank" rel="noopener">@LarryPanozzo</a></td>
+<td>对比提问：Codex 在等待本地运行完成时会持续烧额度，而 Cowork 能挂起、子任务完成后再唤醒</td>
+<td>—</td>
+<td><strong>成本视角的实战观察</strong>，长构建 / 长测试场景直接相关</td>
+</tr>
+<tr>
+<td><a href="https://x.com/hongming731" target="_blank" rel="noopener">@hongming731</a></td>
+<td>BestBlogs 早报把「Claude 记忆打通 Cowork」列为当日头条之一</td>
+<td>🔁1 👁33</td>
+<td>中文技术媒体侧的采纳信号</td>
+</tr>
+</tbody></table></div>
+
+<h3>Claude Code Tips 热帖</h3>
+
+<div class="table-wrap"><table><thead><tr>
+<th>作者</th>
+<th>内容摘要</th>
+<th>互动</th>
+<th>亮点</th>
+</tr></thead><tbody>
+<tr>
+<td><a href="https://x.com/sulekhat95" target="_blank" rel="noopener">@sulekhat95</a></td>
+<td>推荐 <a href="https://github.com/shanraisshan/claude-code-best-practice" target="_blank" rel="noopener">shanraisshan/claude-code-best-practice</a>：19.7K 星 / 1.7K 分叉，收录 Anthropic Claude Code 团队 84 条实操技巧 + 子代理 / 技能 / 钩子 / 斜杠命令 / MCP / tmux + git worktrees，还有 Claude + Codex 双模型协作工作流</td>
+<td>18小时前 · 含视频 + README 截图</td>
+<td><strong>本期社区侧最高价值资源</strong>；README 更新时间戳为 Aug 25, 2026，仓库曾登 GitHub Trending 日榜第一</td>
+</tr>
+<tr>
+<td><a href="https://x.com/clementeortuzar" target="_blank" rel="noopener">@clementeortuzar</a></td>
+<td>处理 Findings 的两条建议：① 代理不在 Kapso 内时可直接接仓库让 Kapso agent 就地调查；② 可把一条 finding 导出为 <code class="inline">.md</code> 或经 MCP 直接递交给 Codex / Claude Code</td>
+<td>💬0 🔁1 ❤️1 👁133</td>
+<td>跨代理交接的最小可行做法：<strong>文件是最稳的接口</strong></td>
+</tr>
+<tr>
+<td><a href="https://x.com/Preppandey121" target="_blank" rel="noopener">@Preppandey121</a></td>
+<td>「Claude Code for Beginners」：不必是编程专家也能用 AI 造东西，一行代码不写也能把想法变成真项目</td>
+<td>❤️2 👁21</td>
+<td>非开发者入门叙事在 X 上持续走量</td>
+</tr>
+<tr>
+<td><a href="https://x.com/emmaeni__" target="_blank" rel="noopener">@emmaeni__</a></td>
+<td>求助帖：想进入 AI 自动化 / 成为 Claude Code operator，LinkedIn 受限只能靠 X 获客，求建议</td>
+<td>💬2 ❤️1 👁79</td>
+<td><strong>需求侧信号</strong>：「Claude Code operator」正在成为一个自称的职业标签</td>
+</tr>
+<tr>
+<td><a href="https://x.com/Y_MAGARI000" target="_blank" rel="noopener">@Y_MAGARI000</a></td>
+<td>已经在 note 上边用 AI 辅助边连载 Claude Code 技巧笔记约两周</td>
+<td>👁58</td>
+<td>个人知识连载是日本圈常见的学习范式</td>
+</tr>
+<tr>
+<td><a href="https://x.com/Claudecode_JPES" target="_blank" rel="noopener">@Claudecode_JPES</a> / <a href="https://x.com/Claudecode_JPEE" target="_blank" rel="noopener">@Claudecode_JPEE</a></td>
+<td>ClaudeCode JP 门户矩阵账号高频推送 AI 新闻与指南（学生版 / 工程师版分线）</td>
+<td>👁11–14/条</td>
+<td>高频低互动，<strong>内容农场型账号在该关键词下占比明显</strong>，检索时需注意过滤</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>六、跨平台趋势总结</h2>
+
+<p><strong>1. 今天只有一件大事，三个平台的分工非常清楚。</strong> X 是唯一的一手现场——官方发布 6 小时内，日本、印度、中文圈的开发者已经完成了拆解、翻译和二次传播，而且<strong>拆解质量高于多数英文媒体报道</strong>（<a href="https://x.com/takuto_pitaliy" target="_blank" rel="noopener">@takuto_pitaliy</a> 的主题级说明图比若干篇新闻稿更完整）。媒体侧（TechCrunch / The Register / 9to5Mac / SiliconANGLE / The New Stack）在同一天集中出稿，但内容高度同质。YouTube 完全没跟上——本方向最新的 Cowork 教程也是 8 天前的，尚无一条覆盖新记忆机制。<strong>想第一时间学新功能，X 仍是唯一选择；YouTube 的价值在体系化，不在时效。</strong></p>
+
+<p><strong>2. 「记忆」正在取代「上下文」成为社区的中心词。</strong> 昨天的焦点还是 token 效率与缓存命中——那是<strong>单次会话内</strong>的优化。今天的焦点是跨会话、跨产品的持久记忆——这是<strong>会话之间</strong>的优化。两者不冲突，但注意力明显在迁移：前者的收益是线性的（每次省一点），后者是复利的（记对了一次，之后每次都受益）。</p>
+
+<p><strong>3. 隐私叙事被官方主动前置了。</strong> 值得注意的是，Anthropic 这次没有等媒体来问，而是在发布同时就把敏感话题清单、默认关闭策略、PII 永不存储的边界一次讲清。多家媒体的标题也顺势落在「保护敏感话题」而非「记住更多」上——这与半年前 AI 记忆功能普遍先发布后解释的节奏形成对比。</p>
+
+<p><strong>4. 社区正在从「技巧碎片」走向「可复制配置」。</strong> 19.7K 星的 claude-code-best-practice 之所以能起来，不是因为它收集的技巧最多，而是因为它把技巧组织成了<strong>能直接抄的目录结构</strong>（Agents / Commands / Skills 三分）。这与本站上期观察到的趋势一致：单条 tip 的边际价值在下降，成套配置的价值在上升。</p>
+
+<p><strong>5. 「用哪个代理」开始变成成本问题而非能力问题。</strong> <a href="https://x.com/LarryPanozzo" target="_blank" rel="noopener">@LarryPanozzo</a> 那条对比——Codex 空等烧额度、Cowork 能挂起唤醒——代表了一类新的选型依据。当各家能力趋同，<strong>长任务的空闲计费策略</strong>会成为真正的差异点。</p>
+
+<hr>
+
+<h2>七、进阶路线图</h2>
+
+<div class="table-wrap"><table><thead><tr>
+<th>阶段</th>
+<th>目标</th>
+<th>本期新增动作</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>第 1 天</strong></td>
+<td>记忆卫生</td>
+<td>打开「设置 → Memory」，通读全部主题；删掉过期项；决定敏感话题开关的开/关</td>
+</tr>
+<tr>
+<td><strong>第 2–3 天</strong></td>
+<td>记忆与 skill 分层</td>
+<td>把散落在各 skill 开头的「我是谁 / 我团队 / 我偏好」抽出来交给记忆，让 skill 只留做法</td>
+</tr>
+<tr>
+<td><strong>第 1 周</strong></td>
+<td>定时任务体检</td>
+<td>检查每个长期定时任务：它现在会读到的记忆是否仍然正确？加一条月度体检提醒</td>
+</tr>
+<tr>
+<td><strong>第 2 周</strong></td>
+<td>抄一套成体系的配置</td>
+<td>通读 <a href="https://github.com/shanraisshan/claude-code-best-practice" target="_blank" rel="noopener">claude-code-best-practice</a> 的 Agents / Commands / Skills 三个目录，挑 3 条落地，而不是 30 条</td>
+</tr>
+<tr>
+<td><strong>第 3 周</strong></td>
+<td>并行编排基础设施</td>
+<td>配 <code class="inline">git worktrees</code> + <code class="inline">tmux</code>，让子代理能在互不冲突的副本上并行</td>
+</tr>
+<tr>
+<td><strong>第 4 周</strong></td>
+<td>跨代理协作</td>
+<td>试一次 Claude 实现 + Codex 审查的交叉工作流；用 <code class="inline">.md</code> 文件做交接接口</td>
+</tr>
+<tr>
+<td><strong>长期</strong></td>
+<td>记忆即资产</td>
+<td>把「设计一份长期正确的记忆」当成和写文档同等重要的事——这是唯一有复利的那部分投入</td>
+</tr>
+</tbody></table></div>
+
+<hr>
+
+<h2>八、推荐行动</h2>
+
+<p><strong>今天就做（10 分钟）</strong></p>
+
+<p>1. 打开「设置 → Memory」，通读 Claude 已经记住的全部主题。大概率会发现记错或过期的条目——现在删掉，比等 Cowork 按错误前提干完半小时活再发现便宜得多。</p>
+<p>2. 对「Include sensitive topics in memory」做一次刻意决策，而不是接受默认。</p>
+<p>3. 如果你从别家 AI 迁移过来，跑一次 "Import memory from other AI providers"。</p>
+
+<p><strong>这周做（1 小时）</strong></p>
+
+<p>4. 挑一个你最常用的 skill，把开头那段「我是谁 / 我的偏好」删掉，交给记忆承担。跑一次，确认输出没退化。</p>
+<p>5. 检查你所有的定时任务：它们现在会读到的记忆是否仍然正确？</p>
+<p>6. 收藏 <a href="https://github.com/shanraisshan/claude-code-best-practice" target="_blank" rel="noopener">shanraisshan/claude-code-best-practice</a>，但<strong>只挑三条落地</strong>。19.7K 星的仓库最大的风险是让人以为读完就等于会了。</p>
+
+<p><strong>想深入的话</strong></p>
+
+<p>7. 看 <a href="https://www.youtube.com/results?search_query=Use+Claude+Better+Than+99%25+of+People+Futurepedia" target="_blank" rel="noopener">Futurepedia 的 Memory Transfer 章节</a>（6.1万观看，9 天前）——目前唯一在视频里正面讲记忆迁移的内容。</p>
+<p>8. 长构建 / 长测试场景值得实测一次 Cowork 的挂起-唤醒行为，对照你现在的额度消耗，看 <a href="https://x.com/LarryPanozzo" target="_blank" rel="noopener">@LarryPanozzo</a> 提到的差异在你的工作负载上有多大。</p>
+
+<hr>
+
+<p><em>本日报由 Claude Cowork 定时任务自动生成 · 数据采集于 2026-08-26</em></p>
+
+  </div>
+</article>
+<div class="article-footer">
+  <div class="container">
+    <a href="../#ai-trends">← 返回首页</a>
+  </div>
+</div>
+</body>
+</html>
